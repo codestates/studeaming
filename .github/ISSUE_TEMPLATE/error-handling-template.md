@@ -1,6 +1,6 @@
 ---
 name: Error Handling Template
-about: 에러 핸들링
+about: Describe this error template's purpose here.
 title: "[Error]"
 labels: ''
 assignees: ''
