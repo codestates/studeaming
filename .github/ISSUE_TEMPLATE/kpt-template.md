@@ -1,7 +1,7 @@
 ---
 name: KPT Template
 about: 팀 또는 개인 회고 기록
-title: "[KPT]"
+title: "[KPT] DAY + "
 labels: ''
 assignees: ''
 
