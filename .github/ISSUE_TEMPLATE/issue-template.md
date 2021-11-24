@@ -1,7 +1,7 @@
 ---
 name: Issue template
-about: 이슈 생성
-title: ''
+about: 태스크 생성
+title: "[Task]"
 labels: ''
 assignees: ''
 
