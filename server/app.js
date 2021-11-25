@@ -8,6 +8,10 @@ const app = express();
 const studyRoom = require("./controller/studyRoom");
 const { Server } = require("socket.io");
 require("dotenv").config();
+const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
+const studyToggleRouter = require("./routes/studyToggle");
+const studyLogRouter = require("./routes/studyLog");
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -31,6 +35,10 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+app.use("/auth", authRouter);
+app.use("/user", userRouter);
+app.use("/studylog", studyLogRouter);
+app.use("studytoggle", studyToggleRouter);
 //경로 설정
 
 app.use(function (req, res, next) {
