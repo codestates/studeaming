@@ -12,9 +12,9 @@ const initState = {
 const modalReducer = (state = initState, action) => {
   switch (action.type) {
     case SIGNIN_MODAL_OPEN:
-      return { ...state, isSigninOpen: true };
+      return { ...state, isSigninOpen: action.payload };
     case SIGNUP_MODAL_OPEN:
-      return { ...state, isSignupOpen: true };
+      return { ...state, isSignupOpen: action.payload };
     case MODAL_OFF:
       return { ...initState };
     default:
