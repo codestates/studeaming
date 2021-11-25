@@ -1,5 +1,8 @@
 export const CHANGE_LOGIN_STATE = "CHANGE_LOGIN_STATE";
 // TODO : 다른 액션 타입 추가
+export const SIGNIN_MODAL_OPEN = "SIGNIN_MODAL_OPEN";
+export const SIGNUP_MODAL_OPEN = "SIGNUP_MODAL_OPEN";
+export const MODAL_OFF = "MODAL_OFF";
 export const ENQUEUE_NOTIFICATION = "ENQUEUE_NOTIFICATION";
 export const DEQUEUE_NOTIFICATION = "DEQUEUE_NOTIFICATION";
 
@@ -11,6 +14,25 @@ export const loginStateChange = (boolean) => {
 };
 
 // TODO : 다른 액션 추가
+export const signinModalOpen = (boolean) => {
+  return {
+    type: SIGNIN_MODAL_OPEN,
+    payload: boolean,
+  };
+};
+
+export const signupModalOpen = (boolean) => {
+  return {
+    type: SIGNUP_MODAL_OPEN,
+    payload: boolean,
+  };
+};
+
+export const modalOff = () => {
+  return {
+    type: MODAL_OFF,
+  };
+};
 
 export const notify =
   (message, link, dismissTime = 3000) =>
