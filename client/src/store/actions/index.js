@@ -14,15 +14,17 @@ export const loginStateChange = (boolean) => {
 };
 
 // TODO : 다른 액션 추가
-export const signinModalOpen = () => {
+export const signinModalOpen = (boolean) => {
   return {
     type: SIGNIN_MODAL_OPEN,
+    payload: boolean,
   };
 };
 
-export const signupModalOpen = () => {
+export const signupModalOpen = (boolean) => {
   return {
     type: SIGNUP_MODAL_OPEN,
+    payload: boolean,
   };
 };
 
