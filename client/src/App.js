@@ -9,6 +9,7 @@ import Viewer from "./pages/Viewer";
 import Modal from "./components/Modal";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
+import NotificationCenter from "./components/NotificationCenter";
 require("dotenv").config();
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
   };
   return (
     <>
+      <NotificationCenter />
       <h1>Hello</h1>
       <button onClick={signinHandler}>모달</button>
       {/* <Routes>
