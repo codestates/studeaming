@@ -4,6 +4,7 @@ import Main from "./pages/Main";
 import Mypage from "./pages/Mypage";
 import Streamer from "./pages/Streamer";
 import Viewer from "./pages/Viewer";
+require("dotenv").config();
 
 function App() {
   return (
