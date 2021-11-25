@@ -16,7 +16,7 @@ const authAPI = {
     return await api.post(`/auth/logout`);
   },
 
-  withdraw: async () => {
+  withdraw: async (password) => {
     return await api.delete(`/auth/withdraw`, { data: { password } });
   },
 
