@@ -12,24 +12,20 @@ import Signup from "./components/Signup";
 import StreamerSetting from "./components/StreamerSetting";
 import Header from "./components/Header";
 import NotificationCenter from "./components/NotificationCenter";
+import SideLog from "./components/SideLog";
 require("dotenv").config();
 
 function App() {
   const { isSignupOpen, isSigninOpen, isStreamSettingOpen } = useSelector(
     ({ modalReducer }) => modalReducer
   );
+  const { isSideLogOpen } = useSelector(({ sideLogReducer }) => sideLogReducer);
   const isModal = isSignupOpen || isSigninOpen || isStreamSettingOpen;
-  const dispatch = useDispatch();
 
-  const signinHandler = () => {
-    dispatch(signinModalOpen(true));
-  };
   return (
     <>
       <Header />
       <NotificationCenter />
-      <h1>Hello</h1>
-      <button onClick={signinHandler}>모달</button>
       {/* <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/main" element={<Main />} />
@@ -37,6 +33,7 @@ function App() {
         <Route path="/streamer" element={<Streamer />} />
         <Route path="/viewer" element={<Viewer />} />
       </Routes> */}
+      {isSideLogOpen && <SideLog />}
       {isModal && (
         <Modal>
           {isSignupOpen && <Signup />}

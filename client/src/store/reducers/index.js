@@ -3,6 +3,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import loginReducer from "./loginReducer";
 import modalReducer from "./modalReducer";
+import sideLogReducer from "./sideLogReducer";
 import notificationReducer from "./notificationReducer";
 
 const persistConfig = {
@@ -14,6 +15,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   loginReducer,
   modalReducer,
+  sideLogReducer,
   notificationReducer,
 });
 
