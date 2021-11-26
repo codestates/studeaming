@@ -96,7 +96,11 @@ function Signin() {
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            dispatch(notify("잘못된 아이디 이거나 비밀번호가 틀렸습니다."));
+            if (err.responsed.data.message === "Wrong email or password") {
+              dispatch(notify("잘못된 아이디 이거나 비밀번호가 틀렸습니다."));
+            } else {
+              dispatch(notify("이메일 인증이 완료되지 않았습니다."));
+            }
           } else {
             dispatch(notify("새로고침 후 다시 시도해주세요."));
           }
@@ -107,6 +111,18 @@ function Signin() {
   const openSignup = () => {
     dispatch(signinModalOpen(false));
     dispatch(signupModalOpen(true));
+  };
+
+  const googleBtnClick = () => {
+    window.location.assign(
+      `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_REST_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email&state=google`
+    );
+  };
+
+  const kakaoBtnClick = () => {
+    window.location.assign(
+      `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code&state=kakao`
+    );
   };
 
   return (
