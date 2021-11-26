@@ -9,14 +9,16 @@ import Viewer from "./pages/Viewer";
 import Modal from "./components/Modal";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
+import StreamerSetting from "./components/StreamerSetting";
+import Header from "./components/Header";
 import NotificationCenter from "./components/NotificationCenter";
 require("dotenv").config();
 
 function App() {
-  const { isSignupOpen, isSigninOpen } = useSelector(
+  const { isSignupOpen, isSigninOpen, isStreamSettingOpen } = useSelector(
     ({ modalReducer }) => modalReducer
   );
-  const isModal = isSignupOpen || isSigninOpen;
+  const isModal = isSignupOpen || isSigninOpen || isStreamSettingOpen;
   const dispatch = useDispatch();
 
   const signinHandler = () => {
@@ -24,6 +26,7 @@ function App() {
   };
   return (
     <>
+      <Header />
       <NotificationCenter />
       <h1>Hello</h1>
       <button onClick={signinHandler}>모달</button>
@@ -38,6 +41,7 @@ function App() {
         <Modal>
           {isSignupOpen && <Signup />}
           {isSigninOpen && <Signin />}
+          {isStreamSettingOpen && <StreamerSetting />}
         </Modal>
       )}
     </>
