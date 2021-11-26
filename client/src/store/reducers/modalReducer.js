@@ -1,6 +1,7 @@
 import {
   SIGNIN_MODAL_OPEN,
   SIGNUP_MODAL_OPEN,
+  PWDEDIT_MODAL_OPEN,
   STREAM_SETTING_MODAL_OPEN,
   SIDE_LOG_COMPONENT_OPEN,
   MODAL_OFF,
@@ -9,6 +10,7 @@ import {
 const initState = {
   isSigninOpen: false,
   isSignupOpen: false,
+  isPwdEditOpen: false,
   isStreamSettingOpen: false,
   isSideLogOpen: false,
 };
@@ -19,6 +21,8 @@ const modalReducer = (state = initState, action) => {
       return { ...state, isSigninOpen: action.payload };
     case SIGNUP_MODAL_OPEN:
       return { ...state, isSignupOpen: action.payload };
+    case SIGNUP_MODAL_OPEN:
+      return { ...state, isPwdEditOpen: action.payload };
     case STREAM_SETTING_MODAL_OPEN:
       return { ...state, isStreamSettingOpen: action.payload };
     case SIDE_LOG_COMPONENT_OPEN:
