@@ -2,11 +2,12 @@ const express = require("express");
 const router = express.Router();
 const studyLog = require("../controller/studyLog");
 const comment = require("../controller/comment");
+const checkAuth = require("../middleware/checkAuth");
 
-router.post("/", studyLog.post);
-router.patch("/", studyLog.patch);
-router.get("/:date", studyLog.get);
-router.get("/comment/:date", comment.get);
-router.patch("/comment/:date", comment.patch);
+router.post("/", checkAuth, studyLog.post);
+router.patch("/", checkAuth, studyLog.patch);
+router.get("/:date", checkAuth, studyLog.get);
+router.get("/comment/:date", checkAuth, comment.get);
+router.patch("/comment/:date", checkAuth, comment.patch);
 
 module.exports = router;
