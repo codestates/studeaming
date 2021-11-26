@@ -1,12 +1,20 @@
 import api from "./index";
 
 const authAPI = {
-  signup: async (username, email, password) => {
-    return await api.post(`/auth/signup`, { username, email, password });
+  signup: async (image, username, email, password) => {
+    return await api.post(`/auth/signup`, { image, username, email, password });
   },
 
-  // check email availability
-  // check username availability
+  checkAvailability: async (type, input) => {
+    let payload;
+    switch (type) {
+      case "email":
+        payload = { email: input };
+      case "username":
+        payload = { username: input };
+    }
+    return await api.post(`auth/signup/availability`, { type, ...payload });
+  },
 
   signin: async (email, password) => {
     return await api.post(`/auth/signin`, { email, password });
