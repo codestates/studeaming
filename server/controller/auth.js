@@ -1,9 +1,10 @@
 const { User } = require("../models");
 const encryptPassword = require("./functions/encryptFunctions");
 const {
-  generateToken,
-  sendToken,
+  sendAccessToken,
+  sendRefreshToken,
   clearToken,
+  isRefreshAuthorized,
 } = require("./functions/tokenFunctions");
 const {
   generateVerification,
@@ -64,8 +65,8 @@ module.exports = {
             user.password,
             (result) => {
               if (result && user.isEmailVerified) {
-                const accessToken = generateToken({ id: user.id });
-                sendToken(res, accessToken);
+                sendAccessToken(res, { id: user.id });
+                sendRefreshToken(res, { id: user.id });
                 res.send({
                   user: {
                     id: user.id,
@@ -93,16 +94,63 @@ module.exports = {
     }
   },
 
-  checkAvailability: (req, res) => {},
+  checkAvailability: async (req, res) => {
+    if (req.body.type === "email" && req.body.email) {
+      try {
+        const user = await User.findOne({ where: { email: req.body.email } });
+        if (!user) {
+          res.send({ message: "Available" });
+        } else {
+          res.status(409).send({ message: "Already exist" });
+        }
+      } catch {
+        res.sendStatus(500);
+      }
+    } else if (req.body.type === "username" && req.body.username) {
+      try {
+        const user = await User.findOne({
+          where: { username: req.body.username },
+        });
+        if (!user) {
+          res.send({ message: "Available" });
+        } else {
+          res.status(409).send({ message: "Already exist" });
+        }
+      } catch {
+        res.sendStatus(500);
+      }
+    } else {
+      res.status(400).send({ message: "Invalid parameter" });
+    }
+  },
 
   signout: (req, res) => {
-    clearToken(res);
-    res.sendStatus(205);
+    try {
+      clearToken(res);
+      res.sendStatus(205);
+    } catch {
+      res.sendStatus(500);
+    }
   },
 
   withdraw: (req, res) => {
+    //todo: drop data
     if (req.password) {
     } else {
+    }
+  },
+
+  refreshToken: (req, res) => {
+    try {
+      const data = isRefreshAuthorized(req);
+      if (data) {
+        clearToken(res);
+        sendAccessToken(res, data);
+      } else {
+        res.status(401).send({ message: "Invalid refresh token" });
+      }
+    } catch {
+      res.sendStatus(500);
     }
   },
 };
