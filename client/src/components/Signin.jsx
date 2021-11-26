@@ -43,14 +43,25 @@ const SignupBtn = styled.div`
 `;
 
 const SocialBtnBox = styled.div`
+  width: 100px;
+  display: flex;
+  justify-content: space-between;
   margin: 10px 0px 5px 0px;
 `;
 
-const SocialBtn = styled.img`
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
+const SocialBtn = styled.div`
+  width: 40px;
+  height: 40px;
   cursor: pointer;
+  border: 1px solid #f5f5f5;
+  border-radius: 5px;
+  img {
+    object-fit: cover;
+  }
+  :hover {
+    border: none;
+    box-shadow: 0px 0px 5px rgba(144, 144, 144, 0.6);
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -128,8 +139,12 @@ function Signin() {
       </ButtonContainer>
       <SignupBtn onClick={openSignup}>회원가입</SignupBtn>
       <SocialBtnBox>
-        <SocialBtn src={google} />
-        <SocialBtn src={kakao} />
+        <SocialBtn>
+          <img src={google} />
+        </SocialBtn>
+        <SocialBtn>
+          <img src={kakao} />
+        </SocialBtn>
       </SocialBtnBox>
     </AuthContainer>
   );
