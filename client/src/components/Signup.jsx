@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import crypto from "crypto-js";
 import authAPI from "../api/auth";
 import { modalOff, notify } from "../store/actions";
 import Button from "./Button";
@@ -12,11 +13,6 @@ import {
   Input,
   ErrorMsg,
 } from "./reusableStyle";
-
-/* TODO
-1. 프로필 사진이 업로드 되지 않아 null인 경우, assets에서 파일을 불러와 보여준다.
-2. 사진 업로드없이 가입한 경우 post 요청에 assets 파일을 profile image로 넘겨준다.
-*/
 
 const ProfileImg = styled.div`
   position: relative;
@@ -77,8 +73,8 @@ const ButtonContainer = styled.div`
 `;
 
 function Signup() {
-  const [profileImg, setProfileImg] = useState(null);
   const [signupInfo, setSignupInfo] = useState({
+    image: null,
     email: "",
     username: "",
     password: "",
@@ -97,24 +93,20 @@ function Signup() {
     check: "",
   });
   const dispatch = useDispatch();
-
   const regExpEmail =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
   const regExpPwd = /^(?=.*?[a-z])(?=.*?[0-9]).{8,16}$/i;
 
   const getProfileImg = (event) => {
     const src = event.target.files[0];
-    setProfileImg(URL.createObjectURL(src));
+    setSignupInfo({ ...signupInfo, image: URL.createObjectURL(src) });
   };
 
   const removeProfileImg = () => {
-    setProfileImg(null);
+    setSignupInfo({ ...signupInfo, image: null });
   };
 
   const handleInputValue = (key) => (e) => {
-    if (key === "password") {
-      // 암호화하여 저장
-    }
     setSignupInfo({ ...signupInfo, [key]: e.target.value });
     if (!signupInfo[key].length) {
       setMessage({ ...message, [key]: "" });
@@ -128,7 +120,7 @@ function Signup() {
       setIsValid({ ...isValid, email: false });
     } else if (regExpEmail.test(signupInfo.email)) {
       try {
-        // check email availability
+        authAPI.checkAvailability("email", signupInfo.email);
         setMessage({ ...message, email: "" });
         setIsValid({ ...isValid, email: true });
       } catch {
@@ -170,7 +162,7 @@ function Signup() {
 
   const checkUsername = () => {
     try {
-      // check username availability
+      authAPI.checkAvailability("username", signupInfo.username);
       setMessage({ ...message, username: "" });
       setIsValid({ ...isValid, username: true });
     } catch {
@@ -179,19 +171,27 @@ function Signup() {
     }
   };
 
-  const buttonHandler = (e) => {
+  const signupHandler = () => {
     const { email, username, password, check } = isValid;
     if (email && username && password && check) {
+      const encryptedPwd = crypto.AES.encrypt(
+        signupInfo.password,
+        process.env.REACT_APP_SECRET_KEY
+      ).toString();
       try {
         authAPI.signup(
+          signupInfo.image,
           signupInfo.username,
           signupInfo.email,
-          signupInfo.password
+          encryptedPwd
         );
         dispatch(notify("회원가입이 완료되었습니다."));
         dispatch(modalOff());
-      } catch {}
+      } catch {
+        dispatch(notify("새로고침 후 다시 시도해주세요."));
+      }
     } else {
+      dispatch(notify("입력란을 다시 확인해주세요."));
     }
   };
 
@@ -203,9 +203,9 @@ function Signup() {
   return (
     <AuthContainer>
       <Title>회원가입</Title>
-      {profileImg ? (
+      {signupInfo.image ? (
         <ProfileImg onClick={removeProfileImg}>
-          <img src={profileImg} />
+          <img src={signupInfo.image} />
           <div id="remove_profile_img">&times;</div>
         </ProfileImg>
       ) : (
@@ -254,11 +254,14 @@ function Signup() {
           type="password"
           id="check_password"
           onChange={handleInputValue("check")}
+          onKeyUp={(e) => {
+            e.key === "Enter" && signupHandler();
+          }}
         ></Input>
         <ErrorMsg>{message.check}</ErrorMsg>
       </InputContainer>
       <ButtonContainer>
-        <Button message="회원가입" clickEvent={buttonHandler} />
+        <Button message="회원가입" clickEvent={signupHandler} />
       </ButtonContainer>
     </AuthContainer>
   );
