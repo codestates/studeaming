@@ -10,61 +10,52 @@ import {
 import styled from "styled-components";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Input } from "./reusableStyle";
+import Button from "./Button";
+import { AuthContainer, Title, Input } from "./reusableStyle";
 import authAPI from "../api/auth";
 import google from "../assets/images/btn_google.svg";
 import kakao from "../assets/images/btn_kakao.svg";
 
-const SigninLogo = styled.span`
-  padding: 50px 130px;
-  font-size: 14px;
-  color: #6e6e6e;
-`;
-
 const InputBox = styled.div`
   position: relative;
+  width: 220px;
+
+  :first-of-type {
+    margin: 25px 0px 10px 0px;
+  }
 `;
 
 const Icon = styled(FontAwesomeIcon)`
   position: absolute;
-  right: 65px;
-  top: 10px;
+  height: 12px;
+  right: 8px;
+  top: calc(50% - 9px);
 `;
 
-const ButtonBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  height: 80px;
-  margin: 30px;
-`;
-
-const Button = styled.div`
-  width: 120px;
-  height: 35px;
-  cursor: pointer;
-  border: 1px solid;
-  border-radius: 5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-`;
-
-const SignupBtn = styled.span`
+const SignupBtn = styled.div`
+  margin: 15px 0px 25px 0px;
   font-size: 14px;
   cursor: pointer;
+  :hover {
+    color: #656bff;
+    font-weight: 700;
+  }
 `;
 
 const SocialBtnBox = styled.div`
-  margin: 50px;
+  margin: 10px 0px 5px 0px;
 `;
 
 const SocialBtn = styled.img`
   width: 50px;
   height: 50px;
+  object-fit: cover;
   cursor: pointer;
+`;
+
+const ButtonContainer = styled.div`
+  width: 220px;
+  margin-top: 40px;
 `;
 
 function Signin() {
@@ -108,8 +99,8 @@ function Signin() {
   };
 
   return (
-    <>
-      <SigninLogo>로그인</SigninLogo>
+    <AuthContainer>
+      <Title>로그인</Title>
       <InputBox>
         <Input
           type="text"
@@ -127,20 +118,20 @@ function Signin() {
           placeholder="비밀번호"
           onChange={handleInputValue("password")}
           onKeyUp={(e) => {
-            if (e.key === "Enter") loginHandler();
+            e.key === "Enter" && loginHandler();
           }}
         />
         <Icon icon={faLock} />
       </InputBox>
-      <ButtonBox>
-        <Button onClick={loginHandler}>로그인</Button>
-        <SignupBtn onClick={openSignup}>회원가입</SignupBtn>
-      </ButtonBox>
+      <ButtonContainer>
+        <Button message="로그인" clickEvent={loginHandler}></Button>
+      </ButtonContainer>
+      <SignupBtn onClick={openSignup}>회원가입</SignupBtn>
       <SocialBtnBox>
         <SocialBtn src={google} />
         <SocialBtn src={kakao} />
       </SocialBtnBox>
-    </>
+    </AuthContainer>
   );
 }
 
