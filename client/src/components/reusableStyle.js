@@ -1,15 +1,54 @@
 import styled from "styled-components";
 
+export const AuthContainer = styled.div`
+  width: 280px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Title = styled.h2`
+  font-size: 16px;
+  font-weight: 500;
+  color: #444453;
+  margin-bottom: 20px;
+  display: block;
+`;
+
+export const InputContainer = styled.div`
+  /* padding: 16px; */
+  margin-bottom: 12px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  :nth-last-of-type(2) {
+    margin-bottom: 20px;
+  }
+`;
+
+export const Desc = styled.label`
+  font-size: 12px;
+  display: inline-block;
+  color: #8d8d8d;
+  margin-bottom: 5px;
+`;
+
 export const Input = styled.input`
-  margin: 0 60px 30px 60px;
+  /* box-sizing: border-box; */
+  /* margin: 0 60px 30px 60px; */
+  margin-bottom: 5px;
   border: none;
-  border-bottom: 1px solid #8d8d8d;
+  border-radius: 8px;
   outline: none;
-  width: 200px;
-  height: 30px;
-  background-color: transparent;
+  width: 100%;
+  height: 40px;
+  padding: 5px 10px;
+  background-color: #f7f7ff;
   :focus {
-    background-color: transparent;
+    background-color: #f6f8ff;
+    border: 1.5px solid #7a7ef4;
   }
   ::placeholder,
   ::-webkit-input-placeholder {
@@ -18,4 +57,10 @@ export const Input = styled.input`
     font-size: 12px;
     letter-spacing: 1px;
   }
+`;
+
+export const ErrorMsg = styled.span`
+  display: inline-block;
+  color: #f04949;
+  font-size: 10px;
 `;
