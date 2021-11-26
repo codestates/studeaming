@@ -7,11 +7,12 @@ const {
   followUser,
   deleteFollow,
 } = require("../controller/user");
+const checkAuth = require("../middleware/checkAuth");
 
-router.get("/", getUser);
+router.get("/", checkAuth, getUser);
 router.get("/:username/profile", getProfile);
-router.get("/follows", getFollows);
-router.post("/follows/:username", followUser);
-router.delete("/follows/:username", deleteFollow);
+router.get("/follows", checkAuth, getFollows);
+router.post("/follows/:username", checkAuth, followUser);
+router.delete("/follows/:username", checkAuth, deleteFollow);
 
 module.exports = router;
