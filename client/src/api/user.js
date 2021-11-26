@@ -15,10 +15,12 @@ const userAPI = {
         payload = { username: newInfo };
       case "about":
         payload = { about: newInfo };
-      case "password":
-        payload = { password: newInfo };
     }
     return await api.patch(`/user`, payload);
+  },
+
+  modifyPassword: async (currentPassword, newPassword) => {
+    return await api.patch(`/user/password`, { currentPassword, newPassword });
   },
 
   getOthersInfo: async (username) => {
