@@ -32,9 +32,10 @@ const ModalWrapper = styled.div`
   align-items: center;
   justify-content: center;
   background-color: white;
-  padding: 20px;
+  padding: 35px 25px;
   border-radius: 1rem;
   position: relative;
+  box-shadow: 0px 0px 20px #8d8d8d;
 `;
 
 function Modal({ children }) {
