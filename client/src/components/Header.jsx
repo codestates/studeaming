@@ -4,7 +4,7 @@ import styled from "styled-components";
 import {
   signinModalOpen,
   streamSettingModalOpen,
-  loginStateChange,
+  sideLogOpen,
 } from "../store/actions/index";
 import { faBars, faVideo, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -61,8 +61,13 @@ const Login = styled.span`
 
 function Header() {
   const { isLogin } = useSelector(({ loginReducer }) => loginReducer);
+  const { isSideLogOpen } = useSelector(({ modalReducer }) => modalReducer);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const sidelogHandler = () => {
+    dispatch(sideLogOpen(!isSideLogOpen));
+  };
 
   const navigateLanding = () => {
     navigate("/");
@@ -82,7 +87,7 @@ function Header() {
 
   return (
     <HeaderSection>
-      {isLogin && <Hamburger icon={faBars} />}
+      {isLogin || <Hamburger icon={faBars} onClick={sidelogHandler} />}
       <Logo onClick={navigateLanding}>studeaming</Logo>
       <UserBox>
         {isLogin ? (
