@@ -8,6 +8,7 @@ import {
   signupModalOpen,
 } from "../store/actions/index";
 import styled from "styled-components";
+import crypto from "crypto-js";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "./Button";
@@ -69,41 +70,43 @@ const ButtonContainer = styled.div`
 `;
 
 function Signin() {
-  const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
+  const [signinInfo, setSigninInfo] = useState({ email: "", password: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const regExpEmail =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
 
   const handleInputValue = (key) => (e) => {
-    setLoginInfo({ ...loginInfo, [key]: e.target.value });
+    setSigninInfo({ ...signinInfo, [key]: e.target.value });
   };
 
-  const loginHandler = () => {
-    if (!loginInfo.email.length) {
+  const signinHandler = () => {
+    if (!signinInfo.email.length) {
       dispatch(notify("이메일을 입력해주세요."));
-    } else if (!loginInfo.password.length) {
+    } else if (!signinInfo.password.length) {
       dispatch(notify("비밀번호를 입력해주세요."));
-    } else if (!regExpEmail.test(loginInfo.email)) {
+    } else if (!regExpEmail.test(signinInfo.email)) {
       dispatch(notify("올바른 이메일 형식이 아닙니다."));
     } else {
-      authAPI
-        .signin(loginInfo.email, loginInfo.password)
-        .then(() => {
-          dispatch(loginStateChange(true));
-          navigate("/");
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            if (err.responsed.data.message === "Wrong email or password") {
-              dispatch(notify("잘못된 아이디 이거나 비밀번호가 틀렸습니다."));
-            } else {
-              dispatch(notify("이메일 인증이 완료되지 않았습니다."));
-            }
+      try {
+        const encryptedPwd = crypto.AES.encrypt(
+          signinInfo.password,
+          process.env.REACT_APP_SECRET_KEY
+        ).toString();
+        authAPI.signin(signinInfo.email, encryptedPwd);
+        dispatch(loginStateChange(true));
+        navigate("/");
+      } catch (err) {
+        if (err.response.status === 401) {
+          if (err.responsed.data.message === "Wrong email or password") {
+            dispatch(notify("잘못된 아이디 이거나 비밀번호가 틀렸습니다."));
           } else {
-            dispatch(notify("새로고침 후 다시 시도해주세요."));
+            dispatch(notify("이메일 인증이 완료되지 않았습니다."));
           }
-        });
+        } else {
+          dispatch(notify("새로고침 후 다시 시도해주세요."));
+        }
+      }
     }
   };
 
@@ -133,7 +136,7 @@ function Signin() {
           placeholder="이메일"
           onChange={handleInputValue("email")}
           onKeyUp={(e) => {
-            if (e.key === "Enter") loginHandler();
+            e.key === "Enter" && signinHandler();
           }}
         />
         <Icon icon={faUser} />
@@ -144,13 +147,13 @@ function Signin() {
           placeholder="비밀번호"
           onChange={handleInputValue("password")}
           onKeyUp={(e) => {
-            e.key === "Enter" && loginHandler();
+            e.key === "Enter" && signinHandler();
           }}
         />
         <Icon icon={faLock} />
       </InputBox>
       <ButtonContainer>
-        <Button message="로그인" clickEvent={loginHandler}></Button>
+        <Button message="로그인" clickEvent={signinHandler}></Button>
       </ButtonContainer>
       <SignupBtn onClick={openSignup}>회원가입</SignupBtn>
       <SocialBtnBox>
