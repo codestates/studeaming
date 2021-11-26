@@ -9,6 +9,7 @@ import Viewer from "./pages/Viewer";
 import Modal from "./components/Modal";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
+import PwdEdit from "./components/PwdEdit";
 import StreamerSetting from "./components/StreamerSetting";
 import Header from "./components/Header";
 import NotificationCenter from "./components/NotificationCenter";
@@ -16,9 +17,8 @@ import SideLog from "./components/SideLog";
 require("dotenv").config();
 
 function App() {
-  const { isSignupOpen, isSigninOpen, isStreamSettingOpen } = useSelector(
-    ({ modalReducer }) => modalReducer
-  );
+  const { isSignupOpen, isSigninOpen, isPwdEditOpen, isStreamSettingOpen } =
+    useSelector(({ modalReducer }) => modalReducer);
   const { isSideLogOpen } = useSelector(({ sideLogReducer }) => sideLogReducer);
   const isModal = isSignupOpen || isSigninOpen || isStreamSettingOpen;
 
@@ -38,6 +38,7 @@ function App() {
         <Modal>
           {isSignupOpen && <Signup />}
           {isSigninOpen && <Signin />}
+          {isPwdEditOpen && <PwdEdit />}
           {isStreamSettingOpen && <StreamerSetting />}
         </Modal>
       )}
