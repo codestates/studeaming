@@ -6,6 +6,7 @@ import {
   loginStateChange,
   signinModalOpen,
   signupModalOpen,
+  modalOff,
 } from "../store/actions/index";
 import styled from "styled-components";
 import crypto from "crypto-js";
@@ -95,7 +96,7 @@ function Signin() {
         ).toString();
         authAPI.signin(signinInfo.email, encryptedPwd);
         dispatch(loginStateChange(true));
-        navigate("/");
+        dispatch(modalOff());
       } catch (err) {
         if (err.response.status === 401) {
           if (err.responsed.data.message === "Wrong email or password") {
