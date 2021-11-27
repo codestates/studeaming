@@ -9,16 +9,23 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       user_id: {
+        allowNull: false,
         type: Sequelize.INTEGER,
       },
       name: {
+        allowNull: false,
         type: Sequelize.STRING,
+        defaultValue: "공부",
       },
       color: {
+        allowNull: false,
         type: Sequelize.STRING,
+        defaultValue: "a5c7e5",
       },
       isOn: {
+        allowNull: false,
         type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
     });
   },

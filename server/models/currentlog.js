@@ -19,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       isOn: DataTypes.BOOLEAN,
     },
     {
+      createdAt: false,
+      updatedAt: false,
       sequelize,
       modelName: "Currentlog",
     }

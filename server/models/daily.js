@@ -19,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       studyTime: DataTypes.INTEGER,
     },
     {
+      createdAt: false,
+      updatedAt: false,
       sequelize,
       modelName: "Daily",
     }
