@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Currentlog } = require("../models");
 const encryptPassword = require("./functions/encryptFunctions");
 const {
   sendAccessToken,
@@ -26,8 +26,12 @@ module.exports = {
             },
             raw: true,
           });
-          console.log(newUser.email);
+
           if (created) {
+            const defautToggle = await Currentlog.create({
+              user_id: newUser.id,
+              name: "휴식",
+            });
             const code = await generateVerification(newUser.id);
             sendVerifyEmail(newUser.email, code);
             res.send({
