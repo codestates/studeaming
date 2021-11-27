@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
+import {
+  getUserInfo,
+  userInfoEditModalOpen,
+  notify,
+} from "../store/actions/index";
 import Button from "./Button";
-import userApi from "../api/user";
+import userAPI from "../api/user";
 import { InputContainer, Input, Desc } from "./reusableStyle";
+import defaultImg from "../assets/images/img_profile_default.svg";
 
 const ProfileImg = styled.div`
   position: relative;
@@ -59,19 +66,23 @@ const ImgLabel = styled.label`
 `;
 
 function UserInfoEdit() {
+  const { profileImg, username, about } = useSelector(
+    ({ userReducer }) => userReducer
+  );
   const [editInfo, setEditInfo] = useState({
-    userImg: null,
-    username: "",
-    comment: "",
+    profileImg: profileImg || defaultImg,
+    username,
+    about,
   });
+  const dispatch = useDispatch();
 
   const getProfileImg = (event) => {
     const src = event.target.files[0];
-    setEditInfo({ ...editInfo, userImg: URL.createObjectURL(src) });
+    setEditInfo({ ...editInfo, profileImg: URL.createObjectURL(src) });
   };
 
   const removeProfileImg = () => {
-    setEditInfo({ ...editInfo, userImg: null });
+    setEditInfo({ ...editInfo, profileImg: null });
   };
 
   const handleInputValue = (key) => (e) => {
@@ -79,15 +90,20 @@ function UserInfoEdit() {
   };
 
   const editRequest = () => {
-    userApi.modifyUserInfo(editInfo);
-    //.then(()=>{}) user 상태 저장.
+    userAPI.modifyUserInfo(editInfo).then(() => {
+      dispatch(getUserInfo());
+      dispatch(userInfoEditModalOpen(false));
+      dispatch(notify("변경되었습니다."));
+    });
+    dispatch(userInfoEditModalOpen(false)); //api잘 되면 지우기
+    dispatch(notify("변경되었습니다.")); //api잘 되면 지우기
   };
 
   return (
     <>
-      {editInfo.userImg ? (
+      {editInfo.profileImg ? (
         <ProfileImg>
-          <img src={editInfo.userImg} />
+          <img src={editInfo.profileImg} />
           <div id="remove_profile_img">
             <span
               onClick={removeProfileImg}
@@ -118,11 +134,11 @@ function UserInfoEdit() {
         />
       </InputContainer>
       <InputContainer>
-        <Desc htmlFor="comment">소개글 변경</Desc>
+        <Desc htmlFor="about">소개글 변경</Desc>
         <Input
           type="text"
-          id="comment"
-          onChange={handleInputValue("comment")}
+          id="about"
+          onChange={handleInputValue("about")}
           maxLength="40"
           placeholder="최대 40자"
         />
