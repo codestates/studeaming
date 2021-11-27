@@ -1,4 +1,6 @@
 export const CHANGE_LOGIN_STATE = "CHANGE_LOGIN_STATE";
+export const GET_USERINFO = "GET_USERINFO";
+export const LOGOUT = "LOGOUT";
 // TODO : 다른 액션 타입 추가
 export const SIGNIN_MODAL_OPEN = "SIGNIN_MODAL_OPEN";
 export const SIGNUP_MODAL_OPEN = "SIGNUP_MODAL_OPEN";
@@ -14,6 +16,19 @@ export const loginStateChange = (boolean) => {
   return {
     type: CHANGE_LOGIN_STATE,
     payload: boolean,
+  };
+};
+
+export const getUserInfo = (data) => {
+  return {
+    type: GET_USERINFO,
+    payload: data,
+  };
+};
+
+export const logout = () => {
+  return {
+    type: LOGOUT,
   };
 };
 
