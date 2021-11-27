@@ -3,6 +3,7 @@ export const CHANGE_LOGIN_STATE = "CHANGE_LOGIN_STATE";
 export const SIGNIN_MODAL_OPEN = "SIGNIN_MODAL_OPEN";
 export const SIGNUP_MODAL_OPEN = "SIGNUP_MODAL_OPEN";
 export const PWDEDIT_MODAL_OPEN = "PWDEDIT_MODAL_OPEN";
+export const USERINFO_MODAL_OPEN = "USERINFO_MODAL_OPEN";
 export const STREAM_SETTING_MODAL_OPEN = "STREAM_SETTING_MODAL_OPEN";
 export const SIDE_LOG_COMPONENT_OPEN = "SIDE_LOG_COMPONENT_OPEN";
 export const MODAL_OFF = "MODAL_OFF";
@@ -34,6 +35,13 @@ export const signupModalOpen = (boolean) => {
 export const pwdEditModalOpen = (boolean) => {
   return {
     type: PWDEDIT_MODAL_OPEN,
+    payload: boolean,
+  };
+};
+
+export const userInfoEditModalOpen = (boolean) => {
+  return {
+    type: USERINFO_MODAL_OPEN,
     payload: boolean,
   };
 };
