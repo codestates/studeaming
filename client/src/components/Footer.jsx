@@ -44,7 +44,8 @@ const Menu = styled.div`
   font-size: 1.4rem;
   @media screen and (max-width: 768px) {
     display: block;
-    padding: 1rem;
+    padding: 1rem 1.6rem;
+    margin-top: 1.4rem;
   }
 `;
 
@@ -67,7 +68,7 @@ const Element = styled.a`
   }
   @media screen and (max-width: 768px) {
     display: block;
-    padding: 1rem;
+    padding: 0.8rem 1.6rem;
   }
 `;
 
