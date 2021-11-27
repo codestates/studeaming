@@ -13,7 +13,7 @@ const ModalBackground = styled.section`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000;
+  z-index: 5000;
 `;
 
 const CloseBtn = styled.div`

@@ -61,7 +61,7 @@ const Login = styled.span`
 
 function Header() {
   const { isLogin } = useSelector(({ loginReducer }) => loginReducer);
-  const { isSideLogOpen } = useSelector(({ modalReducer }) => modalReducer);
+  const { isSideLogOpen } = useSelector(({ sideLogReducer }) => sideLogReducer);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
