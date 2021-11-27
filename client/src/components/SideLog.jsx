@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   notify,
-  loginStateChange,
+  logout,
   sideLogOpen,
   userInfoEditModalOpen,
 } from "../store/actions/index";
@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import toggleApi from "../api/studyToggle";
 import ToggleBox from "./ToggleBox";
 import LogChart from "./LogChart";
+import defaultImg from "../assets/images/img_profile_default.svg";
 
 const SideLogSection = styled.section`
   width: 332px;
@@ -37,7 +38,6 @@ const UserBox = styled.div`
 const UserImg = styled.image`
   width: 50px;
   height: 50px;
-  border: 1px solid;
   border-radius: 100%;
   img {
     width: 50px;
@@ -158,8 +158,11 @@ const PlusIcon = styled(FontAwesomeIcon)`
 `;
 
 function SideLog() {
+  const { profileImg, username, about } = useSelector(
+    ({ userReducer }) => userReducer
+  );
   const [toggleBox, setToggleBox] = useState([
-    { name: "휴식", isOn: false, color: "#a5c7e5", idx: 0 },
+    { name: "휴식", isOn: false, color: "#a5c7e5", id: 0 },
   ]);
   const [plusClick, setPlusClick] = useState(false);
   const [pickedColor, setPickedColor] = useState("lightgrey");
@@ -169,25 +172,33 @@ function SideLog() {
   const colorPick = ["#ffaeae", "#fdd4ae", "#b4e29e", "#565781", "#b094f2"];
 
   const logoutHandler = () => {
-    dispatch(loginStateChange(false));
-    navigate("/");
+    dispatch(logout());
     dispatch(sideLogOpen(false));
+    navigate("/");
     dispatch(notify("로그아웃 되었습니다."));
   };
 
   const editCompleteHandler = () => {
-    const num = toggleBox[toggleBox.length - 1].idx + 1;
+    const num = toggleBox[toggleBox.length - 1].id + 1; //get 요청 받아오면 없애야할 부분
     const newToggle = {
       name: inputValue,
       isOn: false,
       color: pickedColor,
-      idx: num,
+      id: num, //get 요청 받아오면 없애야할 부분
     };
     setToggleBox([...toggleBox, newToggle]);
     setPlusClick(false);
     setPickedColor("lightgrey");
     setInputValue("공부");
-    toggleApi.makeToggle(newToggle.name, newToggle.color, newToggle.isOn);
+    // toggleApi
+    //   .makeToggle(newToggle.name, newToggle.color, newToggle.isOn)
+    //   .then((res) => {
+    //     const { id } = res.data.newToggle;
+    //     setToggleBox([...toggleBox, { ...newToggle, id }]);
+    //     setPlusClick(false);
+    //     setPickedColor("lightgrey");
+    //     setInputValue("공부");
+    //   });
   };
 
   const toggleHandler = (idx) => {
@@ -195,7 +206,7 @@ function SideLog() {
 
     if (numOfIsOn.length > 0) {
       const allOff = toggleBox.map((el) => ({ ...el, isOn: false }));
-      if (numOfIsOn[0].idx === toggleBox[idx].idx) {
+      if (numOfIsOn[0].id === toggleBox[idx].id) {
         setToggleBox(allOff);
       } else {
         allOff[idx].isOn = !allOff[idx].isOn;
@@ -226,11 +237,11 @@ function SideLog() {
     <SideLogSection id="side_log">
       <UserBox>
         <UserImg>
-          <img />
+          <img src={profileImg || defaultImg} />
         </UserImg>
         <UserNameAndLogout>
           <div>
-            <span className="nickname">닉네임</span>
+            <span className="nickname">{username || "김코딩"}</span>
             <span className="user_edit" onClick={userInfoEditHandler}>
               편집
             </span>
@@ -238,7 +249,7 @@ function SideLog() {
               로그아웃
             </span>
           </div>
-          <div className="comment">본인을 소개해보세요.</div>
+          <div className="comment">{about || "본인을 소개해보세요."}</div>
         </UserNameAndLogout>
       </UserBox>
       <ToggleBoxWrapper>
@@ -249,6 +260,7 @@ function SideLog() {
             color={toggle.color}
             isOn={toggle.isOn}
             idx={idx}
+            id={toggle.id}
             toggleBox={toggleBox}
             setToggleBox={setToggleBox}
             toggleHandler={toggleHandler}

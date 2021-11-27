@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { gsap } from "gsap";
+import toggleAPI from "../api/studyToggle";
 
 const ToggleSection = styled.section`
   width: 80px;
@@ -60,6 +61,7 @@ function ToggleBox({
   color,
   isOn,
   idx,
+  id,
   toggleHandler,
   toggleBox,
   setToggleBox,
@@ -67,6 +69,7 @@ function ToggleBox({
   const deleteHandler = () => {
     const filter = [...toggleBox.slice(0, idx), ...toggleBox.slice(idx + 1)];
     setToggleBox(filter);
+    toggleAPI.deleteToggle(id);
   };
 
   useEffect(() => {

@@ -5,18 +5,8 @@ const userAPI = {
     return await api.get(`/user`);
   },
 
-  modifyUserInfo: async (type, newInfo) => {
-    // 보완 필요
-    let payload;
-    switch (type) {
-      case "profileImg":
-        payload = { profileImg: newInfo };
-      case "username":
-        payload = { username: newInfo };
-      case "about":
-        payload = { about: newInfo };
-    }
-    return await api.patch(`/user`, payload);
+  modifyUserInfo: async (editInfo) => {
+    return await api.patch(`/user`, editInfo);
   },
 
   modifyPassword: async (currentPassword, newPassword) => {
