@@ -6,6 +6,7 @@ import Main from "./pages/Main";
 import Mypage from "./pages/Mypage";
 import Streamer from "./pages/Streamer";
 import Viewer from "./pages/Viewer";
+import Verification from "./pages/Verification";
 import Modal from "./components/Modal";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
@@ -39,6 +40,7 @@ function App() {
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/streamer" element={<Streamer />} />
         <Route path="/viewer" element={<Viewer />} />
+        <Route path="/auth" element={<Verification />} />
       </Routes> */}
       {isSideLogOpen && <SideLog />}
       {isModal && (
