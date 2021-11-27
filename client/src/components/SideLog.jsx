@@ -1,6 +1,19 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  notify,
+  loginStateChange,
+  sideLogOpen,
+  userInfoEditModalOpen,
+} from "../store/actions/index";
 import { gsap } from "gsap";
 import styled from "styled-components";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import toggleApi from "../api/studyToggle";
+import ToggleBox from "./ToggleBox";
+import LogChart from "./LogChart";
 
 const SideLogSection = styled.section`
   width: 332px;
@@ -9,53 +22,202 @@ const SideLogSection = styled.section`
   flex-direction: column;
   padding: 40px;
   border-radius: 0 1rem 1rem 0;
-  border: 1px solid;
+  position: fixed;
+  top: 65px;
   z-index: 3000;
+  background-color: white;
+  box-shadow: 0px 0px 15px #8d8d8d;
 `;
 
 const UserBox = styled.div`
   display: flex;
-  justify-content: space-between;
-
-  > .logout {
-    cursor: pointer;
-  }
+  justify-content: start;
 `;
 
-const UserImg = styled.div`
+const UserImg = styled.image`
   width: 50px;
   height: 50px;
   border: 1px solid;
   border-radius: 100%;
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 
-const UserNameAndComment = styled.div`
+const UserNameAndLogout = styled.div`
   margin-top: 4px;
-  width: 58%;
+  width: 100%;
 
   > div {
     > .nickname {
       margin-right: 10px;
+      margin-left: 5px;
       font-weight: 700;
     }
     > .user_edit {
       font-size: 14px;
       color: #6e6e6e;
       cursor: pointer;
+      margin-right: 75px;
+    }
+    > .logout {
+      margin-top: 4px;
+      cursor: pointer;
     }
   }
 
   > .comment {
     margin-top: 5px;
+    margin-left: 5px;
     font-size: 12px;
   }
 `;
 
-const TogleBox = styled.div``;
+const ToggleBoxWrapper = styled.div`
+  padding: 20px 0;
+  display: grid;
+  place-items: center;
+  grid-template-rows: repeat(auto-fill, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px 5px;
+`;
 
-const TenMinuteLog = styled.div``;
+const ToggleAddBox = styled.div`
+  width: 80px;
+  height: 80px;
+  border: 1px dashed;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ToggleEditBox = styled.div`
+  width: 80px;
+  height: 80px;
+  border-radius: 1rem;
+  border: 1px solid;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  > .edit_letter_box {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+`;
+
+const EditClose = styled.div`
+  font-size: 10px;
+  cursor: pointer;
+`;
+
+const EditComplete = styled.div`
+  font-size: 10px;
+  cursor: pointer;
+`;
+
+const ColorSelectedBox = styled.input`
+  width: 60px;
+  height: 20px;
+  background-color: ${(props) => props.color};
+  margin-top: 5px;
+  border: none;
+  outline: none;
+  text-align: center;
+  font-size: 10px;
+  ::placeholder,
+  ::-webkit-input-placeholder {
+    color: #6e6e6e;
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+`;
+
+const ColorPickBox = styled.div`
+  margin-top: 10px;
+  display: flex;
+`;
+
+const ColorPick = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  background-color: ${(props) => props.color};
+  margin: 0 2px;
+`;
+
+const PlusIcon = styled(FontAwesomeIcon)`
+  cursor: pointer;
+`;
 
 function SideLog() {
+  const [toggleBox, setToggleBox] = useState([
+    { name: "휴식", isOn: false, color: "#a5c7e5", idx: 0 },
+  ]);
+  const [plusClick, setPlusClick] = useState(false);
+  const [pickedColor, setPickedColor] = useState("lightgrey");
+  const [inputValue, setInputValue] = useState("공부");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const colorPick = ["#ffaeae", "#fdd4ae", "#b4e29e", "#565781", "#b094f2"];
+
+  const logoutHandler = () => {
+    dispatch(loginStateChange(false));
+    navigate("/");
+    dispatch(sideLogOpen(false));
+    dispatch(notify("로그아웃 되었습니다."));
+  };
+
+  const editCompleteHandler = () => {
+    const num = toggleBox[toggleBox.length - 1].idx + 1;
+    const newToggle = {
+      name: inputValue,
+      isOn: false,
+      color: pickedColor,
+      idx: num,
+    };
+    setToggleBox([...toggleBox, newToggle]);
+    setPlusClick(false);
+    setPickedColor("lightgrey");
+    setInputValue("공부");
+    toggleApi.makeToggle(newToggle.name, newToggle.color, newToggle.isOn);
+  };
+
+  const toggleHandler = (idx) => {
+    const numOfIsOn = toggleBox.filter((el) => el.isOn === true);
+
+    if (numOfIsOn.length > 0) {
+      const allOff = toggleBox.map((el) => ({ ...el, isOn: false }));
+      if (numOfIsOn[0].idx === toggleBox[idx].idx) {
+        setToggleBox(allOff);
+      } else {
+        allOff[idx].isOn = !allOff[idx].isOn;
+        setToggleBox(allOff);
+      }
+    } else {
+      const newToggleBox = [...toggleBox];
+      newToggleBox[idx].isOn = !newToggleBox[idx].isOn;
+      setToggleBox(newToggleBox);
+    }
+  };
+
+  const userInfoEditHandler = () => {
+    dispatch(userInfoEditModalOpen(true));
+  };
+
+  useEffect(() => {
+    toggleApi.getToggles().then((res) => {
+      setToggleBox(res.data.toggleList);
+    });
+  }, [toggleBox]);
+
   useEffect(() => {
     gsap.from("#side_log", { x: -414 });
   }, []);
@@ -63,18 +225,80 @@ function SideLog() {
   return (
     <SideLogSection id="side_log">
       <UserBox>
-        <UserImg />
-        <UserNameAndComment>
+        <UserImg>
+          <img />
+        </UserImg>
+        <UserNameAndLogout>
           <div>
             <span className="nickname">닉네임</span>
-            <span className="user_edit">편집</span>
+            <span className="user_edit" onClick={userInfoEditHandler}>
+              편집
+            </span>
+            <span className="logout" onClick={logoutHandler}>
+              로그아웃
+            </span>
           </div>
-          <div className="comment">코멘트</div>
-        </UserNameAndComment>
-        <span className="logout">로그아웃</span>
+          <div className="comment">본인을 소개해보세요.</div>
+        </UserNameAndLogout>
       </UserBox>
-      <TogleBox>토글 박스</TogleBox>
-      <TenMinuteLog>텐미닛 로그</TenMinuteLog>
+      <ToggleBoxWrapper>
+        {toggleBox.map((toggle, idx) => (
+          <ToggleBox
+            key={idx}
+            name={toggle.name}
+            color={toggle.color}
+            isOn={toggle.isOn}
+            idx={idx}
+            toggleBox={toggleBox}
+            setToggleBox={setToggleBox}
+            toggleHandler={toggleHandler}
+          />
+        ))}
+        {toggleBox.length < 6 ? (
+          plusClick ? (
+            <ToggleEditBox>
+              <div className="edit_letter_box">
+                <EditClose
+                  onClick={() => {
+                    setPlusClick(false);
+                  }}
+                >
+                  취소
+                </EditClose>
+                <EditComplete onClick={editCompleteHandler}>완료</EditComplete>
+              </div>
+              <ColorSelectedBox
+                color={pickedColor}
+                placeholder="과목 입력"
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                }}
+              />
+              <ColorPickBox>
+                {colorPick.map((color, idx) => (
+                  <ColorPick
+                    key={idx}
+                    color={color}
+                    onClick={() => {
+                      setPickedColor(color);
+                    }}
+                  />
+                ))}
+              </ColorPickBox>
+            </ToggleEditBox>
+          ) : (
+            <ToggleAddBox>
+              <PlusIcon
+                icon={faPlus}
+                onClick={() => {
+                  setPlusClick(true);
+                }}
+              />
+            </ToggleAddBox>
+          )
+        ) : null}
+      </ToggleBoxWrapper>
+      <LogChart />
     </SideLogSection>
   );
 }
