@@ -55,7 +55,7 @@ module.exports = {
     if (req.body.email && req.body.password) {
       try {
         const user = await User.findOne({
-          where: { email: req.body.email },
+          where: { email: req.body.email, platformType: "original" },
           raw: true,
         });
         if (user) {
@@ -127,6 +127,7 @@ module.exports = {
   signout: (req, res) => {
     try {
       clearToken(res);
+      //todo: 토글 끄기
       res.sendStatus(205);
     } catch {
       res.sendStatus(500);
@@ -138,7 +139,7 @@ module.exports = {
     if (req.password) {
     } else {
     }
-  },
+  }, //todo: drop data, oauth 회원인 경우 연결 끊기
 
   refreshToken: (req, res) => {
     try {
