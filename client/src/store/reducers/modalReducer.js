@@ -22,7 +22,7 @@ const modalReducer = (state = initState, action) => {
       return { ...state, isSigninOpen: action.payload };
     case SIGNUP_MODAL_OPEN:
       return { ...state, isSignupOpen: action.payload };
-    case SIGNUP_MODAL_OPEN:
+    case PWDEDIT_MODAL_OPEN:
       return { ...state, isPwdEditOpen: action.payload };
     case STREAM_SETTING_MODAL_OPEN:
       return { ...state, isStreamSettingOpen: action.payload };
