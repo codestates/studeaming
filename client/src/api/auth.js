@@ -35,6 +35,10 @@ const authAPI = {
   kakaoOAuth: async (kakaocode) => {
     return await api.post(`auth/oauth/kakao`, { kakaocode });
   },
+
+  verification: async (code) => {
+    return await api.post(`/verification/${code}`);
+  },
 };
 
 export default authAPI;
