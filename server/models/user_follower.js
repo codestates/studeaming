@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       studeamer_id: DataTypes.INTEGER,
     },
     {
+      createdAt: false,
+      updatedAt: false,
       sequelize,
       modelName: "user-follower",
     }

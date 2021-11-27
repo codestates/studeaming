@@ -20,6 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       finishedAt: DataTypes.DATE,
     },
     {
+      createdAt: false,
+      updatedAt: false,
       sequelize,
       modelName: "Studylog",
     }
