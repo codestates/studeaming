@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/studylog", studyLogRouter);
-app.use("studytoggle", studyToggleRouter);
+app.use("/studytoggle", studyToggleRouter);
 app.use("/verification", verifyRouter);
 //경로 설정
 
@@ -52,7 +52,7 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  res.status(err.status || 500);
+  res.status(err.status || 404);
   res.send(err);
 });
 
