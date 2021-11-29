@@ -5,7 +5,8 @@ export const LOGOUT = "LOGOUT";
 export const SIGNIN_MODAL_OPEN = "SIGNIN_MODAL_OPEN";
 export const SIGNUP_MODAL_OPEN = "SIGNUP_MODAL_OPEN";
 export const PWDEDIT_MODAL_OPEN = "PWDEDIT_MODAL_OPEN";
-export const USERINFO_MODAL_OPEN = "USERINFO_MODAL_OPEN";
+export const USERINFO_EDIT_MODAL_OPEN = "USERINFO_EDIT_MODAL_OPEN";
+export const PROFILE_MODAL_OPEN = "PROFILE_MODAL_OPEN ";
 export const STREAM_SETTING_MODAL_OPEN = "STREAM_SETTING_MODAL_OPEN";
 export const SIDE_LOG_COMPONENT_OPEN = "SIDE_LOG_COMPONENT_OPEN";
 export const MODAL_OFF = "MODAL_OFF";
@@ -56,8 +57,15 @@ export const pwdEditModalOpen = (boolean) => {
 
 export const userInfoEditModalOpen = (boolean) => {
   return {
-    type: USERINFO_MODAL_OPEN,
+    type: USERINFO_EDIT_MODAL_OPEN,
     payload: boolean,
+  };
+};
+
+export const profileModalOpen = (boolean, username) => {
+  return {
+    type: PROFILE_MODAL_OPEN,
+    payload: { boolean, username },
   };
 };
 
