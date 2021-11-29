@@ -21,9 +21,11 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: var(--font-size-regular);
+    @media screen and (max-width: 768px) {
+      font-size: var(--font-size-small);
+    }    
   }
-
   a {
     text-decoration: none; 
     outline: none;
@@ -31,6 +33,10 @@ const GlobalStyle = createGlobalStyle`
     :hover, :active {
       text-decoration: none; 
     }
+  }
+  button {
+    all: unset;
+    cursor: pointer;
   }
 
   :root {
@@ -42,7 +48,7 @@ const GlobalStyle = createGlobalStyle`
     --color-main-25: #F6F8FF;
     --color-destructive: #E04343;
     --color-black: #333333;
-    --color-black-50: #5C5C60
+    --color-black-50: #5C5C60;
     --color-black-25:#8D8D8D;
     --color-grey-bg: #f8f8f8;
     --color-red: #FFAEAE;
