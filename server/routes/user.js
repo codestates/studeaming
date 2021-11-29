@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {
   getUser,
+  editUser,
+  editPassword,
   getProfile,
   getFollows,
   followUser,
@@ -10,6 +12,8 @@ const {
 const checkAuth = require("../middleware/checkAuth");
 
 router.get("/", checkAuth, getUser);
+router.patch("/", checkAuth, editUser);
+router.patch("/password", checkAuth, editPassword);
 router.get("/:username/profile", getProfile);
 router.get("/follows", checkAuth, getFollows);
 router.post("/follows/:username", checkAuth, followUser);
