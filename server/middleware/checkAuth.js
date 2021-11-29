@@ -1,6 +1,4 @@
-const {
-  isAccessAuthorized,
-} = require("../controller/functions/tokenFunctions");
+const { isAccessAuthorized } = require("../controller/functions/tokenFunc");
 
 module.exports = (req, res, next) => {
   const user = isAccessAuthorized(req);
