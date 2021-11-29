@@ -15,10 +15,11 @@ const HeaderSection = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
-  box-shadow: 0px 2px 20px rgba(141, 141, 141, 0.3);
+  border-bottom: 1px solid rgba(141, 141, 141, 0.3);
+  background-color: white;
   z-index: 1000;
 `;
 
