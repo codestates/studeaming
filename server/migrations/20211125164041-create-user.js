@@ -19,13 +19,19 @@ module.exports = {
         type: Sequelize.STRING,
       },
       profileImg: {
+        allowNull: false,
         type: Sequelize.STRING,
+        defaultValue: "",
       },
       about: {
+        allowNull: false,
         type: Sequelize.STRING,
+        defaultValue: "",
       },
       studeaming: {
+        allowNull: false,
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       isEmailVerified: {
         allowNull: false,
