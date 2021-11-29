@@ -1,6 +1,6 @@
 const { User } = require("../../models");
 
-module.exports = (name) => {
+module.exports = async (name) => {
   //return unique name
   const count = await User.count({
     where: {

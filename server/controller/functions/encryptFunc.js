@@ -15,6 +15,8 @@ module.exports = {
     bcrypt.compare(myPlaintextPassword, hash, function (err, result) {
       if (err) {
         res.status(500).send();
+      } else if (!result) {
+        res.status(401).send({ message: "Wrong password" });
       } else {
         cb(result);
       }
