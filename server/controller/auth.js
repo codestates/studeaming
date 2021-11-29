@@ -1,15 +1,16 @@
 const { User, Currentlog } = require("../models");
-const encryptPassword = require("./functions/encryptFunctions");
+const encryptPassword = require("./functions/encryptFunc");
 const {
   sendAccessToken,
   sendRefreshToken,
   clearToken,
   isRefreshAuthorized,
-} = require("./functions/tokenFunctions");
+} = require("./functions/tokenFunc");
 const {
   generateVerification,
   sendVerifyEmail,
-} = require("./functions/EmailVerifyFunctions");
+} = require("./functions/EmailVerifyFunc");
+const { verifyUsername, verifyEmail } = require("./functions/modelFunc");
 
 module.exports = {
   signup: async (req, res) => {
@@ -68,7 +69,7 @@ module.exports = {
             req.body.password,
             user.password,
             (result) => {
-              if (result && user.isEmailVerified) {
+              if (user.isEmailVerified) {
                 sendAccessToken(res, { id: user.id });
                 sendRefreshToken(res, { id: user.id });
                 res.send({
@@ -78,12 +79,10 @@ module.exports = {
                     username: user.username,
                   },
                 });
-              } else if (result) {
+              } else {
                 res
                   .status(401)
                   .send({ message: "Verify email address", email: user.email });
-              } else {
-                res.status(401).send({ message: "Wrong email or password" });
               }
             }
           );
@@ -99,29 +98,19 @@ module.exports = {
   },
 
   checkAvailability: async (req, res) => {
-    if (req.body.type === "email" && req.body.email) {
-      try {
-        const user = await User.findOne({ where: { email: req.body.email } });
-        if (!user) {
-          res.send({ message: "Available" });
-        } else {
-          res.status(409).send({ message: "Already exist" });
-        }
-      } catch {
-        res.sendStatus(500);
+    const { type, email, username } = req.body;
+
+    if (type === "email" && email) {
+      if (verifyEmail(email)) {
+        res.send({ message: "Available" });
+      } else {
+        res.status(409).send({ message: "Already exist" });
       }
-    } else if (req.body.type === "username" && req.body.username) {
-      try {
-        const user = await User.findOne({
-          where: { username: req.body.username },
-        });
-        if (!user) {
-          res.send({ message: "Available" });
-        } else {
-          res.status(409).send({ message: "Already exist" });
-        }
-      } catch {
-        res.sendStatus(500);
+    } else if (type === "username" && username) {
+      if (verifyUsername(username)) {
+        res.send({ message: "Available" });
+      } else {
+        res.status(409).send({ message: "Already exist" });
       }
     } else {
       res.status(400).send({ message: "Invalid parameter" });
