@@ -16,6 +16,7 @@ const LogChartSection = styled.section`
     > .ten_minute_block {
       width: 100%;
       text-align: center;
+      font-size: 14px;
     }
   }
 
@@ -35,6 +36,7 @@ const LogChartSection = styled.section`
         text-align: center;
         border-right: 1px solid;
         padding-top: 5px;
+        font-size: 14px;
       }
     }
   }
