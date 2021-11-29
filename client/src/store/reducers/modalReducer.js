@@ -2,7 +2,8 @@ import {
   SIGNIN_MODAL_OPEN,
   SIGNUP_MODAL_OPEN,
   PWDEDIT_MODAL_OPEN,
-  USERINFO_MODAL_OPEN,
+  USERINFO_EDIT_MODAL_OPEN,
+  PROFILE_MODAL_OPEN,
   STREAM_SETTING_MODAL_OPEN,
   MODAL_OFF,
 } from "../actions/index";
@@ -12,6 +13,7 @@ const initState = {
   isSignupOpen: false,
   isPwdEditOpen: false,
   isUserInfoEditOpen: false,
+  isProfileModalOpen: { boolean: false, username: "" },
   isStreamSettingOpen: false,
   isSideLogOpen: false,
 };
@@ -24,9 +26,11 @@ const modalReducer = (state = initState, action) => {
       return { ...state, isSignupOpen: action.payload };
     case PWDEDIT_MODAL_OPEN:
       return { ...state, isPwdEditOpen: action.payload };
+    case PROFILE_MODAL_OPEN:
+      return { ...state, isProfileModalOpen: { ...action.payload } };
     case STREAM_SETTING_MODAL_OPEN:
       return { ...state, isStreamSettingOpen: action.payload };
-    case USERINFO_MODAL_OPEN:
+    case USERINFO_EDIT_MODAL_OPEN:
       return { ...state, isUserInfoEditOpen: action.payload };
     case MODAL_OFF:
       return { ...initState };
