@@ -50,12 +50,16 @@ const GlobalStyle = createGlobalStyle`
     --color-black: #333333;
     --color-black-50: #5C5C60;
     --color-black-25:#8D8D8D;
-    --color-grey-bg: #f8f8f8;
+    --color-gray-bg: #f8f8f8;
     --color-red: #FFAEAE;
+    --color-pink: #FBB4EB;
     --color-orange: #FFBE82;
+    --color-yellow: #F4E772;
     --color-green: #B4E29E;
+    --color-aqua: #A4EDE9;
     --color-blue: #A5C7E5;
-    --color-puple: #B094FE;
+    --color-indigo: #5D639D;
+    --color-purple: #B094FE;
   }
   `;
 
