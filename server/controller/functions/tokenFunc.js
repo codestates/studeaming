@@ -10,7 +10,7 @@ const cookieOpt = {
 module.exports = {
   sendAccessToken: (res, data) => {
     const accessToken = sign(data, process.env.ACCESS_SECRET, {
-      expiresIn: "10m",
+      expiresIn: "50m",
     });
     res.cookie("authorization", accessToken, cookieOpt);
   },
