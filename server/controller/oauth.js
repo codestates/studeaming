@@ -1,9 +1,6 @@
 const { User } = require("../models");
 const axios = require("axios");
-const {
-  sendAccessToken,
-  sendRefreshToken,
-} = require("./functions/tokenFunctions");
+const { sendAccessToken, sendRefreshToken } = require("./functions/tokenFunc");
 const generateName = require("./functions/generateUsername");
 require("dotenv").config();
 
@@ -51,7 +48,7 @@ module.exports = {
       res.sendStatus(500);
     }
   },
-  kakaoSignin: (req, res) => {
+  kakaoSignin: async (req, res) => {
     try {
       const response = await axios({
         method: "post",
