@@ -9,7 +9,7 @@ const {
 const {
   generateVerification,
   sendVerifyEmail,
-} = require("./functions/EmailVerifyFunc");
+} = require("./functions/emailVerifyFunc");
 const { verifyUsername, verifyEmail } = require("./functions/modelFunc");
 
 module.exports = {
