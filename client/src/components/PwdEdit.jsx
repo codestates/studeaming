@@ -64,34 +64,31 @@ function PwdEdit() {
     }
   };
 
-  const pwdEditHandler = (event) => {
-    const isRequest =
-      event.target.textContent === "회원정보 수정" ? true : false;
-    if (isRequest && !password.current.length) {
+  const pwdEditHandler = () => {
+    if (!password.current.length) {
       dispatch(notify("현재 비밀번호를 입력해주세요."));
       currentPwInput.current.focus();
-    } else if (isRequest && isValid.fresh && isValid.check) {
-      try {
-        const encryptedCurrentPwd = crypto.AES.encrypt(
-          password.current,
-          process.env.REACT_APP_SECRET_KEY
-        ).toString();
-        const encryptedNewPwd = crypto.AES.encrypt(
-          password.fresh,
-          process.env.REACT_APP_SECRET_KEY
-        ).toString();
-        userAPI.modifyUserInfo(encryptedCurrentPwd, encryptedNewPwd);
-        dispatch(notify("비밀번호가 변경되었습니다."));
-        dispatch(modalOff());
-      } catch (err) {
-        if (err.response.status === 401) {
-          dispatch(notify("현재 비밀번호가 일치하지 않습니다."));
-          currentPwInput.current.focus();
-        }
-      }
-    } else if (isRequest) {
-      dispatch(notify("새 비밀번호를 바르게 입력해주세요."));
-      newPwInput.current.focus();
+    } else if (isValid.fresh && isValid.check) {
+      const encryptedCurrentPwd = crypto.AES.encrypt(
+        password.current,
+        process.env.REACT_APP_SECRET_KEY
+      ).toString();
+      const encryptedNewPwd = crypto.AES.encrypt(
+        password.fresh,
+        process.env.REACT_APP_SECRET_KEY
+      ).toString();
+      userAPI
+        .modifyUserInfo(encryptedCurrentPwd, encryptedNewPwd)
+        .then(() => {
+          dispatch(notify("비밀번호가 변경되었습니다."));
+          dispatch(modalOff());
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            dispatch(notify("현재 비밀번호가 일치하지 않습니다."));
+            currentPwInput.current.focus();
+          }
+        });
     }
   };
 

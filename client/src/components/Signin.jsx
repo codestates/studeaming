@@ -89,35 +89,38 @@ function Signin() {
     } else if (!regExpEmail.test(signinInfo.email)) {
       dispatch(notify("올바른 이메일 형식이 아닙니다."));
     } else {
-      try {
-        // signin request
-        const encryptedPwd = crypto.AES.encrypt(
-          signinInfo.password,
-          process.env.REACT_APP_SECRET_KEY
-        ).toString();
-        authAPI.signin(signinInfo.email, encryptedPwd);
-        dispatch(loginStateChange(true));
-        dispatch(modalOff());
-
-        // set userinfo state
-        const { username, profileImg, about, studeaming } =
-          userAPI.getUserInfo();
-        const data = { username, profileImg, about, studeaming };
-        dispatch(getUserInfo(data));
-      } catch (err) {
-        if (err.response.status === 401) {
-          if (err.responsed.data.message === "Wrong email or password") {
-            dispatch(notify("잘못된 아이디 이거나 비밀번호가 틀렸습니다."));
+      // signin request
+      const encryptedPwd = crypto.AES.encrypt(
+        signinInfo.password,
+        process.env.REACT_APP_SECRET_KEY
+      ).toString();
+      authAPI
+        .signin(signinInfo.email, encryptedPwd)
+        .then(() => {
+          dispatch(loginStateChange(true));
+          dispatch(modalOff());
+          return userAPI.getUserInfo();
+        })
+        .then((res) => {
+          // set userinfo state
+          const { username, profileImg, about, studeaming } = res;
+          const data = { username, profileImg, about, studeaming };
+          dispatch(getUserInfo(data));
+          return userAPI.getFollows();
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            if (err.responsed.data.message === "Wrong email or password") {
+              dispatch(notify("잘못된 아이디 이거나 비밀번호가 틀렸습니다."));
+            } else {
+              dispatch(notify("이메일 인증이 완료되지 않았습니다."));
+            }
           } else {
-            dispatch(notify("이메일 인증이 완료되지 않았습니다."));
+            dispatch(notify("새로고침 후 다시 시도해주세요."));
           }
-        } else {
-          dispatch(notify("새로고침 후 다시 시도해주세요."));
-        }
-      }
+        });
     }
   };
-
   const openSignup = () => {
     dispatch(signinModalOpen(false));
     dispatch(signupModalOpen(true));
