@@ -1,40 +1,40 @@
 import api from "./index";
 
 const userAPI = {
-  getUserInfo: async () => {
-    return await api.get(`/user`);
+  getUserInfo: () => {
+    return api.get(`/user`);
   },
 
-  modifyUserInfo: async (editInfo) => {
-    return await api.patch(`/user`, editInfo);
+  modifyUserInfo: (editInfo) => {
+    return api.patch(`/user`, editInfo);
   },
 
-  modifyPassword: async (currentPassword, newPassword) => {
-    return await api.patch(`/user/password`, { currentPassword, newPassword });
+  modifyPassword: (currentPassword, newPassword) => {
+    return api.patch(`/user/password`, { currentPassword, newPassword });
   },
 
-  getOthersInfo: async (username) => {
-    return await api.get(`/user/${username}/profile`);
+  getOthersInfo: (username) => {
+    return api.get(`/user/${username}/profile`);
   },
 
-  getFollows: async () => {
-    return await api.get(`user/follows`);
+  getFollows: () => {
+    return api.get(`user/follows`);
   },
 
-  follow: async (username) => {
-    return await api.post(`user/follows/${username}`);
+  follow: (username) => {
+    return api.post(`user/follows/${username}`);
   },
 
-  unfollow: async (username) => {
-    return await api.delete(`user/follows/${username}`);
+  unfollow: (username) => {
+    return api.delete(`user/follows/${username}`);
   },
 
-  getAchievement: async () => {
-    return await api.get(`user/achievement`);
+  getAchievement: () => {
+    return api.get(`user/achievement`);
   },
 
-  getOthersAchievement: async (username) => {
-    return await api.get(`user/${username}/achievement`);
+  getOthersAchievement: (username) => {
+    return api.get(`user/${username}/achievement`);
   },
 };
 

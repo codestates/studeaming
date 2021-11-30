@@ -1,24 +1,24 @@
 import api from "./index";
 
 const logAPI = {
-  getLogs: async (data) => {
-    return await api.get(`/studylog/${date}`);
+  getLogs: (date) => {
+    return api.get(`/studylog/${date}`);
   },
 
-  initiateLog: async (name, color) => {
-    return await api.post(`/studylog`, { name, color });
+  initiateLog: (name, color) => {
+    return api.post(`/studylog`, { name, color });
   },
 
-  finishLog: async (name, color) => {
-    return await api.patch(`/studylog`, { name, color });
+  finishLog: (name, color) => {
+    return api.patch(`/studylog`, { name, color });
   },
 
-  getComment: async (date) => {
-    return await api.get(`/studylog/comment/${date}`);
+  getComment: (date) => {
+    return api.get(`/studylog/comment/${date}`);
   },
 
-  modifyComment: async (date, comment) => {
-    return await api.patch(`/studylog/comment/${date}`, { comment });
+  modifyComment: (date, comment) => {
+    return api.patch(`/studylog/comment/${date}`, { comment });
   },
 };
 
