@@ -33,6 +33,11 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
+      watching: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
       isEmailVerified: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
