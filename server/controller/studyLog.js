@@ -1,6 +1,7 @@
 const { Studylog, Daily } = require("../models");
 const { isAccessAuthorized } = require("./functions/tokenFunc");
 const { getStudyTime, getStudyLogs } = require("./functions/modelFunc");
+const checkAchievement = require("./functions/checkAchievement");
 const { Op } = require("sequelize");
 
 module.exports = {
@@ -26,6 +27,7 @@ module.exports = {
       });
 
       if (newLog) {
+        checkAchievement.startLog(user.id);
         res.send({ studylog: { id: newLog.id, startedAt: newLog.startedAt } });
       } else {
         res.sendStatus(500);
@@ -58,6 +60,13 @@ module.exports = {
       );
 
       if (logToUpdate && updated) {
+        if (logToUpdate.name === "휴식") {
+          checkAchievement.successSecretMission(user.id);
+        } else {
+          checkAchievement.studyHundredhours(user.id);
+          checkAchievement.studyHalfDay(user.id);
+        }
+
         //요청받은 로그도 있고 업데이트도 성공했으면 성공 응답
         res.send({
           studylog: {
@@ -87,7 +96,7 @@ module.exports = {
       console.log(dateStart);
 
       const studyLogList = await getStudyLogs(user.id, dateStart, dateEnd);
-      const studyTime = await getStudyTime(user.id, dateStart, dateEnd);
+      const studyTime = await getStudyTime(studyLogList);
 
       const [daily, created] = await Daily.findOrCreate({
         where: { user_id: user.id, date: dateStart },

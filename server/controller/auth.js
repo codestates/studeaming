@@ -29,7 +29,7 @@ module.exports = {
           });
 
           if (created) {
-            const defautToggle = await Currentlog.create({
+            await Currentlog.create({
               user_id: newUser.id,
               name: "휴식",
             });
@@ -77,6 +77,7 @@ module.exports = {
                     id: user.id,
                     email: user.email,
                     username: user.username,
+                    platformType: user.platformType,
                   },
                 });
               } else {
