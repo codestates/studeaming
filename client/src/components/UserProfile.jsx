@@ -80,23 +80,29 @@ const Tag = styled.span`
 `;
 
 const BadgeContainer = styled.div`
-  /* border: 1px solid gray; */
+  grid-area: badge;
   padding: 10px;
   background-color: var(--color-main-25);
   border-radius: 10px;
-  grid-area: badge;
   width: 200px;
   height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   @media screen and (max-width: 768px) {
-    background-color: transparent;
+    display: flex;
+    justify-content: flex-start;
     margin-top: 1rem;
+    background-color: transparent;
     width: 100%;
-    padding: 0;
+    padding: 5px 0;
     height: fit-content;
+    overflow: scroll;
+
+    /* hide scroll bar */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    ::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera*/
+    }
   }
 `;
 

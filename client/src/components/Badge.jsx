@@ -12,9 +12,11 @@ const Container = styled.div`
 
   @media screen and (max-width: 768px) {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     height: fit-content;
-    margin-top: 10px;
+    /* margin-top: 10px; */
+    gap: 2px;
+    width: fit-content;
   }
 `;
 
@@ -38,17 +40,11 @@ const BadgeBox = styled.div`
     height: 100%;
     background-color: rgba(141, 141, 141, 0.6);
     border-radius: 30%;
-
-    @media screen and (max-width: 768px) {
-      /* border-radius: 50%; */
-    }
   }
 
   @media screen and (max-width: 768px) {
-    font-size: 0.8rem;
-    height: 25px;
-    width: 25px;
-    /* border-radius: 50%; */
+    width: 40px;
+    height: 40px;
   }
 `;
 
