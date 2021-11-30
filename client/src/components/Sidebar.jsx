@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import userAPI from "../api/user";
-import { pwdEditModalOpen, profileModalOpen, notify } from "../store/actions";
+import {
+  pwdEditModalOpen,
+  withdrawalModalOpen,
+  profileModalOpen,
+  notify,
+} from "../store/actions";
 import Badge from "./Badge";
 import defaultImg from "../assets/images/img_profile_default.svg";
 import dummyBadges from "../assets/dummy/bages";
@@ -131,6 +136,10 @@ function Sidebar() {
     }
   };
 
+  const withdrawalHandler = () => {
+    dispatch(withdrawalModalOpen(true));
+  };
+
   useEffect(() => {
     getFollowing();
     getBadge();
@@ -164,7 +173,9 @@ function Sidebar() {
         <button id="edit_email" onClick={editPwdHandler}>
           비밀번호 수정
         </button>
-        <button id="withdrawl">회원 탈퇴</button>
+        <button id="withdrawl" onClick={withdrawalHandler}>
+          회원 탈퇴
+        </button>
       </section>
     </Container>
   );
