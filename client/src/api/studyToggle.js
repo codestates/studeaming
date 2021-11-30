@@ -1,16 +1,16 @@
 import api from "./index";
 
 const toggleAPI = {
-  getToggles: async () => {
-    return await api.get(`/studytoggle`);
+  getToggles: () => {
+    return api.get(`/studytoggle`);
   },
 
-  makeToggle: async (name, color, isOn) => {
-    return await api.post(`/studytoggle`, { name, color, isOn });
+  makeToggle: (name, color, isOn) => {
+    return api.post(`/studytoggle`, { name, color, isOn });
   },
 
-  deleteToggle: async (toggleId) => {
-    return await api.delete(`/studytoggle/${toggleId}`);
+  deleteToggle: (toggleId) => {
+    return api.delete(`/studytoggle/${toggleId}`);
   },
 };
 
