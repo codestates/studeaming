@@ -36,6 +36,8 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+// app.get("/*", (_, res) => res.redirect("/"));
+
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/studylog", studyLogRouter);
@@ -70,8 +72,22 @@ if (fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")) {
   io.on("connection", studyRoom.io);
   server.listen(PORT, () => console.log("https server runnning"));
 } else {
-  const io = new Server(server);
-  io.on("connection", studyRoom.io);
+  //todo:// https랑 같이 사용할경우 One and only one of the port server or no Server options must be specified
+  //todo:// 해당 에러 발생 , 임시로 에러 해결을 위해 port 4001로 변경, 차후에 https 배포되면 여기는 필요없음
+  const httpserver = require("http").createServer(app);
+  const WebSocket = require("ws").Server;
+  const io = new WebSocket(
+    { port: 4001 },
+    {
+      cors: {
+        origin: "http://localhost:3000",
+        credentials: true,
+        samesite: "none",
+        secure: true,
+      },
+    }
+  );
+  io.on("connection", (socket) => studyRoom.io(socket));
   server = app.listen(PORT, () => console.log("http server runnning"));
 }
 
