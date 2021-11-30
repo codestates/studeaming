@@ -1,6 +1,10 @@
 const { Studylog, Daily } = require("../models");
 const { isAccessAuthorized } = require("./functions/tokenFunc");
-const { getStudyTime, getStudyLogs } = require("./functions/modelFunc");
+const {
+  getStudyTime,
+  getStudyLogs,
+  toggleOff,
+} = require("./functions/modelFunc");
 const checkAchievement = require("./functions/checkAchievement");
 const { Op } = require("sequelize");
 
@@ -10,13 +14,7 @@ module.exports = {
       const user = isAccessAuthorized(req);
       const { name, color } = req.body;
 
-      await Studylog.update(
-        //이전 로그 중 끝나지 않은 항목이 있는지 우선 확인하고, 있다면 업데이트
-        { finishedAt: new Date() },
-        {
-          where: { user_id: user.id, finishedAt: { [Op.is]: null } },
-        }
-      );
+      await toggleOff(user.id);
 
       const newLog = await Studylog.create({
         //요청받은 새 로그 만들기
@@ -89,7 +87,7 @@ module.exports = {
       const dateEnd = new Date(
         req.params.date.slice(0, 4),
         Number(req.params.date.slice(4, 6)) - 1,
-        Number(req.params.date.slice(6, 8)) + 1
+        Number(req.params.date.slice(6, 8)) + 2
       );
       console.log(dateEnd);
       const dateStart = new Date(dateEnd - 24 * 60 * 60 * 1000);
