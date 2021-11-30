@@ -1,8 +1,13 @@
 const { Op } = require("sequelize");
 const { User, Currentlog, user_follower } = require("../models");
 const { isAccessAuthorized } = require("./functions/tokenFunc");
-const { verifyUsername, getStudyTime } = require("./functions/modelFunc");
+const {
+  verifyUsername,
+  getStudyTime,
+  getStudyLogs,
+} = require("./functions/modelFunc");
 const { encrypt, decrypt } = require("./functions/encryptFunc");
+const checkAchievement = require("./functions/checkAchievement");
 
 module.exports = {
   getUser: async (req, res) => {
@@ -100,7 +105,8 @@ module.exports = {
       const now = new Date();
       const aMonthAgo = new Date(new Date().setDate(now.getDate() - 30));
 
-      const studyTime = await getStudyTime(user.id, aMonthAgo, now);
+      const studyLogs = await getStudyLogs(user.id, aMonthAgo, now);
+      const studyTime = await getStudyTime(studyLogs);
 
       res.send({
         profile: {
@@ -148,10 +154,12 @@ module.exports = {
         attributes: ["id", "username", "profileImg"],
         raw: true,
       });
-      console.log(studeamer);
+
       await user_follower.findOrCreate({
         where: { user_id: user.id, studeamer_id: studeamer.id },
       });
+
+      checkAchievement.haveTenFollowers(studeamer.id);
 
       res.send({ newFollow: studeamer });
     } catch (e) {

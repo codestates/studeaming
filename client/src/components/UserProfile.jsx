@@ -3,17 +3,19 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import userAPI from "../api/user";
 import { modalOff, notify } from "../store/actions";
-import "./FollowBtn";
-import defaultImg from "../assets/images/img_profile_default.svg";
 import FollowBtn from "./FollowBtn";
+import Badge from "./Badge";
+import defaultImg from "../assets/images/img_profile_default.svg";
+import dummyBadges from "../assets/dummy/bages";
 
 const Container = styled.div`
   display: grid;
   grid-template-rows: auto;
-  grid-template-columns: 250px 180px;
+  grid-template-columns: 280px 200px;
   grid-template-areas:
     "userInfo userInfo"
     "studyInfo badge";
+  align-items: end;
 
   @media screen and (max-width: 768px) {
     display: flex;
@@ -78,16 +80,29 @@ const Tag = styled.span`
 `;
 
 const BadgeContainer = styled.div`
-  border: 1px solid gray; /* 임시 */
   grid-area: badge;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 10px;
+  background-color: var(--color-main-25);
+  border-radius: 10px;
+  width: 200px;
+  height: 200px;
 
   @media screen and (max-width: 768px) {
+    display: flex;
+    justify-content: flex-start;
     margin-top: 1rem;
+    background-color: transparent;
+    width: 100%;
+    padding: 5px 0;
+    height: fit-content;
+    overflow: scroll;
+
+    /* hide scroll bar */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    ::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera*/
+    }
   }
 `;
 
@@ -106,6 +121,7 @@ function UserProfile({ username }) {
     ],
     studyTime: 1890,
   });
+  const [badges, setBadges] = useState(dummyBadges);
   const dispatch = useDispatch();
 
   const getProfile = (username) => {
@@ -118,8 +134,16 @@ function UserProfile({ username }) {
     }
   };
 
+  const getBadges = (username) => {
+    try {
+      const res = userAPI.getOthersAchievement(username);
+      // setBadges(res);
+    } catch {}
+  };
+
   useEffect(() => {
     getProfile(username);
+    getBadges(username);
   }, []);
 
   return (
@@ -142,7 +166,9 @@ function UserProfile({ username }) {
           {Math.floor(profile.studyTime / 60)}h {profile.studyTime % 60}m
         </span>
       </StudyInfo>
-      <BadgeContainer />
+      <BadgeContainer>
+        <Badge badges={badges} />
+      </BadgeContainer>
     </Container>
   );
 }

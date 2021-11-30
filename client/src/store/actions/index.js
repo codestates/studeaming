@@ -1,10 +1,12 @@
 export const CHANGE_LOGIN_STATE = "CHANGE_LOGIN_STATE";
+export const VERIFY_SOCIAL_LOGINED = "VERIFY_SOCIAL_LOGINED";
 export const GET_USERINFO = "GET_USERINFO";
 export const LOGOUT = "LOGOUT";
 // TODO : 다른 액션 타입 추가
 export const SIGNIN_MODAL_OPEN = "SIGNIN_MODAL_OPEN";
 export const SIGNUP_MODAL_OPEN = "SIGNUP_MODAL_OPEN";
 export const PWDEDIT_MODAL_OPEN = "PWDEDIT_MODAL_OPEN";
+export const WITHDRAWAL_MODAL_OPEN = "WITHDRAWAL_MODAL_OPEN";
 export const USERINFO_EDIT_MODAL_OPEN = "USERINFO_EDIT_MODAL_OPEN";
 export const PROFILE_MODAL_OPEN = "PROFILE_MODAL_OPEN ";
 export const STREAM_SETTING_MODAL_OPEN = "STREAM_SETTING_MODAL_OPEN";
@@ -16,6 +18,13 @@ export const DEQUEUE_NOTIFICATION = "DEQUEUE_NOTIFICATION";
 export const loginStateChange = (boolean) => {
   return {
     type: CHANGE_LOGIN_STATE,
+    payload: boolean,
+  };
+};
+
+export const verifySocialLogined = (boolean) => {
+  return {
+    type: VERIFY_SOCIAL_LOGINED,
     payload: boolean,
   };
 };
@@ -51,6 +60,13 @@ export const signupModalOpen = (boolean) => {
 export const pwdEditModalOpen = (boolean) => {
   return {
     type: PWDEDIT_MODAL_OPEN,
+    payload: boolean,
+  };
+};
+
+export const withdrawalModalOpen = (boolean) => {
+  return {
+    type: WITHDRAWAL_MODAL_OPEN,
     payload: boolean,
   };
 };

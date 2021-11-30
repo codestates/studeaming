@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("user_followers", {
+    await queryInterface.createTable("user_achievements", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,13 +12,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
-      studeamer_id: {
+      achievement_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("user_followers");
+    await queryInterface.dropTable("user_achievements");
   },
 };

@@ -32,33 +32,34 @@ module.exports = {
       return null;
     }
   },
-  getStudyTime: async (id, start, end) => {
-    const studyLogList = await Studylog.findAll({
-      where: {
-        user_id: id,
-        finishedAt: {
-          [Op.gte]: start,
-        },
-        startedAt: {
-          [Op.lte]: end,
-        },
-      },
-      raw: true,
-    });
-    //start 에서 end까지 studylog들을 찾고
-    const time = studyLogList.reduce((acc, currentLog) => {
-      if (currentLog.startedAt < start) {
-        currentLog.startedAt = start;
-      }
-      if (currentLog.finishedAt > end || currentLog.finishedAt === null) {
-        currentLog.finishedAt = end;
-      }
+  getStudyTime: async (studyLogList) => {
+    return studyLogList.reduce((acc, currentLog) => {
       return (
         acc + currentLog.finishedAt.getTime() - currentLog.startedAt.getTime()
       );
     }, 0);
+  },
+  getStudyLogs: async (id, start, end) => {
+    const studyLogList = await Studylog.findAll({
+      where: {
+        user_id: id,
+        finishedAt: { [Op.gte]: start },
+        startedAt: { [Op.lte]: end },
+      },
+      raw: true,
+    });
 
-    return time;
-    //각 배열 요소들의 startedAt(start보다 전이라면 start)부터 finishedAt(null이라면 현재시간, end보다 뒤라면 end)까지를 더한다
+    studyLogList.forEach((log) => {
+      if (log.startedAt < start) {
+        log.startedAt = start;
+      }
+      if (log.finishedAt === null) {
+        log.finishedAt = new Date();
+      } else if (log.finishedAt > end) {
+        log.finishedAt = end;
+      }
+    }); //각 배열 요소들의 startedAt(start보다 전이라면 start)부터 finishedAt(null이라면 현재시간, end보다 뒤라면 end)까지
+
+    return studyLogList;
   },
 };

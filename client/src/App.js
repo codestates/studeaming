@@ -10,6 +10,7 @@ import Modal from "./components/Modal";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
 import PwdEdit from "./components/PwdEdit";
+import Withdrawal from "./components/Withdrawal";
 import UserInfoEdit from "./components/UserInfoEdit";
 import UserProfile from "./components/UserProfile";
 import StreamerSetting from "./components/StreamerSetting";
@@ -25,6 +26,7 @@ function App() {
     isSignupOpen,
     isSigninOpen,
     isPwdEditOpen,
+    isWithdrawalOpen,
     isUserInfoEditOpen,
     isProfileModalOpen,
     isStreamSettingOpen,
@@ -34,6 +36,7 @@ function App() {
     isSignupOpen ||
     isSigninOpen ||
     isPwdEditOpen ||
+    isWithdrawalOpen ||
     isUserInfoEditOpen ||
     isProfileModalOpen.boolean ||
     isStreamSettingOpen;
@@ -56,6 +59,7 @@ function App() {
           {isSignupOpen && <Signup />}
           {isSigninOpen && <Signin />}
           {isPwdEditOpen && <PwdEdit />}
+          {isWithdrawalOpen && <Withdrawal />}
           {isUserInfoEditOpen && <UserInfoEdit />}
           {isProfileModalOpen.boolean && (
             <UserProfile username={isProfileModalOpen.username} />

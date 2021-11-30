@@ -2,9 +2,15 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import userAPI from "../api/user";
-import { pwdEditModalOpen, profileModalOpen, notify } from "../store/actions";
-// import Badge from "./Badge";
+import {
+  pwdEditModalOpen,
+  withdrawalModalOpen,
+  profileModalOpen,
+  notify,
+} from "../store/actions";
+import Badge from "./Badge";
 import defaultImg from "../assets/images/img_profile_default.svg";
+import dummyBadges from "../assets/dummy/bages";
 
 const Container = styled.div`
   width: 300px;
@@ -18,7 +24,7 @@ const Container = styled.div`
 
   .sidebar_section {
     width: 90%;
-    padding: 2rem;
+    padding: 2rem 1.2rem;
   }
 
   #following {
@@ -28,14 +34,22 @@ const Container = styled.div`
   button {
     display: block;
     padding: 0.6rem 0;
+    font-size: 0.9rem;
     :hover {
       font-weight: 600;
     }
   }
+
+  @media screen and (max-width: 768px) {
+    width: 100vw;
+    min-width: 370px;
+    height: fit-content;
+    min-witdth: 400px;
+  }
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 500;
   margin-bottom: 1.2rem;
 `;
@@ -52,17 +66,37 @@ const Following = styled.ul`
   }
 
   img {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     margin-right: 0.8rem;
+  }
+
+  .following_name {
+    font-size: 0.9rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 120px);
   }
 `;
 
-const Badges_temp = styled.div`
-  width: 200px;
-  height: 200px;
-  border-radius: 10px;
-  background-color: var(--color-main-50);
+const BadgeContainer = styled.div`
+  width: 220px;
+  height: 220px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: fit-content;
+    overflow: scroll;
+
+    /* hide scroll bar */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    ::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera*/
+    }
+  }
 `;
 
 function Sidebar() {
@@ -71,6 +105,7 @@ function Sidebar() {
     { profileImg: "", username: "박해커" },
     { profileImg: "", username: "이보안" },
   ]);
+  const [badges, setBadges] = useState(dummyBadges);
   const dispatch = useDispatch();
 
   const getFollowing = () => {
@@ -84,6 +119,8 @@ function Sidebar() {
 
   const getBadge = () => {
     try {
+      const res = userAPI.getAchievement();
+      // setBadges()
     } catch {}
   };
 
@@ -97,6 +134,10 @@ function Sidebar() {
     } else {
       dispatch(notify("비밀번호를 변경할 수 없습니다."));
     }
+  };
+
+  const withdrawalHandler = () => {
+    dispatch(withdrawalModalOpen(true));
   };
 
   useEffect(() => {
@@ -116,7 +157,7 @@ function Sidebar() {
                   src={studeamer.profileImg || defaultImg}
                   alt="profile_image"
                 />
-                <span>{studeamer.username}</span>
+                <span className="following_name">{studeamer.username}</span>
               </li>
             );
           })}
@@ -124,13 +165,17 @@ function Sidebar() {
       </section>
       <section id="badges" className="sidebar_section">
         <SectionTitle>내 훈장</SectionTitle>
-        {/* <Badge /> */}
+        <BadgeContainer>
+          <Badge badges={badges} />
+        </BadgeContainer>
       </section>
       <section id="user_edit" className="sidebar_section">
         <button id="edit_email" onClick={editPwdHandler}>
           비밀번호 수정
         </button>
-        <button id="withdrawl">회원 탈퇴</button>
+        <button id="withdrawl" onClick={withdrawalHandler}>
+          회원 탈퇴
+        </button>
       </section>
     </Container>
   );

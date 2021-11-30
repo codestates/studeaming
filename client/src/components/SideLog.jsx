@@ -56,9 +56,10 @@ const UserNameAndLogout = styled.div`
       margin-right: 10px;
       margin-left: 5px;
       font-weight: 700;
+      font-size: 14px;
     }
     > .user_edit {
-      font-size: 14px;
+      font-size: 12px;
       color: #6e6e6e;
       cursor: pointer;
       margin-right: 75px;
@@ -66,6 +67,7 @@ const UserNameAndLogout = styled.div`
     > .logout {
       margin-top: 4px;
       cursor: pointer;
+      font-size: 12px;
     }
   }
 
