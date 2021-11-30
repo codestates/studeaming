@@ -16,14 +16,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      emoji: {
+      emoticon: {
         allowNull: false,
-        type: Sequelize.INTEGER,
-      },
-      isGet: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+        type: Sequelize.STRING,
       },
     });
   },
