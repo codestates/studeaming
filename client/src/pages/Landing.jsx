@@ -3,6 +3,7 @@ import LandingSection1 from "../components/LandingSection1";
 import LandingSection2 from "../components/LandingSection2";
 import LandingSection3 from "../components/LandingSection3";
 import Footer from "../components/Footer";
+import TopBtn from "../components/TopBtn";
 
 const LandingContainer = styled.section`
   width: 100%;
@@ -20,6 +21,7 @@ function Landing() {
         <LandingSection2 />
         <LandingSection3 />
       </LandingContainer>
+      <TopBtn />
       <Footer />
     </>
   );
