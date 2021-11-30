@@ -9,12 +9,21 @@ module.exports = {
     const head = crypto.randomBytes(256).toString("hex").substr(100, 5);
     const tail = crypto.randomBytes(256).toString("base64").substr(50, 5);
     const emailVerifyCode = head + tail + id.toString();
-    await User.update({ emailVerifyCode }, { where: { id } });
-    //todo: destroy if not verified after 1h
-    return emailVerifyCode;
+    try {
+      await User.update({ emailVerifyCode }, { where: { id } });
+
+      setTimeout(async () => {
+        const user = await User.findOne({ where: { id }, raw: true });
+        if (!user.isEmailVerified) {
+          await User.destroy({ where: { id } });
+        }
+      }, 60 * 60 * 1000);
+
+      return emailVerifyCode;
+    } catch {}
   },
+
   sendVerifyEmail: async (email, code) => {
-    console.log(code);
     const url = process.env.SERVER_URL + "/verification/" + code.toString(); //todo: use client url
 
     const transporter = nodemailer.createTransport({
