@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { gsap } from "gsap";
 import styled from "styled-components";
 
 const StyledSlideContainer = styled.div`
@@ -16,6 +18,9 @@ const StyledSlideContainer = styled.div`
       height: 90%;
       object-fit: cover;
       cursor: pointer;
+      :hover {
+        box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.5);
+      }
     }
 
     > .slide-title {
@@ -30,6 +35,12 @@ const StyledSlideContainer = styled.div`
 `;
 
 const SlideContainer = ({ activeIndex, imageSlider }) => {
+  useEffect(() => {
+    gsap.from(".active", {
+      opacity: 0,
+      duration: 1,
+    });
+  }, [imageSlider]);
   return (
     <StyledSlideContainer>
       {imageSlider.map((slide, idx) =>
