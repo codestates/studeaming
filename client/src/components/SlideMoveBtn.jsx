@@ -1,14 +1,14 @@
 import styled from "styled-components";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import {
   faChevronRight,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const ArrowBtn = styled(FontAwesomeIcon)`
+const ArrowBtn = styled.div`
   cursor: pointer;
   z-index: 100;
-  font-size: 24px;
 
   &.next {
     position: absolute;
@@ -33,11 +33,17 @@ const ArrowBtn = styled(FontAwesomeIcon)`
 
 function SlideMoveBtn({ direction, moveSlide }) {
   return (
-    <ArrowBtn
-      icon={direction === "next" ? faChevronRight : faChevronLeft}
-      onClick={moveSlide}
-      className={direction === "next" ? "btn-slide next" : "btn-slide prev"}
-    />
+    <>
+      {direction === "next" ? (
+        <ArrowBtn className="next">
+          <IoIosArrowForward onClick={moveSlide} size="24" />
+        </ArrowBtn>
+      ) : (
+        <ArrowBtn className="prev">
+          <IoIosArrowBack onClick={moveSlide} size="24" />
+        </ArrowBtn>
+      )}
+    </>
   );
 }
 
