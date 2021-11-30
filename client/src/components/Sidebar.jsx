@@ -100,6 +100,7 @@ const BadgeContainer = styled.div`
 `;
 
 function Sidebar() {
+  const userinfo = useSelector(({ userReducer }) => userReducer);
   const [following, setFollowing] = useState([
     { profileImg: "", username: "김코딩" },
     { profileImg: "", username: "박해커" },
@@ -108,20 +109,22 @@ function Sidebar() {
   const [badges, setBadges] = useState(dummyBadges);
   const dispatch = useDispatch();
 
-  const getFollowing = () => {
+  const getFollowing = async () => {
     try {
-      const res = userAPI.getFollows();
+      const res = await userAPI.getFollows();
       // setFollowing(res);
     } catch {
       dispatch(notify("로그인이 만료되었습니다."));
     }
   };
 
-  const getBadge = () => {
+  const getBadge = async () => {
     try {
-      const res = userAPI.getAchievement();
-      // setBadges()
-    } catch {}
+      const res = await userAPI.getAchievement();
+      // setBadges(res)
+    } catch {
+      dispatch(notify("로그인이 만료되었습니다."));
+    }
   };
 
   const openFollowingProfile = (username) => {
@@ -129,7 +132,7 @@ function Sidebar() {
   };
 
   const editPwdHandler = () => {
-    if ("자체 로그인 회원이라면") {
+    if (!isSocialLogined) {
       dispatch(pwdEditModalOpen(true));
     } else {
       dispatch(notify("비밀번호를 변경할 수 없습니다."));
