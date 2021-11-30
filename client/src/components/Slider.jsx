@@ -8,9 +8,6 @@ import image2 from "../assets/images/intro_img_2.svg";
 import image3 from "../assets/images/intro_img_3.svg";
 
 const StyledSlider = styled.section`
-  @media screen and (max-width: 768) {
-    height: 350px;
-  }
   width: 100%;
   height: 400px;
   overflow: hidden;
