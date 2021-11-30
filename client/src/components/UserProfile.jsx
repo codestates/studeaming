@@ -122,11 +122,12 @@ function UserProfile({ username }) {
     studyTime: 1890,
   });
   const [badges, setBadges] = useState(dummyBadges);
+  const [isFollowing, setIsFollowing] = useState(false);
   const dispatch = useDispatch();
 
-  const getProfile = (username) => {
+  const getProfile = async (username) => {
     try {
-      const res = userAPI.getOthersInfo(username);
+      const res = await userAPI.getOthersInfo(username);
       // setProfile(res);
     } catch {
       modalOff();
@@ -134,16 +135,27 @@ function UserProfile({ username }) {
     }
   };
 
-  const getBadges = (username) => {
+  const getBadges = async (username) => {
     try {
-      const res = userAPI.getOthersAchievement(username);
+      const res = await userAPI.getOthersAchievement(username);
       // setBadges(res);
     } catch {}
+  };
+
+  const checkFollowing = async (username) => {
+    try {
+      const list = await userAPI.getFollows();
+      const check = list.map((follow) => follow.username).includes(username);
+      setIsFollowing(check);
+    } catch {
+      dispatch(notify("회원 정보를 불러오지 못했습니다."));
+    }
   };
 
   useEffect(() => {
     getProfile(username);
     getBadges(username);
+    checkFollowing(username);
   }, []);
 
   return (
@@ -152,7 +164,7 @@ function UserProfile({ username }) {
         <img src={profile.profileImg || defaultImg} id="profile_img" />
         <div className="description">
           <div id="username">{profile.username}</div>
-          <FollowBtn></FollowBtn>
+          <FollowBtn isFollowin={isFollowing}></FollowBtn>
           <div id="about">{profile.about}</div>
         </div>
       </UserInfo>
