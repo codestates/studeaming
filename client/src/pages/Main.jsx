@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { AiOutlineSearch } from "react-icons/ai";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Slider from "../components/Slider";
 import MainContents from "../components/MainContents";
+import TopBtn from "../components/TopBtn";
 import { verifySocialLogined, getUserInfo } from "../store/actions";
 import authAPI from "../api/auth";
 import userAPI from "../api/user";
@@ -108,6 +107,7 @@ function Main() {
           <h2>현재 스터디밍이 없습니다...</h2>
         </NotContents>
       )}
+      <TopBtn />
     </>
   );
 }
