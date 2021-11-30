@@ -15,8 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       description: DataTypes.STRING,
-      emoji: DataTypes.INTEGER,
-      isGet: DataTypes.BOOLEAN,
+      emoticon: DataTypes.STRING,
     },
     {
       createdAt: false,
