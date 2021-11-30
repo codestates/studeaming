@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import userAPI from "../api/user";
 import { pwdEditModalOpen, profileModalOpen, notify } from "../store/actions";
-import Badge from "./Badge";
+// import Badge from "./Badge";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
 const Container = styled.div`
@@ -124,7 +124,7 @@ function Sidebar() {
       </section>
       <section id="badges" className="sidebar_section">
         <SectionTitle>내 훈장</SectionTitle>
-        <Badge />
+        {/* <Badge /> */}
       </section>
       <section id="user_edit" className="sidebar_section">
         <button id="edit_email" onClick={editPwdHandler}>

@@ -16,6 +16,7 @@ import StreamerSetting from "./components/StreamerSetting";
 import Header from "./components/Header";
 import NotificationCenter from "./components/NotificationCenter";
 import SideLog from "./components/SideLog";
+import Screen from "./components/Screen";
 
 require("dotenv").config();
 
@@ -62,6 +63,7 @@ function App() {
           {isStreamSettingOpen && <StreamerSetting />}
         </Modal>
       )}
+      <Screen />
     </>
   );
 }
