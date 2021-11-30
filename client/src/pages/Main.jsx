@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { AiOutlineSearch } from "react-icons/ai";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Slider from "../components/Slider";
 import MainContents from "../components/MainContents";
+import { verifySocialLogined, getUserInfo } from "../store/actions";
+import authAPI from "../api/auth";
+import userAPI from "../api/user";
 
 const SearchSection = styled.section`
   display: flex;
@@ -58,8 +62,25 @@ const NotContents = styled.section`
 
 function Main() {
   const [searchValue, SetSearchValue] = useState("");
-  const filterOpt = ["시청자 순", "최신 순", "오래 공부한 순"];
   const [contents, setContents] = useState([""]);
+  const dispatch = useDispatch();
+  const filterOpt = ["시청자 순", "최신 순", "오래 공부한 순"];
+  const url = new URL(window.location.href);
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+
+  useEffect(() => {
+    if (code) {
+      // signin request
+      if (state === "kakao") authAPI.kakaoOAuth(code);
+      else if (!state) authAPI.googleOAuth(code);
+      // set userinfo state
+      const { username, profileImg, about, studeaming } = userAPI.getUserInfo();
+      const data = { username, profileImg, about, studeaming };
+      dispatch(verifySocialLogined(true));
+      dispatch(getUserInfo(data));
+    }
+  }, []);
 
   return (
     <>
