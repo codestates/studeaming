@@ -68,16 +68,38 @@ function Main() {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
 
+  const tryKakaoOAuth = (authorizationCode) => {
+    authAPI
+      .kakaoOAuth(authorizationCode)
+      .then(() => {
+        dispatch(verifySocialLogined(true));
+        return userAPI.getUserInfo();
+      })
+      .then((res) => {
+        const { username, profileImg, about, studeaming } = res;
+        const data = { username, profileImg, about, studeaming };
+        dispatch(getUserInfo(data));
+      });
+  };
+
+  const tryGoogleOAuth = (authorizationCode) => {
+    authAPI
+      .googleOAuth(authorizationCode)
+      .then(() => {
+        dispatch(verifySocialLogined(true));
+        return userAPI.getUserInfo();
+      })
+      .then((res) => {
+        const { username, profileImg, about, studeaming } = res;
+        const data = { username, profileImg, about, studeaming };
+        dispatch(getUserInfo(data));
+      });
+  };
+
   useEffect(() => {
     if (code) {
-      // signin request
-      if (state === "kakao") authAPI.kakaoOAuth(code);
-      else if (!state) authAPI.googleOAuth(code);
-      // set userinfo state
-      const { username, profileImg, about, studeaming } = userAPI.getUserInfo();
-      const data = { username, profileImg, about, studeaming };
-      dispatch(verifySocialLogined(true));
-      dispatch(getUserInfo(data));
+      if (state === "kakao") tryKakaoOAuth(code);
+      else if (state === "google") tryGoogleOAuth(code);
     }
   }, []);
 

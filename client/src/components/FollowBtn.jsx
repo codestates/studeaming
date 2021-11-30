@@ -23,21 +23,25 @@ function FollowBtn({ username }) {
 
   const changeFollowing = () => {
     if (isFollowed) {
-      try {
-        userAPI.unfollow(username);
-        setIsFollowed(false);
-        // TODO: 전역 상태에서 제거
-      } catch {
-        dispatch(notify("로그인 후 이용해주세요."));
-      }
+      userAPI
+        .unfollow(username)
+        .then(() => {
+          setIsFollowed(false);
+          // TODO: 전역 상태에서 제거
+        })
+        .catch(() => {
+          dispatch(notify("로그인 후 이용해주세요."));
+        });
     } else {
-      try {
-        userAPI.follow(username);
-        setIsFollowed(true);
-        // TODO: 전역 상태에 추가
-      } catch {
-        dispatch(notify("로그인 후 이용해주세요."));
-      }
+      userAPI
+        .follow(username)
+        .then(() => {
+          setIsFollowed(true);
+          // TODO: 전역 상태에 추가
+        })
+        .catch(() => {
+          dispatch(notify("로그인 후 이용해주세요."));
+        });
     }
   };
 

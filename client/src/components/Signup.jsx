@@ -119,14 +119,16 @@ function Signup() {
       setMessage({ ...message, email: "올바른 이메일 형식이 아닙니다." });
       setIsValid({ ...isValid, email: false });
     } else if (regExpEmail.test(signupInfo.email)) {
-      try {
-        authAPI.checkAvailability("email", signupInfo.email);
-        setMessage({ ...message, email: "" });
-        setIsValid({ ...isValid, email: true });
-      } catch {
-        setMessage({ ...message, email: "중복된 이메일 입니다." });
-        setIsValid({ ...isValid, email: false });
-      }
+      authAPI
+        .checkAvailability("email", signupInfo.email)
+        .then(() => {
+          setMessage({ ...message, email: "" });
+          setIsValid({ ...isValid, email: true });
+        })
+        .catch(() => {
+          setMessage({ ...message, email: "중복된 이메일 입니다." });
+          setIsValid({ ...isValid, email: false });
+        });
     }
   };
 
@@ -161,14 +163,16 @@ function Signup() {
   };
 
   const checkUsername = () => {
-    try {
-      authAPI.checkAvailability("username", signupInfo.username);
-      setMessage({ ...message, username: "" });
-      setIsValid({ ...isValid, username: true });
-    } catch {
-      setMessage({ ...message, username: "중복된 닉네임 입니다." });
-      setIsValid({ ...isValid, username: false });
-    }
+    authAPI
+      .checkAvailability("username", signupInfo.username)
+      .then(() => {
+        setMessage({ ...message, username: "" });
+        setIsValid({ ...isValid, username: true });
+      })
+      .catch(() => {
+        setMessage({ ...message, username: "중복된 닉네임 입니다." });
+        setIsValid({ ...isValid, username: false });
+      });
   };
 
   const signupHandler = () => {
@@ -178,18 +182,20 @@ function Signup() {
         signupInfo.password,
         process.env.REACT_APP_SECRET_KEY
       ).toString();
-      try {
-        authAPI.signup(
+      authAPI
+        .signup(
           signupInfo.image,
           signupInfo.username,
           signupInfo.email,
           encryptedPwd
-        );
-        dispatch(notify("회원가입이 완료되었습니다."));
-        dispatch(modalOff());
-      } catch {
-        dispatch(notify("새로고침 후 다시 시도해주세요."));
-      }
+        )
+        .then(() => {
+          dispatch(notify("회원가입이 완료되었습니다."));
+          dispatch(modalOff());
+        })
+        .catch(() => {
+          dispatch(notify("새로고침 후 다시 시도해주세요."));
+        });
     } else {
       dispatch(notify("입력란을 다시 확인해주세요."));
     }
