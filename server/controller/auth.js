@@ -5,12 +5,18 @@ const {
   sendRefreshToken,
   clearToken,
   isRefreshAuthorized,
+  isAccessAuthorized,
 } = require("./functions/tokenFunc");
 const {
   generateVerification,
   sendVerifyEmail,
 } = require("./functions/emailVerifyFunc");
-const { verifyUsername, verifyEmail } = require("./functions/modelFunc");
+const {
+  verifyUsername,
+  verifyEmail,
+  dropData,
+  toggleOff,
+} = require("./functions/modelFunc");
 
 module.exports = {
   signup: async (req, res) => {
@@ -118,22 +124,40 @@ module.exports = {
     }
   },
 
-  signout: (req, res) => {
+  signout: async (req, res) => {
     try {
+      const id = isAccessAuthorized(req).id;
+
+      await toggleOff(id);
+
       clearToken(res);
-      //todo: 토글 끄기
+
       res.sendStatus(205);
     } catch {
       res.sendStatus(500);
     }
   },
 
-  withdraw: (req, res) => {
-    //todo: drop data
-    if (req.password) {
-    } else {
+  withdraw: async (req, res) => {
+    try {
+      const id = isAccessAuthorized(req).id;
+
+      const user = await User.findByPk(id);
+
+      encryptPassword.decrypt(
+        res,
+        req.body.password,
+        user.password,
+        async (result) => {
+          await dropData(user.id);
+          clearToken(res);
+          res.sendStatus(204);
+        }
+      );
+    } catch (e) {
+      res.status(500).send(e);
     }
-  }, //todo: drop data, oauth 회원인 경우 연결 끊기
+  },
 
   refreshToken: (req, res) => {
     try {
