@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
-  notify,
+  getUserInfo,
   loginStateChange,
   signinModalOpen,
   signupModalOpen,
   modalOff,
+  notify,
 } from "../store/actions/index";
 import styled from "styled-components";
 import crypto from "crypto-js";
@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "./Button";
 import { AuthContainer, Title, Input } from "./reusableStyle";
 import authAPI from "../api/auth";
+import userAPI from "../api/user";
 import google from "../assets/images/btn_google.svg";
 import kakao from "../assets/images/btn_kakao.svg";
 
@@ -73,7 +74,6 @@ const ButtonContainer = styled.div`
 function Signin() {
   const [signinInfo, setSigninInfo] = useState({ email: "", password: "" });
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const regExpEmail =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
 
@@ -90,6 +90,7 @@ function Signin() {
       dispatch(notify("올바른 이메일 형식이 아닙니다."));
     } else {
       try {
+        // signin request
         const encryptedPwd = crypto.AES.encrypt(
           signinInfo.password,
           process.env.REACT_APP_SECRET_KEY
@@ -97,6 +98,12 @@ function Signin() {
         authAPI.signin(signinInfo.email, encryptedPwd);
         dispatch(loginStateChange(true));
         dispatch(modalOff());
+
+        // set userinfo state
+        const { username, profileImg, about, studeaming } =
+          userAPI.getUserInfo();
+        const data = { username, profileImg, about, studeaming };
+        dispatch(getUserInfo(data));
       } catch (err) {
         if (err.response.status === 401) {
           if (err.responsed.data.message === "Wrong email or password") {
