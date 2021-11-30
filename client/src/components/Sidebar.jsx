@@ -34,6 +34,13 @@ const Container = styled.div`
       font-weight: 600;
     }
   }
+
+  @media screen and (max-width: 768px) {
+    width: 100vw;
+    min-width: 370px;
+    height: fit-content;
+    min-witdth: 400px;
+  }
 `;
 
 const SectionTitle = styled.h3`
@@ -62,11 +69,29 @@ const Following = styled.ul`
   .following_name {
     font-size: 0.9rem;
   }
+
+  @media screen and (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 120px);
+  }
 `;
 
 const BadgeContainer = styled.div`
   width: 220px;
   height: 220px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: fit-content;
+    overflow: scroll;
+
+    /* hide scroll bar */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    ::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera*/
+    }
+  }
 `;
 
 function Sidebar() {
