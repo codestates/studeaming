@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       description: DataTypes.STRING,
       emoticon: DataTypes.STRING,
+      color: DataTypes.STRING,
     },
     {
       createdAt: false,
