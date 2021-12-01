@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Video from "./Video";
 import { io } from "socket.io-client";
-import { Error } from "../../../server/node_modules/sequelize/dist";
 
 const StunServer = {
   iceServers: [
