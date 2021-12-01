@@ -7,6 +7,7 @@ import {
   signupModalOpen,
   modalOff,
   notify,
+  getFollows,
 } from "../store/actions/index";
 import styled from "styled-components";
 import crypto from "crypto-js";
@@ -107,6 +108,10 @@ function Signin() {
           const data = { username, profileImg, about, studeaming };
           dispatch(getUserInfo(data));
           return userAPI.getFollows();
+        })
+        .then((res) => {
+          // set follows state
+          dispatch(getFollows(res.data.studeamerList));
         })
         .catch((err) => {
           if (err.response.status === 401) {
