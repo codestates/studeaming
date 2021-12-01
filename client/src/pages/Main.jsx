@@ -5,7 +5,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import Slider from "../components/Slider";
 import MainContents from "../components/MainContents";
 import TopBtn from "../components/TopBtn";
-import { verifySocialLogined, getUserInfo } from "../store/actions";
+import { verifySocialLogined, getUserInfo, getFollows } from "../store/actions";
 import authAPI from "../api/auth";
 import userAPI from "../api/user";
 
@@ -79,7 +79,12 @@ function Main() {
         const { username, profileImg, about, studeaming } = res;
         const data = { username, profileImg, about, studeaming };
         dispatch(getUserInfo(data));
-      });
+        return userAPI.getFollows();
+      })
+      .then((res) => {
+        dispatch(getFollows(res.data.studeamerList));
+      })
+      .catch((err) => console.log(err));
   };
 
   const tryGoogleOAuth = (authorizationCode) => {
@@ -93,7 +98,12 @@ function Main() {
         const { username, profileImg, about, studeaming } = res;
         const data = { username, profileImg, about, studeaming };
         dispatch(getUserInfo(data));
-      });
+        return userAPI.getFollows();
+      })
+      .then((res) => {
+        dispatch(getFollows(res.data.studeamerList));
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
