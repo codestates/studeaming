@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { faHeart as solid_heart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as regular_heart } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import userAPI from "../api/user";
-import { notify } from "../store/actions";
+import { follow, unfollow, notify } from "../store/actions";
 
 const FollowIcon = styled(FontAwesomeIcon)`
   color: var(--color-main-100);
@@ -14,20 +14,22 @@ const FollowIcon = styled(FontAwesomeIcon)`
 `;
 
 function FollowBtn({ username }) {
+  const { follows } = useSelector(({ followReducer }) => followReducer);
   const [isFollowed, setIsFollowed] = useState(true);
   const dispatch = useDispatch();
 
-  const setFollowing = () => {
-    // 사용자가 팔로우한 회원 중 현재 조회 중인 사람이 포함되어있는지 확인하고 isFollowed를 세팅한다.
+  const checkFollowing = (username) => {
+    const check = follows.map((follow) => follow.username).includes(username);
+    setIsFollowed(check);
   };
 
-  const changeFollowing = () => {
+  const changeFollowing = (username) => {
     if (isFollowed) {
       userAPI
         .unfollow(username)
         .then(() => {
           setIsFollowed(false);
-          // TODO: 전역 상태에서 제거
+          dispatch(unfollow(username));
         })
         .catch(() => {
           dispatch(notify("로그인 후 이용해주세요."));
@@ -35,9 +37,9 @@ function FollowBtn({ username }) {
     } else {
       userAPI
         .follow(username)
-        .then(() => {
+        .then((res) => {
           setIsFollowed(true);
-          // TODO: 전역 상태에 추가
+          dispatch(follow(res.data.newFollow));
         })
         .catch(() => {
           dispatch(notify("로그인 후 이용해주세요."));
@@ -46,10 +48,15 @@ function FollowBtn({ username }) {
   };
 
   useEffect(() => {
-    setFollowing();
+    checkFollowing();
   }, []);
 
-  return <FollowIcon icon={isFollowed ? solid_heart : regular_heart} />;
+  return (
+    <FollowIcon
+      icon={isFollowed ? solid_heart : regular_heart}
+      onClick={() => changeFollowing(username)}
+    />
+  );
 }
 
 export default FollowBtn;
