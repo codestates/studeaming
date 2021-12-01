@@ -132,7 +132,7 @@ function Sidebar() {
   };
 
   const editPwdHandler = () => {
-    if (!isSocialLogined) {
+    if ("자체로그인 회원이라면") {
       dispatch(pwdEditModalOpen(true));
     } else {
       dispatch(notify("비밀번호를 변경할 수 없습니다."));
