@@ -1,17 +1,19 @@
 import { createGlobalStyle } from "styled-components";
 import { normalize } from "styled-normalize";
+import NotoSans from "../assets/fonts/NotoSansKR-Regular.woff";
+import Poppins from "../assets/fonts/Poppins-ExtraLight.woff";
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}
   
   @font-face {
     font-family: "NotoSans";
-    src: url("../assets/fonts/NotoSansKR-Regular.woff") format("woff");
+    src: local("NotoSans"), url(${NotoSans}) format("woff");
   }
 
   @font-face {
     font-family: "Poppins";
-    src: url("../assets/fonts/Poppins-ExtraLight.woff")format("woff");
+    src: local("Poppins"), url(${Poppins}) format("woff");
   }
 
   *,
