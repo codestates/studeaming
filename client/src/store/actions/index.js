@@ -2,6 +2,9 @@ export const CHANGE_LOGIN_STATE = "CHANGE_LOGIN_STATE";
 export const VERIFY_SOCIAL_LOGINED = "VERIFY_SOCIAL_LOGINED";
 export const GET_USERINFO = "GET_USERINFO";
 export const LOGOUT = "LOGOUT";
+export const GET_FOLLOWS = "GET_FOLLOWS";
+export const FOLLOW = "FOLLOW";
+export const UNFOLLOW = "UNFOLLOW";
 // TODO : 다른 액션 타입 추가
 export const SIGNIN_MODAL_OPEN = "SIGNIN_MODAL_OPEN";
 export const SIGNUP_MODAL_OPEN = "SIGNUP_MODAL_OPEN";
@@ -32,13 +35,34 @@ export const verifySocialLogined = (boolean) => {
 export const getUserInfo = (data) => {
   return {
     type: GET_USERINFO,
-    payload: data,
+    payload: { data },
   };
 };
 
 export const logout = () => {
   return {
     type: LOGOUT,
+  };
+};
+
+export const getFollows = (list) => {
+  return {
+    type: GET_FOLLOWS,
+    payload: { list },
+  };
+};
+
+export const follow = (newFollow) => {
+  return {
+    type: FOLLOW,
+    payload: { newFollow },
+  };
+};
+
+export const unfollow = (username) => {
+  return {
+    type: UNFOLLOW,
+    payload: { username },
   };
 };
 
