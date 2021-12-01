@@ -1,7 +1,10 @@
 import { createGlobalStyle } from "styled-components";
 import { normalize } from "styled-normalize";
 import NotoSans from "../assets/fonts/NotoSansKR-Regular.woff";
-import Poppins from "../assets/fonts/Poppins-ExtraLight.woff";
+import Poppins_EL from "../assets/fonts/Poppins-ExtraLight.woff";
+import Poppins_M from "../assets/fonts/Poppins-Medium.woff";
+import Poppins_R from "../assets/fonts/Poppins-Regular.woff";
+import OpenSans from "../assets/fonts/OpenSans-VariableFont.woff";
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -12,14 +15,33 @@ const GlobalStyle = createGlobalStyle`
   }
 
   @font-face {
-    font-family: "Poppins";
-    src: local("Poppins"), url(${Poppins}) format("woff");
+    font-family: "Poppins-Extra_Light";
+    src: local("Poppins_EL"), url(${Poppins_EL}) format("woff");
+    unicode-range: U+0041-005A, U+0061-007A
+  }
+
+  @font-face {
+    font-family: "Poppins-Medium";
+    src: local("Poppins_Medium"), url(${Poppins_M}) format("woff");
+    unicode-range: U+0041-005A, U+0061-007A
+  }
+
+  @font-face {
+    font-family: "Poppins-Regular";
+    src: local("Poppins_R"), url(${Poppins_R}) format("woff");
+    unicode-range: U+0041-005A, U+0061-007A
+  }
+
+  @font-face {
+    font-family: "OpenSans";
+    src: local("OpenSans"), url(${OpenSans}) format("woff");
+    unicode-range: U+0030-0039;
   }
 
   *,
   :after,
   :before {
-    font-family: "NotoSans", "Poppins", sans-serif;
+    font-family: "NotoSans", "Poppins-Medium", "OpenSans", sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
