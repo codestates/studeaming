@@ -10,6 +10,7 @@ const {
   deleteFollow,
 } = require("../controller/user");
 const { getMyAchieve, getOtherAchieve } = require("../controller/achievement");
+const { getStudyData } = require("../controller/data");
 const checkAuth = require("../middleware/checkAuth");
 
 router.get("/", checkAuth, getUser);
@@ -21,5 +22,6 @@ router.post("/follows/:username", checkAuth, followUser);
 router.delete("/follows/:username", checkAuth, deleteFollow);
 router.get("/achievement", checkAuth, getMyAchieve);
 router.get("/:username/achievement", getOtherAchieve);
+router.get("/data", checkAuth, getStudyData);
 
 module.exports = router;
