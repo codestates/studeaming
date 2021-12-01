@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       user_id: DataTypes.STRING,
       name: DataTypes.STRING,
       color: DataTypes.STRING,
-      startedAt: DataTypes.DATE,
-      finishedAt: DataTypes.DATE,
+      startedAt: DataTypes.INTEGER,
+      finishedAt: DataTypes.INTEGER,
     },
     {
       createdAt: false,

@@ -41,9 +41,7 @@ module.exports = {
   },
   getStudyTime: async (studyLogList) => {
     return studyLogList.reduce((acc, currentLog) => {
-      return (
-        acc + currentLog.finishedAt.getTime() - currentLog.startedAt.getTime()
-      );
+      return acc + currentLog.finishedAt - currentLog.startedAt;
     }, 0);
   },
   getStudyLogs: async (id, start, end) => {
@@ -62,7 +60,7 @@ module.exports = {
         log.startedAt = start;
       }
       if (log.finishedAt === null) {
-        log.finishedAt = new Date();
+        log.finishedAt = Date.now();
       } else if (log.finishedAt > end) {
         log.finishedAt = end;
       }
@@ -74,7 +72,7 @@ module.exports = {
   toggleOff: async (id) => {
     await Studylog.update(
       //이전 로그 중 끝나지 않은 항목이 있는지 우선 확인하고, 있다면 업데이트
-      { finishedAt: new Date() },
+      { finishedAt: Date.now() / (60 * 1000) },
       {
         where: { user_id: id, finishedAt: { [Op.is]: null } },
       }
