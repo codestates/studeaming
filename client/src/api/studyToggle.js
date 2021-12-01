@@ -5,8 +5,8 @@ const toggleAPI = {
     return api.get(`/studytoggle`);
   },
 
-  makeToggle: (name, color, isOn) => {
-    return api.post(`/studytoggle`, { name, color, isOn });
+  makeToggle: (name, color) => {
+    return api.post(`/studytoggle`, { name, color });
   },
 
   deleteToggle: (toggleId) => {
