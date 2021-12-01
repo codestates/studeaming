@@ -1,16 +1,16 @@
 import api from "./index";
 
 const logAPI = {
-  getLogs: (date) => {
-    return api.get(`/studylog/${date}`);
+  getLogs: (offset) => {
+    return api.get(`/studylog?offset=${offset}`);
   },
 
-  initiateLog: (name, color) => {
-    return api.post(`/studylog`, { name, color });
+  initiateLog: (id) => {
+    return api.post(`/studylog`, { id });
   },
 
-  finishLog: (name, color) => {
-    return api.patch(`/studylog`, { name, color });
+  finishLog: (id) => {
+    return api.patch(`/studylog`, { id });
   },
 
   getComment: (date) => {
