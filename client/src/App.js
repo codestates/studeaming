@@ -67,7 +67,6 @@ function App() {
           {isStreamSettingOpen && <StreamerSetting />}
         </Modal>
       )}
-      <Screen />
     </>
   );
 }
