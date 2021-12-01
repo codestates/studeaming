@@ -77,6 +77,12 @@ module.exports = {
         where: { user_id: id, finishedAt: { [Op.is]: null } },
       }
     );
+
+    await Currentlog.update(
+      //현재 토글 isOn 상태 바꾸기
+      { isOn: false },
+      { where: { user_id: id } }
+    );
   },
 
   dropData: async (id) => {
