@@ -24,9 +24,9 @@ module.exports = {
   post: async (req, res) => {
     try {
       const user_id = isAccessAuthorized(req).id;
-      const { name, color, isOn } = req.body;
+      const { name, color } = req.body;
 
-      const newToggle = await Currentlog.create({ user_id, name, color, isOn });
+      const newToggle = await Currentlog.create({ user_id, name, color });
 
       if (newToggle) {
         res.send({ newToggle: { id: newToggle.id } });
