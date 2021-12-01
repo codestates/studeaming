@@ -1,4 +1,4 @@
-const { Studylog, Daily } = require("../models");
+const { Studylog } = require("../models");
 const { isAccessAuthorized } = require("./functions/tokenFunc");
 const {
   getStudyTime,
@@ -17,12 +17,12 @@ module.exports = {
       await toggleOff(user.id);
 
       const newLog = await Studylog.create({
-        //요청받은 새 로그 만들기
         user_id: user.id,
         name: name,
         color: color,
-        startedAt: new Date(),
+        startedAt: Date.now() / (60 * 1000),
       });
+      console.log(Date.now());
 
       if (newLog) {
         checkAchievement.startLog(user.id);
@@ -53,7 +53,7 @@ module.exports = {
 
       const updated = await Studylog.update(
         //아이디에 해당하는 로그 끝나는 시간을 현재 시간으로 업데이트
-        { finishedAt: new Date() },
+        { finishedAt: Date.now() / (60 * 1000) },
         { where: { id: logToUpdate.id } }
       );
 
@@ -84,29 +84,37 @@ module.exports = {
   get: async (req, res) => {
     try {
       const user = isAccessAuthorized(req);
-      const dateEnd = new Date(
-        req.params.date.slice(0, 4),
-        Number(req.params.date.slice(4, 6)) - 1,
-        Number(req.params.date.slice(6, 8)) + 2
-      );
-      console.log(dateEnd);
-      const dateStart = new Date(dateEnd - 24 * 60 * 60 * 1000);
+      const date =
+        req.query.date ||
+        new Date().getFullYear() +
+          new Date().getMonth() +
+          new Date().getDate() +
+          "";
+      const offset = req.query.offset || 0;
+
+      const utc =
+        Number(offset) +
+        Date.UTC(
+          date.slice(0, 4),
+          Number(date.slice(4, 6)) - 1,
+          Number(date.slice(6, 8))
+        ) /
+          (1000 * 60);
+      console.log("utc", utc);
+
+      const dateStart = Math.round(utc);
+      const dateEnd = dateStart + 24 * 60;
+
       console.log(dateStart);
+      console.log(dateEnd);
 
       const studyLogList = await getStudyLogs(user.id, dateStart, dateEnd);
       const studyTime = await getStudyTime(studyLogList);
 
-      const [daily, created] = await Daily.findOrCreate({
-        where: { user_id: user.id, date: dateStart },
-        defaults: { comment: "" },
-        raw: true,
-      });
-
       res.send({
         studylogList: studyLogList,
         studyTime: studyTime,
-        comment: daily.comment,
-      }); //todo:comment 필요한가?
+      });
     } catch (e) {
       res.status(500).send(e);
     }
