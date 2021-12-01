@@ -12,22 +12,27 @@ import styled from "styled-components";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import toggleApi from "../api/studyToggle";
+import logAPI from "../api/studyLog";
 import ToggleBox from "./ToggleBox";
 import LogChart from "./LogChart";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
 const SideLogSection = styled.section`
   width: 332px;
-  height: fit-content;
+  height: 800px;
   display: flex;
   flex-direction: column;
-  padding: 40px;
+  padding: 35px;
   border-radius: 0 1rem 1rem 0;
   position: fixed;
   top: 65px;
+  overflow: scroll;
   z-index: 3000;
   background-color: white;
   box-shadow: 0px 0px 15px #8d8d8d;
+  @media screen and (max-width: 500px) {
+    height: 500px;
+  }
 `;
 
 const UserBox = styled.div`
@@ -193,7 +198,7 @@ function SideLog() {
     setPickedColor("lightgrey");
     setInputValue("공부");
     // toggleApi
-    //   .makeToggle(newToggle.name, newToggle.color, newToggle.isOn)
+    //   .makeToggle(newToggle.name, newToggle.color)
     //   .then((res) => {
     //     const { id } = res.data.newToggle;
     //     setToggleBox([...toggleBox, { ...newToggle, id }]);
@@ -209,15 +214,28 @@ function SideLog() {
     if (numOfIsOn.length > 0) {
       const allOff = toggleBox.map((el) => ({ ...el, isOn: false }));
       if (numOfIsOn[0].id === toggleBox[idx].id) {
+        //토글 끄는 조건
         setToggleBox(allOff);
+        logAPI.finishLog(numOfIsOn[0].id);
       } else {
+        //토글 하나 켜져있을 때 다른 토글 바로 켜는 조건
         allOff[idx].isOn = !allOff[idx].isOn;
+        logAPI.finishLog(numOfIsOn[0].id);
         setToggleBox(allOff);
       }
     } else {
+      //아무것도 안켜져있을 때 켜는 조건
       const newToggleBox = [...toggleBox];
       newToggleBox[idx].isOn = !newToggleBox[idx].isOn;
       setToggleBox(newToggleBox);
+    }
+  };
+
+  //토글 켜지면 로그기록 시작 요청 보내는 함수
+  const toggleOnRequest = () => {
+    const onToggle = toggleBox.filter((el) => el.isOn === true);
+    if (onToggle.length) {
+      logAPI.initiateLog(onToggle[0].id);
     }
   };
 
@@ -229,7 +247,14 @@ function SideLog() {
     toggleApi.getToggles().then((res) => {
       setToggleBox(res.data.toggleList);
     });
+    toggleOnRequest();
   }, [toggleBox]);
+
+  useEffect(() => {
+    if (new Date().getHours() === 0) {
+      toggleOnRequest();
+    }
+  }, [new Date().getHours()]);
 
   useEffect(() => {
     gsap.from("#side_log", { x: -414 });
