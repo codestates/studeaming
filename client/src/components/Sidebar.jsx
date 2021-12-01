@@ -100,7 +100,7 @@ const BadgeContainer = styled.div`
 `;
 
 function Sidebar() {
-  const userinfo = useSelector(({ userReducer }) => userReducer);
+  const { isSocialLogined } = useSelector(({ userReducer }) => userReducer);
   const [following, setFollowing] = useState([
     { profileImg: "", username: "김코딩" },
     { profileImg: "", username: "박해커" },
@@ -132,7 +132,7 @@ function Sidebar() {
   };
 
   const editPwdHandler = () => {
-    if ("자체로그인 회원이라면") {
+    if (!isSocialLogined) {
       dispatch(pwdEditModalOpen(true));
     } else {
       dispatch(notify("비밀번호를 변경할 수 없습니다."));
@@ -153,9 +153,12 @@ function Sidebar() {
       <section id="following" className="sidebar_section">
         <SectionTitle>즐겨찾는 스터디머</SectionTitle>
         <Following>
-          {following.map((studeamer) => {
+          {following.map((studeamer, idx) => {
             return (
-              <li onClick={() => openFollowingProfile(studeamer.username)}>
+              <li
+                key={idx}
+                onClick={() => openFollowingProfile(studeamer.username)}
+              >
                 <img
                   src={studeamer.profileImg || defaultImg}
                   alt="profile_image"
