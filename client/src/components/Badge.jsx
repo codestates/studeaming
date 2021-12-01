@@ -14,7 +14,6 @@ const Container = styled.div`
     display: flex;
     justify-content: flex-start;
     height: fit-content;
-    /* margin-top: 10px; */
     gap: 2px;
     width: fit-content;
   }
@@ -26,10 +25,8 @@ const BadgeBox = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${(props) =>
-    props.getOrNot ? `var(--color-${props.color})` : "var(--color-gray-bg)"};
+    props.isGet ? `var(--color-${props.color})` : "var(--color-gray-bg)"};
   border-radius: 30%;
-  /* border: ${(props) =>
-    props.getOrNot ? "none" : "1px dashed var(--color-black-25)"}; */
   font-size: 1.4rem;
 
   .not_achieved {
@@ -51,11 +48,11 @@ const BadgeBox = styled.div`
 function Badge({ badges }) {
   return (
     <Container>
-      {badges.map((badge) => {
-        const { name, getOrNot, emoticon, color, desc } = badge;
+      {badges.map((badge, idx) => {
+        const { name, isGet, emoticon, color, description } = badge;
         return (
-          <BadgeBox color={color} getOrNot={getOrNot}>
-            {getOrNot ? null : <div className="not_achieved"></div>}
+          <BadgeBox key={idx} color={color} isGet={isGet}>
+            {isGet ? null : <div className="not_achieved"></div>}
             {emoticon}
           </BadgeBox>
         );
