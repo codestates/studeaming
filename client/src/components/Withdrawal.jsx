@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { BsCheckCircle } from "react-icons/bs";
 import crypto from "crypto-js";
 import authAPI from "../api/auth";
-import { modalOff } from "../store/actions";
 import Button from "./Button";
 import { Title, Input } from "./reusableStyle";
 
