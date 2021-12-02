@@ -32,15 +32,20 @@ const SearchInput = styled.input`
   border-radius: 2rem;
   padding-left: 20px;
   font-size: 10px;
+
   ::placeholder {
     color: #bcbcbc;
+  }
+
+  @media screen and (max-width: 380px) {
+    width: 200px;
   }
 `;
 
 const SearchIcon = styled(AiOutlineSearch)`
   position: absolute;
   top: 25%;
-  right: 20px;
+  right: 5%;
   cursor: pointer;
   font-size: 16px;
 `;
@@ -133,7 +138,7 @@ function Main() {
         </Filter>
       </SearchSection>
       {contents.length ? (
-        <MainContents />
+        <MainContents contents={contents} />
       ) : (
         <NotContents>
           <h2>현재 스터디밍이 없습니다...</h2>
