@@ -9,8 +9,7 @@ import {
 } from "../store/actions/index";
 import { gsap } from "gsap";
 import styled from "styled-components";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IoIosArrowBack, IoIosAdd } from "react-icons/io";
 import toggleApi from "../api/studyToggle";
 import logAPI from "../api/studyLog";
 import ToggleBox from "./ToggleBox";
@@ -19,20 +18,34 @@ import defaultImg from "../assets/images/img_profile_default.svg";
 
 const SideLogSection = styled.section`
   width: 332px;
-  height: 800px;
+  height: 650px;
   display: flex;
   flex-direction: column;
   padding: 35px;
   border-radius: 0 1rem 1rem 0;
   position: fixed;
-  top: 65px;
+  top: 61.69px;
   overflow: scroll;
   z-index: 3000;
   background-color: white;
   box-shadow: 0px 0px 15px #8d8d8d;
-  @media screen and (max-width: 500px) {
-    height: 500px;
+
+  ::-webkit-scrollbar {
+    display: none;
   }
+
+  @media screen and (max-width: 480px) {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    box-shadow: none;
+  }
+`;
+
+const ContentsContainer = styled.div`
+  width: fit-content;
+  height: fit-content;
+  position: relative;
 `;
 
 const UserBox = styled.div`
@@ -73,6 +86,10 @@ const UserNameAndLogout = styled.div`
       margin-top: 4px;
       cursor: pointer;
       font-size: 12px;
+
+      @media screen and (max-width: 350px) {
+        margin-left: -20px;
+      }
     }
   }
 
@@ -160,8 +177,28 @@ const ColorPick = styled.div`
   margin: 0 2px;
 `;
 
-const PlusIcon = styled(FontAwesomeIcon)`
-  cursor: pointer;
+const PlusIcon = styled(IoIosAdd)`
+  font-size: 24px;
+
+  :hover {
+    cursor: pointer;
+    font-size: 30px;
+  }
+`;
+
+const SideLogCloseIcon = styled(IoIosArrowBack)`
+  position: absolute;
+  top: 50%;
+  right: -30px;
+  font-size: 24px;
+
+  :hover {
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 480px) {
+    right: -15%;
+  }
 `;
 
 function SideLog() {
@@ -243,6 +280,13 @@ function SideLog() {
     dispatch(userInfoEditModalOpen(true));
   };
 
+  const sideLogCloseIconHandler = () => {
+    gsap.to("#side_log", { x: -480, duration: 1 });
+    setTimeout(() => {
+      dispatch(sideLogOpen(false));
+    }, 1000);
+  };
+
   useEffect(() => {
     toggleApi.getToggles().then((res) => {
       setToggleBox(res.data.toggleList);
@@ -257,87 +301,91 @@ function SideLog() {
   }, [new Date().getHours()]);
 
   useEffect(() => {
-    gsap.from("#side_log", { x: -414 });
+    gsap.from("#side_log", { x: -480, duration: 1 });
   }, []);
 
   return (
     <SideLogSection id="side_log">
-      <UserBox>
-        <UserImg>
-          <img src={profileImg || defaultImg} />
-        </UserImg>
-        <UserNameAndLogout>
-          <div>
-            <span className="nickname">{username || "김코딩"}</span>
-            <span className="user_edit" onClick={userInfoEditHandler}>
-              편집
-            </span>
-            <span className="logout" onClick={logoutHandler}>
-              로그아웃
-            </span>
-          </div>
-          <div className="comment">{about || "본인을 소개해보세요."}</div>
-        </UserNameAndLogout>
-      </UserBox>
-      <ToggleBoxWrapper>
-        {toggleBox.map((toggle, idx) => (
-          <ToggleBox
-            key={idx}
-            name={toggle.name}
-            color={toggle.color}
-            isOn={toggle.isOn}
-            idx={idx}
-            id={toggle.id}
-            toggleBox={toggleBox}
-            setToggleBox={setToggleBox}
-            toggleHandler={toggleHandler}
-          />
-        ))}
-        {toggleBox.length < 6 ? (
-          plusClick ? (
-            <ToggleEditBox>
-              <div className="edit_letter_box">
-                <EditClose
-                  onClick={() => {
-                    setPlusClick(false);
-                  }}
-                >
-                  취소
-                </EditClose>
-                <EditComplete onClick={editCompleteHandler}>완료</EditComplete>
-              </div>
-              <ColorSelectedBox
-                color={pickedColor}
-                placeholder="과목 입력"
-                onChange={(e) => {
-                  setInputValue(e.target.value);
-                }}
-              />
-              <ColorPickBox>
-                {colorPick.map((color, idx) => (
-                  <ColorPick
-                    key={idx}
-                    color={color}
+      <ContentsContainer>
+        <UserBox>
+          <UserImg>
+            <img src={profileImg || defaultImg} />
+          </UserImg>
+          <UserNameAndLogout>
+            <div>
+              <span className="nickname">{username || "김코딩"}</span>
+              <span className="user_edit" onClick={userInfoEditHandler}>
+                편집
+              </span>
+              <span className="logout" onClick={logoutHandler}>
+                로그아웃
+              </span>
+            </div>
+            <div className="comment">{about || "본인을 소개해보세요."}</div>
+          </UserNameAndLogout>
+        </UserBox>
+        <ToggleBoxWrapper>
+          {toggleBox.map((toggle, idx) => (
+            <ToggleBox
+              key={idx}
+              name={toggle.name}
+              color={toggle.color}
+              isOn={toggle.isOn}
+              idx={idx}
+              id={toggle.id}
+              toggleBox={toggleBox}
+              setToggleBox={setToggleBox}
+              toggleHandler={toggleHandler}
+            />
+          ))}
+          {toggleBox.length < 6 ? (
+            plusClick ? (
+              <ToggleEditBox>
+                <div className="edit_letter_box">
+                  <EditClose
                     onClick={() => {
-                      setPickedColor(color);
+                      setPlusClick(false);
                     }}
-                  />
-                ))}
-              </ColorPickBox>
-            </ToggleEditBox>
-          ) : (
-            <ToggleAddBox>
-              <PlusIcon
-                icon={faPlus}
-                onClick={() => {
-                  setPlusClick(true);
-                }}
-              />
-            </ToggleAddBox>
-          )
-        ) : null}
-      </ToggleBoxWrapper>
-      <LogChart />
+                  >
+                    취소
+                  </EditClose>
+                  <EditComplete onClick={editCompleteHandler}>
+                    완료
+                  </EditComplete>
+                </div>
+                <ColorSelectedBox
+                  color={pickedColor}
+                  placeholder="과목 입력"
+                  onChange={(e) => {
+                    setInputValue(e.target.value);
+                  }}
+                />
+                <ColorPickBox>
+                  {colorPick.map((color, idx) => (
+                    <ColorPick
+                      key={idx}
+                      color={color}
+                      onClick={() => {
+                        setPickedColor(color);
+                      }}
+                    />
+                  ))}
+                </ColorPickBox>
+              </ToggleEditBox>
+            ) : (
+              <ToggleAddBox>
+                <PlusIcon
+                  onClick={() => {
+                    setPlusClick(true);
+                  }}
+                />
+              </ToggleAddBox>
+            )
+          ) : null}
+        </ToggleBoxWrapper>
+        <LogChart />
+        <SideLogCloseIcon onClick={sideLogCloseIconHandler} />
+      </ContentsContainer>
     </SideLogSection>
   );
 }
