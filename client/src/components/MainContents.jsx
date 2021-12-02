@@ -27,7 +27,7 @@ const StyledMainContents = styled.section`
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media screen and (max-width: 450px) {
+  @media screen and (max-width: 480px) {
     grid-template-rows: repeat(auto-fill, 1fr);
     grid-template-columns: repeat(1, 1fr);
   }
@@ -38,9 +38,9 @@ const Contents = styled.div`
   max-width: 240px;
   height: 200px;
 
-  @media screen and (max-width: 450px) {
+  @media screen and (max-width: 480px) {
     width: 100%;
-    height: 300px;
+    height: 350px;
     max-width: 100%;
   }
 `;
@@ -59,7 +59,7 @@ const Desc = styled.div`
   padding: 3px 0px;
   border: 1px solid; //나중에 지우기
 
-  @media screen and (max-width: 450px) {
+  @media screen and (max-width: 480px) {
     padding-top: 6px;
     padding-left: 8px;
   }
@@ -67,7 +67,7 @@ const Desc = styled.div`
   > .thumbnail_title {
     font-size: 12px;
 
-    @media screen and (max-width: 450px) {
+    @media screen and (max-width: 480px) {
       margin-bottom: 4px;
       font-size: 14px;
     }
@@ -84,8 +84,8 @@ const Desc = styled.div`
       object-fit: cover;
       margin-right: 4px;
 
-      @media screen and (max-width: 450px) {
-        width: 55.3px;
+      @media screen and (max-width: 480px) {
+        width: 65.8px;
       }
     }
 
@@ -94,7 +94,7 @@ const Desc = styled.div`
         padding-top: 3px;
         font-size: 12px;
 
-        @media screen and (max-width: 450px) {
+        @media screen and (max-width: 480px) {
           font-size: 14px;
         }
       }
@@ -102,9 +102,10 @@ const Desc = styled.div`
   }
 `;
 
-function MainContents() {
+function MainContents({ contents }) {
   return (
     <StyledMainContents>
+      {/*contents */}
       {Array(20)
         .fill("")
         .map((el, idx) => (
