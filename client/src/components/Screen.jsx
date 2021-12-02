@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Video from "./Video";
 import SocketIOClient, { io } from "socket.io-client";
+import { modalOff } from "../store/actions";
 import styled from "styled-components";
+import Viewer from "../pages/Viewer";
 
 export const LiveVideo = styled.video`
   transform: rotateY(180deg);
@@ -9,6 +13,7 @@ export const LiveVideo = styled.video`
   moz-transform: rotateY(180deg); *이거는 파이어폭스*
 `;
 
+// todo: stun 서버 여러개
 const StunServer = {
   iceServers: [
     {
@@ -28,19 +33,16 @@ function Screen() {
   const [camHidden, setCamHidden] = useState(true);
   const [textInput, setTextInput] = useState("");
   const [roomname, setRoomname] = useState();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // todo: input창에 방 제목 입력하면 접속
-  const handleWelcomeSubmit = async (event) => {
-    event.preventDefault();
-    setCamHidden(false);
-    setRoomname(textInput);
-    getLocalStream();
-    socketRef.current.emit("join_room", {
-      room: textInput,
-      email: "sample@naver.com",
-    });
-    setTextInput("");
-  };
+  // todo: 일단 이 함수는 보류
+  // const handleWelcomeSubmit = async (event) => {
+  //   event.preventDefault();
+  //   setRoomname(textInput);
+  //   setTextInput("");
+  // };
 
   // //todo : Media 스트림 설정
   const getLocalStream = useCallback(async () => {
@@ -55,6 +57,10 @@ function Screen() {
       localStreamRef.current = localStream;
       if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
       if (!socketRef.current) return;
+      socketRef.current.emit("join_room", {
+        room: textInput,
+        email: "sample@naver.com",
+      });
     } catch (e) {
       console.log(`getUserMedia error: ${e}`);
     }
@@ -107,8 +113,8 @@ function Screen() {
       console.log(e);
     }
   }, []);
-
   // TODO: useEffect 렌더링 되는곳
+  // todo: main에서 connect가 연결이 실행
   useEffect(() => {
     socketRef.current = io.connect("http://localhost:4000", {
       reconnectionDelay: 1000,
@@ -119,6 +125,7 @@ function Screen() {
       withCredentials: true,
     });
     //todo: 일단은 getLocalStream() 실행중지
+    getLocalStream();
 
     socketRef.current.on("all_users", (allUsers) => {
       console.log("올 유저", allUsers);
@@ -193,6 +200,7 @@ function Screen() {
     socketRef.current.on("user_exit", (data) => {
       const { id } = data;
       if (pcsRef.current[id]) return;
+      console.log("유저가 나갈때", pcsRef.current);
       pcsRef.current[id].close();
       delete pcsRef.current[id];
       setUsers((oldUsers) => oldUsers.filter((user) => user.id !== id));
@@ -359,30 +367,32 @@ function Screen() {
     setTextInput(data.target.value);
   };
 
+  const navigateLanding = () => {
+    dispatch(modalOff());
+    navigate("../Viewer");
+  };
+
   return (
     <>
-      <div className="welcome" hidden={!camHidden}>
-        <form onSubmit={handleWelcomeSubmit}>
+      <div>스터디밍 시작하기</div>
+      <div className="Cam">
+        <LiveVideo
+          autoPlay
+          playsInline
+          width="500"
+          height="500"
+          ref={localVideoRef}
+        />
+        <div className="welcome">
           <input
             placeholder="roomName"
             type="text"
             value={textInput}
             onChange={Findinput}
           />
-          <button>Enter Room</button>
-        </form>
-      </div>
-      <div className="Cam" hidden={camHidden}>
-        <LiveVideo
-          autoPlay
-          playsInline
-          width="400"
-          height="400"
-          ref={localVideoRef}
-        />
-        {users.map((user, index) => {
-          <Video key={index} email={user.email} stream={user.stream} />;
-        })}
+          //todo: 함수를 만들어야하나?
+          <button onClick={navigateLanding}>Enter Room</button>
+        </div>
       </div>
     </>
   );
