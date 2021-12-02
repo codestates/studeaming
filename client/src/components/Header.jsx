@@ -6,8 +6,12 @@ import {
   streamSettingModalOpen,
   sideLogOpen,
 } from "../store/actions/index";
-import { faBars, faVideo, faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  AiOutlineMenu,
+  AiOutlineVideoCamera,
+  AiOutlineUser,
+} from "react-icons/ai";
+import { gsap } from "gsap";
 
 const HeaderSection = styled.section`
   width: 100%;
@@ -23,7 +27,7 @@ const HeaderSection = styled.section`
   z-index: 1000;
 `;
 
-const Hamburger = styled(FontAwesomeIcon)`
+const Hamburger = styled(AiOutlineMenu)`
   position: fixed;
   left: 1.5rem;
   cursor: pointer;
@@ -42,7 +46,7 @@ const UserBox = styled.div`
   right: 3rem;
 `;
 
-const Video = styled(FontAwesomeIcon)`
+const Video = styled(AiOutlineVideoCamera)`
   @media screen and (max-width: 768px) {
     display: none;
   }
@@ -50,7 +54,7 @@ const Video = styled(FontAwesomeIcon)`
   cursor: pointer;
 `;
 
-const User = styled(FontAwesomeIcon)`
+const User = styled(AiOutlineUser)`
   margin-left: 1.5rem;
   cursor: pointer;
 `;
@@ -67,7 +71,14 @@ function Header() {
   const dispatch = useDispatch();
 
   const sidelogHandler = () => {
-    dispatch(sideLogOpen(!isSideLogOpen));
+    if (!isSideLogOpen) {
+      dispatch(sideLogOpen(true));
+    } else {
+      gsap.to("#side_log", { x: -480, duration: 1 });
+      setTimeout(() => {
+        dispatch(sideLogOpen(false));
+      }, 1000);
+    }
   };
 
   const navigateLanding = () => {
@@ -88,13 +99,13 @@ function Header() {
 
   return (
     <HeaderSection>
-      {isLogin || <Hamburger icon={faBars} onClick={sidelogHandler} />}
+      {isLogin || <Hamburger onClick={sidelogHandler} title="study log" />}
       <Logo onClick={navigateLanding}>studeaming</Logo>
       <UserBox>
-        {isLogin ? (
+        {!isLogin ? (
           <>
-            <Video icon={faVideo} onClick={streamHandler} />
-            <User icon={faUser} onClick={navigateMypage} />
+            <Video onClick={streamHandler} title="start studeaming" />
+            <User onClick={navigateMypage} title="mypage" />
           </>
         ) : (
           <Login onClick={loginHandler}>로그인</Login>
