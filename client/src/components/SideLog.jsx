@@ -9,7 +9,7 @@ import {
 } from "../store/actions/index";
 import { gsap } from "gsap";
 import styled from "styled-components";
-import { IoIosArrowBack, IoIosAdd } from "react-icons/io";
+import { IoIosArrowUp, IoIosArrowBack, IoIosAdd } from "react-icons/io";
 import toggleApi from "../api/studyToggle";
 import logAPI from "../api/studyLog";
 import ToggleBox from "./ToggleBox";
@@ -17,14 +17,14 @@ import LogChart from "./LogChart";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
 const SideLogSection = styled.section`
-  width: 332px;
-  height: 650px;
+  min-width: 332px;
+  height: 690px;
   display: flex;
   flex-direction: column;
   padding: 35px;
   border-radius: 0 1rem 1rem 0;
   position: fixed;
-  top: 61.69px;
+  top: 20px;
   overflow: scroll;
   z-index: 3000;
   background-color: white;
@@ -35,17 +35,26 @@ const SideLogSection = styled.section`
   }
 
   @media screen and (max-width: 480px) {
+    position: fixed;
     width: 100%;
-    height: 100%;
+    height: 400px;
     align-items: center;
     box-shadow: none;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    padding: 25px;
   }
 `;
 
 const ContentsContainer = styled.div`
   width: fit-content;
-  height: fit-content;
+  height: 75%;
   position: relative;
+
+  @media screen and (max-width: 480px) {
+    width: 80%;
+    height: fit-content;
+  }
 `;
 
 const UserBox = styled.div`
@@ -87,7 +96,7 @@ const UserNameAndLogout = styled.div`
       cursor: pointer;
       font-size: 12px;
 
-      @media screen and (max-width: 350px) {
+      @media screen and (max-width: 360px) {
         margin-left: -20px;
       }
     }
@@ -186,7 +195,7 @@ const PlusIcon = styled(IoIosAdd)`
   }
 `;
 
-const SideLogCloseIcon = styled(IoIosArrowBack)`
+const SideLogCloseBackIcon = styled(IoIosArrowBack)`
   position: absolute;
   top: 50%;
   right: -30px;
@@ -197,7 +206,37 @@ const SideLogCloseIcon = styled(IoIosArrowBack)`
   }
 
   @media screen and (max-width: 480px) {
-    right: -15%;
+    display: none;
+  }
+`;
+
+const SideLogCloseUpIcon = styled.div`
+  display: none;
+
+  @media screen and (max-width: 480px) {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    :hover {
+      cursor: pointer;
+    }
+  }
+`;
+
+const SideLogUpIcon = styled(IoIosArrowUp)`
+  display: none;
+
+  @media screen and (max-width: 480px) {
+    display: flex;
+    position: absolute;
+    top: 5px;
+    left: 1.5rem;
+
+    :hover {
+      cursor: pointer;
+    }
   }
 `;
 
@@ -280,11 +319,26 @@ function SideLog() {
     dispatch(userInfoEditModalOpen(true));
   };
 
-  const sideLogCloseIconHandler = () => {
+  const sideLogCloseBackIconHandler = () => {
     gsap.to("#side_log", { x: -480, duration: 1 });
     setTimeout(() => {
       dispatch(sideLogOpen(false));
     }, 1000);
+  };
+
+  const sideLogCloseUpIconHandler = () => {
+    gsap.to("#side_log", { y: -480, duration: 1 });
+    gsap.to("#landingcontainer", {
+      y: 0,
+      duration: 1,
+    });
+    gsap.to("#main", {
+      y: 0,
+      duration: 1,
+    });
+    setTimeout(() => {
+      dispatch(sideLogOpen(false));
+    }, 500);
   };
 
   useEffect(() => {
@@ -300,12 +354,9 @@ function SideLog() {
     }
   }, [new Date().getHours()]);
 
-  useEffect(() => {
-    gsap.from("#side_log", { x: -480, duration: 1 });
-  }, []);
-
   return (
     <SideLogSection id="side_log">
+      <SideLogUpIcon onClick={sideLogCloseUpIconHandler} />
       <ContentsContainer>
         <UserBox>
           <UserImg>
@@ -384,7 +435,10 @@ function SideLog() {
           ) : null}
         </ToggleBoxWrapper>
         <LogChart />
-        <SideLogCloseIcon onClick={sideLogCloseIconHandler} />
+        <SideLogCloseBackIcon onClick={sideLogCloseBackIconHandler} />
+        <SideLogCloseUpIcon>
+          <IoIosArrowUp size="24" onClick={sideLogCloseUpIconHandler} />
+        </SideLogCloseUpIcon>
       </ContentsContainer>
     </SideLogSection>
   );
