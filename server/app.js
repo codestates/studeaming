@@ -21,10 +21,8 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://localhost:3000",
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
     credentials: true,
-    samesite: "none",
-    secure: true,
   })
 );
 
@@ -74,21 +72,23 @@ if (fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")) {
 } else {
   //todo:// https랑 같이 사용할경우 One and only one of the port server or no Server options must be specified
   //todo:// 해당 에러 발생 , 임시로 에러 해결을 위해 port 4001로 변경, 차후에 https 배포되면 여기는 필요없음
-  const httpserver = require("http").createServer(app);
-  const WebSocket = require("ws").Server;
-  const io = new WebSocket(
-    { port: 4001 },
-    {
-      cors: {
-        origin: "http://localhost:3000",
-        credentials: true,
-        samesite: "none",
-        secure: true,
-      },
-    }
-  );
-  io.on("connection", (socket) => studyRoom.io(socket));
-  server = app.listen(PORT, () => console.log("http server runnning"));
+  // const WebSocket = require("ws").Server;
+  const http = require("http");
+  // todo: http를 따로 설정하고
+  server = http.Server(app).listen(4000, function () {
+    console.log("Express server listening on port ");
+  });
+  // todo: http.Server로 새로 하나 만들고 포트 번호 지정하면 되는데 createServer.. 이것때문에 몇일을 소비한건지 참..
+  // console.log(server);
+  const io = new Server(server, {
+    cors: {
+      origin: "http://localhost:3000",
+      credentials: true,
+    },
+  });
+  // server = app.listen(PORT, () => console.log("http server runnning"));
+  // let io = require("socket.io")(http);
+  io.on("connection", (socket) => studyRoom.io(socket, io));
 }
 
 module.exports = server;
