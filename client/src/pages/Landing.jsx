@@ -16,7 +16,7 @@ const LandingContainer = styled.section`
 function Landing() {
   return (
     <>
-      <LandingContainer>
+      <LandingContainer id="landingcontainer">
         <LandingSection1 />
         <LandingSection2 />
         <LandingSection3 />
