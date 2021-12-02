@@ -30,8 +30,6 @@ module.exports = {
         console.log("유저스", users[data.room]);
       }
       socketToRoom[socket.id] = data.room;
-      console.log("소켓아이디", socket.id);
-      console.log("데이터룸", data.room);
       console.log("소켓투룸", socketToRoom[socket.id]);
       socket.join(data.room);
       console.log(

@@ -1,5 +1,7 @@
+import Screen from "./Screen";
+
 function StreamerSetting() {
-  return <div>streamerSetting</div>;
+  return <Screen />;
 }
 
 export default StreamerSetting;
