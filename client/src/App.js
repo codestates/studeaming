@@ -50,8 +50,8 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/main" element={<Main />} />
         <Route path="/mypage" element={<Mypage />} />
-        {/* <Route path="/streamer" element={<Streamer />} />
-        <Route path="/viewer" element={<Viewer />} /> */}
+        {/* <Route path="/streamer" element={<Streamer />} /> */}
+        <Route path="/viewer" element={<Viewer />} />
         <Route path="/auth" element={<Verification />} />
       </Routes>
       {isModal && (

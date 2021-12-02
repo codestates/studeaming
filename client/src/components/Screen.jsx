@@ -1,6 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Video from "./Video";
-import { io } from "socket.io-client";
+import SocketIOClient, { io } from "socket.io-client";
+import styled from "styled-components";
+
+export const LiveVideo = styled.video`
+  transform: rotateY(180deg);
+  webkit-transform: rotateY(180deg); *여기는 사파리*
+  moz-transform: rotateY(180deg); *이거는 파이어폭스*
+`;
 
 const StunServer = {
   iceServers: [
@@ -11,26 +18,31 @@ const StunServer = {
 };
 
 function Screen() {
-  // const socket = io("http://localhost:4001", {
-  //   reconnectionDelay: 1000,
-  //   reconnection: true,
-  //   reconnectionAttempts: 10,
-  //   transports: ["websocket"],
-  //   agent: false,
-  //   upgrade: false,
-  //   rejectUnauthorized: false,
-  // });
   const pcsRef = useRef(new RTCPeerConnection({ socketId: "" }));
   const localVideoRef = useRef(HTMLVideoElement);
   let localStreamRef = useRef(MediaStream);
-  const [sockets, setSockets] = useState();
-  const socketRef = useRef(sockets);
-  const [users, setUsers] = useState({
-    id: "",
-    email: "",
-    stream: MediaStream,
-  });
+  const socketRef = useRef();
+  const [users, setUsers] = useState([
+    { id: "", email: "", stream: MediaStream },
+  ]);
+  const [camHidden, setCamHidden] = useState(true);
+  const [textInput, setTextInput] = useState("");
+  const [roomname, setRoomname] = useState();
 
+  // todo: input창에 방 제목 입력하면 접속
+  const handleWelcomeSubmit = async (event) => {
+    event.preventDefault();
+    setCamHidden(false);
+    setRoomname(textInput);
+    getLocalStream();
+    socketRef.current.emit("join_room", {
+      room: textInput,
+      email: "sample@naver.com",
+    });
+    setTextInput("");
+  };
+
+  // //todo : Media 스트림 설정
   const getLocalStream = useCallback(async () => {
     try {
       const localStream = await navigator.mediaDevices.getUserMedia({
@@ -40,24 +52,20 @@ function Screen() {
           height: 400,
         },
       });
-      // localStreamRef = localStream;
-      // if (localStreamRef.current) localVideoRef.current.srcObject = localStream;
-
-      if (
-        localStreamRef &&
-        localStreamRef.current &&
-        !localStreamRef.current.srcObject
-      ) {
-        localStreamRef.current.srcObject = localStream;
-      }
-      //todo : 여기 sockRef 들어가야하는데 모르겠네..
+      localStreamRef.current = localStream;
+      if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
+      if (!socketRef.current) return;
     } catch (e) {
       console.log(`getUserMedia error: ${e}`);
     }
   }, []);
+
+  // todo: 연결 만들어주는 PeerConnect
   const createPeerConnection = useCallback((socketID, email) => {
     try {
       const pc = new RTCPeerConnection(StunServer);
+      console.log("피씨", pc);
+      console.log("소켓아이디", socketID);
 
       pc.onicecandidate = (e) => {
         if (!(socketRef.current && e.candidate)) return;
@@ -72,17 +80,18 @@ function Screen() {
       pc.oniceconnectionstatechange = (e) => {
         console.log(e);
       };
+
       pc.ontrack = (e) => {
         console.log("ontrack success");
-        setUsers((oldUsers) => {
+        setUsers((oldUsers) =>
           oldUsers
             .filter((user) => user.id !== socketID)
             .concat({
               id: socketID,
-              email,
+              email: email,
               stream: e.streams[0],
-            });
-        });
+            })
+        );
       };
       if (localStreamRef.current) {
         console.log("localstream add");
@@ -101,24 +110,27 @@ function Screen() {
 
   // TODO: useEffect 렌더링 되는곳
   useEffect(() => {
-    socketRef.current = io.connect("http://localhost:4001", {
+    socketRef.current = io.connect("http://localhost:4000", {
       reconnectionDelay: 1000,
       reconnection: true,
-      reconnectionAttempts: 10,
-      transports: ["websocket"],
-      agent: false,
-      upgrade: false,
-      rejectUnauthorized: false,
+      transports: ["polling"],
+      //todo: 기존 connection 재사용 여부
+      forceNew: true,
+      withCredentials: true,
     });
-    getLocalStream();
+    //todo: 일단은 getLocalStream() 실행중지
 
     socketRef.current.on("all_users", (allUsers) => {
-      let [id, email] = allUsers;
+      console.log("올 유저", allUsers);
       allUsers.forEach(async (user) => {
+        const { id, email } = user;
+        console.log("로컬스트림 커렌트", localStreamRef.current);
         if (!localStreamRef.current) return;
         const pc = createPeerConnection(user.id, user.email);
+        console.log("피씨", pc);
+        console.log("피씨 Ref", pcsRef.current);
         if (!(pc && socketRef.current)) return;
-        pcsRef.current = [...pcsRef.current, user.id];
+        pcsRef.current = { ...pcsRef.current, id };
         try {
           const localSdp = await pc.createOffer({
             offerToReceiveAudio: true,
@@ -198,15 +210,16 @@ function Screen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createPeerConnection, getLocalStream]);
 
-  // const [socket, setSocket] = useState();
-  // const [users, setUsers] = useState([]);
-  // let localVideoRef = useRef(HTMLVideoElement);
-  // let pcsRef = new RTCPeerConnection(["socketId"]);
-  const newSocket = io.connect("http://localhost:4001", {
-    withCredentials: true,
-
-    transports: ["websocket"],
-  });
+  // const newSocket = io.connect("http://localhost:4001", {
+  //   withCredentials: true,
+  //   reconnectionDelay: 1000,
+  //   reconnection: true,
+  //   reconnectionAttempts: 10,
+  //   transports: ["websocket"],
+  //   agent: false,
+  //   upgrade: false,
+  //   rejectUnauthorized: false,
+  // });
   // let localStreamRef = useRef(MediaStream);
 
   // // todo: 커뮤니케이션을 위한 RTC
@@ -246,138 +259,130 @@ function Screen() {
   //   return pc;
   // };
 
-  newSocket.on("all_users", ([id, email]) => {
-    let allUsers = [[id, email]];
-    let len = allUsers.length;
-    for (let i = 0; i < len; i++) {
-      createPeerConnection(
-        allUsers[i],
-        id,
-        allUsers[i].email,
-        newSocket,
-        localStreamRef
-      );
-      const pc = new RTCPeerConnection([allUsers[i].id]);
-      if (pc) {
-        pc.createOffer({
-          offerToReceiveAudio: true,
-          offerToReceiveVideo: true,
-        })
-          .then((sdp) => {
-            console.log("create offer success");
-            pc.setLocalDescription(new RTCSessionDescription(sdp));
-            newSocket.emit("offer", {
-              sdp: sdp,
-              offerSendID: newSocket.id,
-              offerSendEmail: "offerSendSample@sample.com",
-              offerReceiveID: allUsers[i].id,
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    }
-  });
-  newSocket.on("getOffer", (sdp, offerSendID, offerSendEmail) => {
-    // let sdp;
-    // let offerSendID = "string";
-    // let offerSendEmail = "string";
-    const data = { sdp, offerSendID, offerSendEmail };
-    createPeerConnection(
-      data.offerSendID,
-      data.offerSendEmail,
-      newSocket,
-      localStreamRef
-    );
-    const pc = pcsRef(data.offerSendID);
-    if (pc) {
-      pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => {
-        console.log("answer set remote description successfully");
-        pc.createAnswer({
-          offerToReceiveAudio: true,
-          offerToReceiveVideo: true,
-        })
-          .then((sdp) => {
-            console.log("create answer successfully");
-            pc.setLocalDescription(new RTCSessionDescription(sdp));
-            newSocket.emit("answer", {
-              sdp: sdp,
-              answerSendID: newSocket.id,
-              answerReceiveID: data.offerSendID,
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      });
-    }
-  });
-
-  newSocket.on("getAnswer", (sdp, answerSendID) => {
-    console.log("get answer");
-    const data = { sdp, answerSendID };
-
-    const pc = pcsRef(data.answerSendID);
-    if (pc) {
-      pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-    }
-    console.log("getAnswer sdp", sdp);
-  });
-  newSocket.on("getCandidate", (candidate, candidateSendID) => {
-    console.log("get candidate");
-    const data = { candidate: candidate, candidateSendID: candidateSendID };
-    const pc = pcsRef(data.candidateSendID);
-    if (pc) {
-      pc.addIceCandidate(new RTCIceCandidate(data.candidate)).then(() => {
-        console.log("candidate add success");
-      });
-    }
-  });
-  newSocket.on("user_exit", (id) => {
-    const data = { id: id };
-    pcsRef(data.id).close();
-    delete pcsRef(data.id);
-    setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
-  });
-
-  // //todo : Media 스트림 설정
-  // navigator.mediaDevices
-  //   .getUserMedia({
-  //     audio: true,
-  //     video: {
-  //       video: {
-  //         width: 240,
-  //         heigth: 240,
-  //       },
-  //     },
-  //   })
-  //   .then((stream) => {
-  //     if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-
-  //     localStreamRef = stream;
-  //     newSocket.emit("join_room", {
-  //       room: "1234",
-  //       email: "sample@naver.com",
+  // newSocket.on("all_users", ([id, email]) => {
+  //   let allUsers = [[id, email]];
+  //   let len = allUsers.length;
+  //   for (let i = 0; i < len; i++) {
+  //     createPeerConnection(
+  //       allUsers[i],
+  //       id,
+  //       allUsers[i].email,
+  //       newSocket,
+  //       localStreamRef
+  //     );
+  //     const pc = new RTCPeerConnection([allUsers[i].id]);
+  //     if (pc) {
+  //       pc.createOffer({
+  //         offerToReceiveAudio: true,
+  //         offerToReceiveVideo: true,
+  //       })
+  //         .then((sdp) => {
+  //           console.log("create offer success");
+  //           pc.setLocalDescription(new RTCSessionDescription(sdp));
+  //           newSocket.emit("offer", {
+  //             sdp: sdp,
+  //             offerSendID: newSocket.id,
+  //             offerSendEmail: "offerSendSample@sample.com",
+  //             offerReceiveID: allUsers[i].id,
+  //           });
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });
+  //     }
+  //   }
+  // });
+  // newSocket.on("getOffer", (sdp, offerSendID, offerSendEmail) => {
+  //   // let sdp;
+  //   // let offerSendID = "string";
+  //   // let offerSendEmail = "string";
+  //   const data = { sdp, offerSendID, offerSendEmail };
+  //   createPeerConnection(
+  //     data.offerSendID,
+  //     data.offerSendEmail,
+  //     newSocket,
+  //     localStreamRef
+  //   );
+  //   const pc = pcsRef(data.offerSendID);
+  //   if (pc) {
+  //     pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => {
+  //       console.log("answer set remote description successfully");
+  //       pc.createAnswer({
+  //         offerToReceiveAudio: true,
+  //         offerToReceiveVideo: true,
+  //       })
+  //         .then((sdp) => {
+  //           console.log("create answer successfully");
+  //           pc.setLocalDescription(new RTCSessionDescription(sdp));
+  //           newSocket.emit("answer", {
+  //             sdp: sdp,
+  //             answerSendID: newSocket.id,
+  //             answerReceiveID: data.offerSendID,
+  //           });
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });
   //     });
-  //   })
-  //   .catch((err) => {
-  //     console.log(`getUserMedia error: ${err}`);
-  //   });
-  // console.log(users);
+  //   }
+  // });
+
+  // newSocket.on("getAnswer", (sdp, answerSendID) => {
+  //   console.log("get answer");
+  //   const data = { sdp, answerSendID };
+
+  //   const pc = pcsRef(data.answerSendID);
+  //   if (pc) {
+  //     pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+  //   }
+  //   console.log("getAnswer sdp", sdp);
+  // });
+  // newSocket.on("getCandidate", (candidate, candidateSendID) => {
+  //   console.log("get candidate");
+  //   const data = { candidate: candidate, candidateSendID: candidateSendID };
+  //   const pc = pcsRef(data.candidateSendID);
+  //   if (pc) {
+  //     pc.addIceCandidate(new RTCIceCandidate(data.candidate)).then(() => {
+  //       console.log("candidate add success");
+  //     });
+  //   }
+  // });
+  // newSocket.on("user_exit", (id) => {
+  //   const data = { id: id };
+  //   pcsRef(data.id).close();
+  //   delete pcsRef(data.id);
+  //   setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
+  // });
+
+  // todo : 함수 모음
+  const Findinput = (data) => {
+    setTextInput(data.target.value);
+  };
+
   return (
     <>
-      <div>
-        <video
+      <div className="welcome" hidden={!camHidden}>
+        <form onSubmit={handleWelcomeSubmit}>
+          <input
+            placeholder="roomName"
+            type="text"
+            value={textInput}
+            onChange={Findinput}
+          />
+          <button>Enter Room</button>
+        </form>
+      </div>
+      <div className="Cam" hidden={camHidden}>
+        <LiveVideo
           autoPlay
           playsInline
           width="400"
           height="400"
-          ref={localStreamRef}
+          ref={localVideoRef}
         />
-        {/* {users.map((user, index) => {
+        {users.map((user, index) => {
           <Video key={index} email={user.email} stream={user.stream} />;
-        })} */}
+        })}
       </div>
     </>
   );
