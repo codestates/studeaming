@@ -10,6 +10,7 @@ module.exports = {
       },
       username: {
         allowNull: false,
+        unique: true,
         type: Sequelize.STRING,
       },
       email: {
@@ -44,6 +45,7 @@ module.exports = {
         defaultValue: false,
       },
       emailVerifyCode: {
+        unique: true,
         type: Sequelize.STRING,
       },
       platformType: {
