@@ -120,30 +120,32 @@ function Main() {
 
   return (
     <>
-      <Slider />
-      <SearchSection>
-        <div className="input-box">
-          <SearchInput
-            type="text"
-            placeholder="주제, 스터디머 등으로 검색해보세요"
-          ></SearchInput>
-          <SearchIcon />
-        </div>
-        <Filter>
-          {filterOpt.map((opt, idx) => (
-            <option value={opt} key={idx}>
-              {opt}
-            </option>
-          ))}
-        </Filter>
-      </SearchSection>
-      {contents.length ? (
-        <MainContents contents={contents} />
-      ) : (
-        <NotContents>
-          <h2>현재 스터디밍이 없습니다...</h2>
-        </NotContents>
-      )}
+      <section id="main">
+        <Slider />
+        <SearchSection>
+          <div className="input-box">
+            <SearchInput
+              type="text"
+              placeholder="주제, 스터디머 등으로 검색해보세요"
+            ></SearchInput>
+            <SearchIcon />
+          </div>
+          <Filter>
+            {filterOpt.map((opt, idx) => (
+              <option value={opt} key={idx}>
+                {opt}
+              </option>
+            ))}
+          </Filter>
+        </SearchSection>
+        {contents.length ? (
+          <MainContents contents={contents} />
+        ) : (
+          <NotContents>
+            <h2>현재 스터디밍이 없습니다...</h2>
+          </NotContents>
+        )}
+      </section>
       <TopBtn />
     </>
   );
