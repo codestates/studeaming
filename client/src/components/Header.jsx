@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -10,7 +11,9 @@ import {
   AiOutlineMenu,
   AiOutlineVideoCamera,
   AiOutlineUser,
+  AiOutlineClose,
 } from "react-icons/ai";
+import { IoIosArrowUp } from "react-icons/io";
 import { gsap } from "gsap";
 
 const HeaderSection = styled.section`
@@ -31,6 +34,42 @@ const Hamburger = styled(AiOutlineMenu)`
   position: fixed;
   left: 1.5rem;
   cursor: pointer;
+
+  @media screen and (max-width: 480px) {
+    display: none;
+  }
+`;
+
+const HamburgerClose = styled(AiOutlineClose)`
+  position: fixed;
+  left: 1.5rem;
+  cursor: pointer;
+
+  @media screen and (max-width: 480px) {
+    display: none;
+  }
+`;
+
+const HamburgerDown = styled(AiOutlineMenu)`
+  display: none;
+
+  @media screen and (max-width: 480px) {
+    display: flex;
+    position: fixed;
+    left: 1.5rem;
+    cursor: pointer;
+  }
+`;
+
+const HamburgerUp = styled(IoIosArrowUp)`
+  display: none;
+
+  @media screen and (max-width: 480px) {
+    display: flex;
+    position: fixed;
+    left: 1.5rem;
+    cursor: pointer;
+  }
 `;
 
 const Logo = styled.span`
@@ -73,12 +112,49 @@ function Header() {
   const sidelogHandler = () => {
     if (!isSideLogOpen) {
       dispatch(sideLogOpen(true));
+      setTimeout(() => {
+        gsap.from("#side_log", { x: -480, duration: 1 });
+      }, 0);
     } else {
       gsap.to("#side_log", { x: -480, duration: 1 });
       setTimeout(() => {
         dispatch(sideLogOpen(false));
-      }, 1000);
+        gsap.from(".hamburger", {
+          opacity: 0,
+          duration: 1,
+        });
+      }, 500);
     }
+  };
+
+  const sidelogDownHandler = () => {
+    dispatch(sideLogOpen(true));
+    setTimeout(() => {
+      gsap.from("#side_log", {
+        y: -480,
+      });
+      gsap.to("#landingcontainer", {
+        y: 358.3,
+      });
+      gsap.to("#main", {
+        y: 358.3,
+      });
+    }, 0);
+  };
+
+  const sidelogUpHandler = () => {
+    gsap.to("#side_log", { y: -480, duration: 1 });
+    gsap.to("#landingcontainer", {
+      y: 0,
+      duration: 1,
+    });
+    gsap.to("#main", {
+      y: 0,
+      duration: 1,
+    });
+    setTimeout(() => {
+      dispatch(sideLogOpen(false));
+    }, 500);
   };
 
   const navigateLanding = () => {
@@ -97,9 +173,33 @@ function Header() {
     navigate("/mypage");
   };
 
+  useEffect(() => {
+    gsap.from(".hamburger_close", {
+      opacity: 0,
+      duration: 2,
+    });
+  });
+
   return (
     <HeaderSection>
-      {isLogin || <Hamburger onClick={sidelogHandler} title="study log" />}
+      {isLogin || isSideLogOpen ? (
+        <>
+          <HamburgerClose
+            className="hamburger_close"
+            onClick={sidelogHandler}
+          />
+          <HamburgerUp onClick={sidelogUpHandler} />
+        </>
+      ) : (
+        <>
+          <Hamburger
+            className="hamburger"
+            onClick={sidelogHandler}
+            title="study log"
+          />
+          <HamburgerDown onClick={sidelogDownHandler} title="study log" />
+        </>
+      )}
       <Logo onClick={navigateLanding}>studeaming</Logo>
       <UserBox>
         {!isLogin ? (
