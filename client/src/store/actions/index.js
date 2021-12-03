@@ -14,6 +14,7 @@ export const USERINFO_EDIT_MODAL_OPEN = "USERINFO_EDIT_MODAL_OPEN";
 export const PROFILE_MODAL_OPEN = "PROFILE_MODAL_OPEN ";
 export const STREAM_SETTING_MODAL_OPEN = "STREAM_SETTING_MODAL_OPEN";
 export const SIDE_LOG_COMPONENT_OPEN = "SIDE_LOG_COMPONENT_OPEN";
+export const DAILY_LOG_OPEN = "DAILY_LOG_OPEN";
 export const MODAL_OFF = "MODAL_OFF";
 export const ENQUEUE_NOTIFICATION = "ENQUEUE_NOTIFICATION";
 export const DEQUEUE_NOTIFICATION = "DEQUEUE_NOTIFICATION";
@@ -120,6 +121,13 @@ export const sideLogOpen = (boolean) => {
   return {
     type: SIDE_LOG_COMPONENT_OPEN,
     payload: boolean,
+  };
+};
+
+export const dailyLogOpen = (boolean, moment) => {
+  return {
+    type: DAILY_LOG_OPEN,
+    payload: { boolean, moment },
   };
 };
 
