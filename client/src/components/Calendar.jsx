@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import moment from "moment";
 import { VscChevronLeft, VscChevronRight } from "react-icons/vsc";
 import statisticsAPI from "../api/statistics";
+import { dailyLogOpen } from "../store/actions";
 
 const Container = styled.section`
   width: 100%;
@@ -66,8 +68,12 @@ const Week = styled.div`
 
 const Date = styled.div`
   /* border: 0.2px solid var(--color-black-25); */
-  background-color: ${(props) =>
-    props.isThisMonth ? "var(--color-gray-bg-50)" : "var(--color-gray-bg)"};
+  background-color: ${(props) => {
+    if (props.isThisMonth) return "var(--color-gray-bg)";
+    else {
+      return `var(--color-main-${props.grape})`;
+    }
+  }};
   display: inline-flexbox;
   width: calc(100% / 7);
   color: ${(props) => props.isThisMonth && "var(--color-black-25)"};
@@ -100,20 +106,43 @@ const Date = styled.div`
 function Calendar() {
   const [standard, setStandard] = useState(() => moment()); /* 월 변경 기준*/
   const [report, setReport] = useState(
-    Array(20).concat([120, 150, 180, 300, 340, 75, 120, 350, 240, 260, 300])
+    Array(31)
+      .fill(0)
+      .map((date) => Math.floor(Math.random() * 721))
   ); /* 임시 더미 */
+  const [grape, setGrape] = useState([]);
+  const dispatch = useDispatch();
   const today = moment();
-  const offset = new window.Date().getTimezoneOffset();
 
-  const handleDayClick = (current) => {}; // modal open
+  const getReport = (moment) => {
+    const year = parseInt(moment.format("YYYY"));
+    const month = parseInt(moment.format("MM"));
+    const offset = new window.Date().getTimezoneOffset();
+    statisticsAPI.getMonthlyReport(year, month, offset).then((res) => {
+      // setReport(res.data.report);
+    });
+  };
+
+  const makeGrape = (report) => {
+    const grapeFarm = report.map((time) => {
+      if (time <= 0) return 0;
+      else if (0 < time && time <= 120) return 25;
+      else if (120 < time && time <= 240) return 50;
+      else if (240 < time && time <= 360) return 75;
+      else if (360 < time) return 100;
+      else return 0;
+    });
+    setGrape(grapeFarm);
+  };
+
+  const handleDayClick = (moment) => {
+    dispatch(dailyLogOpen(true, moment));
+  };
+
   const returnToday = () => {
     return setStandard(moment());
   };
-  const getReport = (year, month, offset) => {
-    statisticsAPI.getMonthlyReport(year, month, offset).then((res) => {
-      setReport(res.data.report);
-    });
-  };
+
   const jumpToMonth = (num) => {
     if (num > 0) {
       setStandard(standard.clone().add(1, "month"));
@@ -143,28 +172,28 @@ function Calendar() {
                 .startOf("week")
                 .add(n + idx, "day");
 
+              const isThisMonth = current.format("MM") == date.format("MM");
               const isToday =
                 today.format("YYYYMMDD") === current.format("YYYYMMDD")
                   ? "today"
                   : "";
-              const isThisMonth = current.format("MM") == date.format("MM");
               const isFuture =
                 current.format("YYYYMMDD") > today.format("YYYYMMDD")
                   ? "future"
                   : "";
+              const targetDate = parseInt(current.format("D"));
 
-              // 오늘 이전 날짜만 로그 기록 및 열람 가능 (클릭)
-              //
               return (
                 <Date
                   isThisMonth={!isThisMonth}
                   isFuture={isFuture}
+                  grape={grape[targetDate]}
                   key={idx}
-                  onClick={() => handleDayClick(current, isFuture)}
+                  onClick={() => handleDayClick(current)}
                 >
                   <div className={isToday}>
                     <span className={`date-text ${isFuture}`}>
-                      {current.format("D")}
+                      {targetDate}
                     </span>
                   </div>
                 </Date>
@@ -177,8 +206,9 @@ function Calendar() {
   };
 
   useEffect(() => {
-    getReport();
-  });
+    getReport(today);
+    makeGrape(report);
+  }, []);
 
   return (
     <Container>
