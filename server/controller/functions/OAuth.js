@@ -80,4 +80,24 @@ module.exports = {
       return null;
     }
   },
+
+  disconnectKakao: async (subId) => {
+    try {
+      const response = await axios({
+        method: "POST",
+        url: "https://kapi.kakao.com/v1/user/unlink",
+        headers: {
+          Authorization: `KakaoAK ${process.env.KAKAO_ADMIN_KEY}`,
+        },
+        params: {
+          target_id_type: "user_id",
+          target_id: subId,
+        },
+      });
+
+      return response.data.id;
+    } catch {
+      return null;
+    }
+  },
 };
