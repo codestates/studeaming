@@ -114,7 +114,7 @@ function Sidebar() {
       const res = await userAPI.getFollows();
       // setFollowing(res);
     } catch {
-      dispatch(notify("로그인이 만료되었습니다."));
+      // dispatch(notify("로그인이 만료되었습니다."));
     }
   };
 
@@ -123,7 +123,7 @@ function Sidebar() {
       const res = await userAPI.getAchievement();
       // setBadges(res)
     } catch {
-      dispatch(notify("로그인이 만료되었습니다."));
+      // dispatch(notify("로그인이 만료되었습니다."));
     }
   };
 
