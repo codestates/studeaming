@@ -57,12 +57,15 @@ const GlobalStyle = createGlobalStyle`
     all: unset;
     cursor: pointer;
   }
+  textarea {
+    all: unset;
+  }
 
   :root {
     --lineHeight-normal: 1;
     --font-size-regular: 16px;
     --font-size-small: 14px;
-    --color-main-100: #656BFF;
+    --color-main-100: #777CFF;
     --color-main-75: #9296FF;
     --color-main-50: #CFD1FF;
     --color-main-25: #E3E4FF;
