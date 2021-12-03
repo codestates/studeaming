@@ -5,8 +5,11 @@ module.exports = {
   getGoogleToken: async (code) => {
     try {
       const response = await axios({
-        method: "get",
+        method: "POST",
         url: "https://oauth2.googleapis.com/token",
+        headers: {
+          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
         params: {
           code: code,
           client_id: process.env.GOOGLE_CLIENT_ID,
@@ -27,6 +30,9 @@ module.exports = {
       const response = await axios({
         method: "post",
         url: "https://kauth.kakao.com/oauth/token",
+        headers: {
+          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
         params: {
           code: code,
           client_id: process.env.KAKAO_CLIENT_ID,
@@ -65,7 +71,6 @@ module.exports = {
         url: "https://kauth.kakao.com/v2/user/me",
         headers: {
           authorization: `Bearer ${accessToken}`,
-          accept: "application/x-www-form-urlencoded;charset=utf-8",
         },
         //params: {property_keys=["kakao_account.email"]}
       });

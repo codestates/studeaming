@@ -9,8 +9,9 @@ const {
   signout,
   withdraw,
   refreshToken,
-} = require("../controller/auth");
-const { googleSignin, kakaoSignin } = require("../controller/oauth");
+  googleSignin,
+  kakaoSignin,
+} = require("../controller");
 
 router.post("/signup", signup);
 router.post("/signup/availability", checkAvailability);

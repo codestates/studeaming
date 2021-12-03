@@ -1,5 +1,5 @@
-const { User, Daily } = require("../models");
-const { isAccessAuthorized } = require("./functions/tokenFunc");
+const { User, Daily } = require("../../models");
+const { isAccessAuthorized } = require("../functions/token");
 const { Op } = require("sequelize");
 
 module.exports = {

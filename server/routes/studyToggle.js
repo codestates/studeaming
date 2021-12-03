@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const studyToggle = require("../controller/studyToggle");
+const { studyToggle } = require("../controller");
 const checkAuth = require("../middleware/checkAuth");
 
 router.get("/", checkAuth, studyToggle.get);

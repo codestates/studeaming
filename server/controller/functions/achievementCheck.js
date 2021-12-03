@@ -1,10 +1,5 @@
-const {
-  User,
-  Achievement,
-  user_achievement,
-  Studylog,
-} = require("../../models");
-const { getStudyTime, getStudyLogs } = require("./modelFunc");
+const { User, user_achievement, Studylog } = require("../../models");
+const { getStudyTime, getStudyLogs } = require("./model");
 
 const haveAchievement = async (user_id, achievement_id) => {
   try {

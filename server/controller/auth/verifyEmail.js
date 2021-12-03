@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User } = require("../../models");
 
 module.exports = async (req, res) => {
   const emailVerifyCode = req.params.emailVerifyCode;
