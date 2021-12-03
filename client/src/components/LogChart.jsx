@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import Loading from "./Loading";
 import logAPI from "../api/studyLog";
 
 const LogChartSection = styled.section`
@@ -72,8 +73,7 @@ const Log = styled.div`
   }
 `;
 
-function LogChart() {
-  const date = new Date();
+function LogChart({ date, offset }) {
   const [log, setLog] = useState([]);
   const [studylogList, setStudylogList] = useState([
     { name: "영어", color: "#ffaeae", startedAt: 20, finishedAt: 80 },
@@ -90,6 +90,7 @@ function LogChart() {
     { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 590 },
     { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 620 },
   ]);
+  const [isLoading, setIsLoading] = useState(true);
   const minute = ["", 10, 20, 30, 40, 50, 60];
   const hour = new Array(24).fill(0).map((_, idx) => idx);
 
@@ -140,7 +141,7 @@ function LogChart() {
   };
 
   const getLogsHandler = () => {
-    logAPI.getLogs(date.getTimezoneOffset()).then((res) => {
+    logAPI.getLogs(date, offset).then((res) => {
       const compileStudylogList = res.data.studylogList.map((list) => {
         const utcStart = list.startedAt * 6000;
         const utcFinish = list.finishedAt * 6000;
@@ -154,12 +155,16 @@ function LogChart() {
       });
       setStudylogList(compileStudylogList);
       fillLog();
+      setIsLoading(false);
     });
   };
 
   useEffect(() => {
     fillLog(); //서버 연결되면 지우기
     getLogsHandler();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
   }, [studylogList]);
 
   return (
@@ -179,25 +184,29 @@ function LogChart() {
             </div>
           ))}
         </div>
-        <Chart>
-          {log.map((el, idx) => (
-            <Hour key={idx}>
-              <Log
-                color={log[idx].color}
-                left={log[idx].left}
-                top={log[idx].top}
-                width={log[idx].width}
-                title={
-                  log[idx].hour === 0 && log[idx].minute > 0
-                    ? `${log[idx].name} ${log[idx].minute}분`
-                    : log[idx].hour > 0 && log[idx].minute === 0
-                    ? `${log[idx].name} ${log[idx].hour}시간`
-                    : `${log[idx].name} ${log[idx].hour}시간 ${log[idx].minute}분`
-                }
-              />
-            </Hour>
-          ))}
-        </Chart>
+        {isLoading ? (
+          <Loading wsize={30} hsize={30} />
+        ) : (
+          <Chart>
+            {log.map((el, idx) => (
+              <Hour key={idx}>
+                <Log
+                  color={log[idx].color}
+                  left={log[idx].left}
+                  top={log[idx].top}
+                  width={log[idx].width}
+                  title={
+                    log[idx].hour === 0 && log[idx].minute > 0
+                      ? `${log[idx].name} ${log[idx].minute}분`
+                      : log[idx].hour > 0 && log[idx].minute === 0
+                      ? `${log[idx].name} ${log[idx].hour}시간`
+                      : `${log[idx].name} ${log[idx].hour}시간 ${log[idx].minute}분`
+                  }
+                />
+              </Hour>
+            ))}
+          </Chart>
+        )}
       </HourListAndChartContainer>
     </LogChartSection>
   );
