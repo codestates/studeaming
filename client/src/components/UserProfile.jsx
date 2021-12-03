@@ -64,7 +64,8 @@ const StudyInfo = styled.section`
 
   #studytime {
     font-size: 2rem;
-    color: var(--color-black-50);
+    font-weight: 700;
+    color: var(--color-black-25);
   }
 `;
 
@@ -73,7 +74,7 @@ const Tag = styled.span`
   padding: 0.6rem;
   margin: 0 0.4rem 0.4rem 0;
   /* border: 0.1px solid var(--color-black-25); */
-  background-color: var(--color-main-25);
+  background-color: var(--color-main-0);
   border-radius: 10px;
   color: var(--color-black-25);
   font-size: 0.8rem;
@@ -82,7 +83,7 @@ const Tag = styled.span`
 const BadgeContainer = styled.div`
   grid-area: badge;
   padding: 10px;
-  background-color: var(--color-main-25);
+  background-color: var(--color-main-0);
   border-radius: 10px;
   width: 200px;
   height: 200px;
@@ -163,7 +164,7 @@ function UserProfile({ username }) {
         })}
         <Subheading>한 달 동안 공부한 시간</Subheading>
         <span id="studytime">
-          {Math.floor(profile.studyTime / 60)}h {profile.studyTime % 60}m
+          {Math.floor(profile.studyTime / 60)}시간 {profile.studyTime % 60}분
         </span>
       </StudyInfo>
       <BadgeContainer>
