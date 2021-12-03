@@ -14,7 +14,7 @@ module.exports = {
           code: code,
           client_id: process.env.GOOGLE_CLIENT_ID,
           client_secret: process.env.GOOGLE_CLIENT_SECRET,
-          redirect_uri: process.env.CLIENT_URL,
+          redirect_uri: process.env.REDIRECT_URI,
           grant_type: "authorization_code",
         },
       });
@@ -28,34 +28,34 @@ module.exports = {
   getKakaoToken: async (code) => {
     try {
       const response = await axios({
-        method: "post",
+        method: "POST",
         url: "https://kauth.kakao.com/oauth/token",
         headers: {
-          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+          "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
         },
         params: {
           code: code,
           client_id: process.env.KAKAO_CLIENT_ID,
-          redirect_uri: process.env.CLIENT_URL,
+          redirect_uri: process.env.REDIRECT_URI,
           grant_type: "authorization_code",
         },
       });
 
       return response.data.access_token;
-    } catch (e) {
+    } catch {
       return null;
     }
   },
 
-  getGoogleEmail: async (accessToken) => {
+  getGoogleSubId: async (accessToken) => {
     try {
       const data = await axios({
         method: "get",
-        url: "https://www.googleapis.com/oauth2/v2/userinfo.email",
+        url: "https://www.googleapis.com/oauth2/v3/userinfo",
         headers: {
-          authorization: `token ${accessToken}`,
           accept: "application/json",
         },
+        params: { access_token: accessToken },
       });
 
       return data.data;
@@ -64,15 +64,15 @@ module.exports = {
     }
   },
 
-  getKakaoEmail: async (accessToken) => {
+  getKakaoSubId: async (accessToken) => {
     try {
       const data = await axios({
         method: "post",
-        url: "https://kauth.kakao.com/v2/user/me",
+        url: "https://kapi.kakao.com/v2/user/me",
         headers: {
-          authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
+          "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
         },
-        //params: {property_keys=["kakao_account.email"]}
       });
 
       return data.data;
@@ -80,6 +80,4 @@ module.exports = {
       return null;
     }
   },
-
-  disconnect: (id) => {},
 };
