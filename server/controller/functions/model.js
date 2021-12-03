@@ -76,7 +76,7 @@ module.exports = {
         log.startedAt = start;
       }
       if (log.finishedAt === null) {
-        log.finishedAt = Date.now();
+        log.finishedAt = Math.round(Date.now() / (60 * 1000));
       } else if (log.finishedAt > end) {
         log.finishedAt = end;
       }
