@@ -46,7 +46,7 @@ function Screen() {
   // };
 
   // //todo : Media 스트림 설정
-  export const getLocalStream = useCallback(async () => {
+  const getLocalStream = useCallback(async () => {
     try {
       const localStream = await navigator.mediaDevices.getUserMedia({
         audio: false,
@@ -381,7 +381,6 @@ function Screen() {
           height="500"
           ref={localVideoRef}
         />
-        <div className="welcome"></div>
       </div>
     </>
   );

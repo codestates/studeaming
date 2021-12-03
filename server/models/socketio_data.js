@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   socketio_data.init({
     uuid: DataTypes.STRING,
     studeamer_id: DataTypes.STRING,
-    HeadCount: DataTypes.INTEGER
+    HeadCount: DataTypes.INTEGER,
+    thumbnail: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'socketio_data',
