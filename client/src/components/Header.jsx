@@ -12,6 +12,8 @@ import {
   AiOutlineVideoCamera,
   AiOutlineUser,
   AiOutlineClose,
+  AiOutlineHome,
+  AiOutlineLogin,
 } from "react-icons/ai";
 import { IoIosArrowUp } from "react-icons/io";
 import { gsap } from "gsap";
@@ -86,21 +88,39 @@ const UserBox = styled.div`
 `;
 
 const Video = styled(AiOutlineVideoCamera)`
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     display: none;
   }
   margin-right: 1.5rem;
+  margin-left: 1.5rem;
   cursor: pointer;
 `;
 
 const User = styled(AiOutlineUser)`
   margin-left: 1.5rem;
   cursor: pointer;
+
+  @media screen and (max-width: 420px) {
+    margin-left: 0.75rem;
+  }
 `;
 
-const Login = styled.span`
+const HomeIcon = styled(AiOutlineHome)`
   cursor: pointer;
-  font-size: 14px;
+  margin-right: 1.5rem;
+
+  @media screen and (max-width: 420px) {
+    margin-right: 0.75rem;
+  }
+`;
+
+const LoginIcon = styled(AiOutlineLogin)`
+  cursor: pointer;
+  margin-left: 1.5rem;
+
+  @media screen and (max-width: 420px) {
+    margin-left: 0.75rem;
+  }
 `;
 
 function Header() {
@@ -113,7 +133,8 @@ function Header() {
     if (!isSideLogOpen) {
       dispatch(sideLogOpen(true));
       setTimeout(() => {
-        gsap.from("#side_log", { x: -480, duration: 1 });
+        // gsap.from("#side_log", { x: -480, duration: 1 });
+        gsap.to("#side_log", { x: 480, duration: 1 });
       }, 0);
     } else {
       gsap.to("#side_log", { x: -480, duration: 1 });
@@ -130,8 +151,8 @@ function Header() {
   const sidelogDownHandler = () => {
     dispatch(sideLogOpen(true));
     setTimeout(() => {
-      gsap.from("#side_log", {
-        y: -480,
+      gsap.to("#side_log", {
+        y: 400,
       });
       gsap.to("#landingcontainer", {
         y: 358.3,
@@ -143,7 +164,7 @@ function Header() {
   };
 
   const sidelogUpHandler = () => {
-    gsap.to("#side_log", { y: -480, duration: 1 });
+    gsap.to("#side_log", { y: 0, duration: 1 });
     gsap.to("#landingcontainer", {
       y: 0,
       duration: 1,
@@ -204,11 +225,25 @@ function Header() {
       <UserBox>
         {!isLogin ? (
           <>
+            <HomeIcon
+              onClick={() => {
+                navigate("/home");
+              }}
+              title="home"
+            />
             <Video onClick={streamHandler} title="start studeaming" />
             <User onClick={navigateMypage} title="mypage" />
           </>
         ) : (
-          <Login onClick={loginHandler}>로그인</Login>
+          <>
+            <HomeIcon
+              onClick={() => {
+                navigate("/home");
+              }}
+              title="home"
+            />
+            <LoginIcon onClick={loginHandler} title="login" />
+          </>
         )}
       </UserBox>
     </HeaderSection>
