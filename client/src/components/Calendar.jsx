@@ -135,8 +135,8 @@ function Calendar() {
     setGrape(grapeFarm);
   };
 
-  const handleDayClick = (moment) => {
-    dispatch(dailyLogOpen(true, moment));
+  const handleDayClick = (moment, isFuture) => {
+    if (!isFuture) dispatch(dailyLogOpen(true, moment));
   };
 
   const returnToday = () => {
@@ -189,7 +189,7 @@ function Calendar() {
                   isFuture={isFuture}
                   grape={grape[targetDate]}
                   key={idx}
-                  onClick={() => handleDayClick(current)}
+                  onClick={() => handleDayClick(current, isFuture)}
                 >
                   <div className={isToday}>
                     <span className={`date-text ${isFuture}`}>
@@ -206,9 +206,9 @@ function Calendar() {
   };
 
   useEffect(() => {
-    getReport(today);
+    getReport(standard);
     makeGrape(report);
-  }, []);
+  }, [standard]);
 
   return (
     <Container>
