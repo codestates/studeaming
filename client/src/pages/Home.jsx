@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { AiOutlineSearch } from "react-icons/ai";
+import { verifySocialLogined, getUserInfo, getFollows } from "../store/actions";
 import Slider from "../components/Slider";
 import MainContents from "../components/MainContents";
 import TopBtn from "../components/TopBtn";
-import { verifySocialLogined, getUserInfo, getFollows } from "../store/actions";
+import Loading from "../components/Loading";
 import authAPI from "../api/auth";
 import userAPI from "../api/user";
+import empty from "../assets/images/empty.png";
 
 const SearchSection = styled.section`
   display: flex;
@@ -64,9 +66,10 @@ const NotContents = styled.section`
   }
 `;
 
-function Main() {
+function Home() {
   const [searchValue, SetSearchValue] = useState("");
   const [contents, setContents] = useState([""]);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const filterOpt = ["시청자 순", "최신 순", "오래 공부한 순"];
   const url = new URL(window.location.href);
@@ -118,6 +121,13 @@ function Main() {
     }
   }, []);
 
+  useEffect(() => {
+    // get contents 요청 보내고 성공적으로 받아지면 setIsLoading(false)
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
+
   return (
     <>
       <section id="main">
@@ -139,10 +149,17 @@ function Main() {
           </Filter>
         </SearchSection>
         {contents.length ? (
-          <MainContents contents={contents} />
+          isLoading ? (
+            <Loading wsize={50} hsize={50} />
+          ) : (
+            <MainContents contents={contents} />
+          )
+        ) : isLoading ? (
+          <Loading wsize={50} hsize={50} />
         ) : (
           <NotContents>
             <h2>현재 스터디밍이 없습니다...</h2>
+            <img src={empty} alt="" style={{ width: "100px" }} />
           </NotContents>
         )}
       </section>
@@ -151,4 +168,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default Home;
