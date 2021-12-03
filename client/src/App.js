@@ -17,7 +17,7 @@ import StreamerSetting from "./components/StreamerSetting";
 import Header from "./components/Header";
 import NotificationCenter from "./components/NotificationCenter";
 import SideLog from "./components/SideLog";
-import Screen from "./components/Screen";
+import DailyLog from "./components/DailyLog";
 
 require("dotenv").config();
 
@@ -30,6 +30,7 @@ function App() {
     isUserInfoEditOpen,
     isProfileModalOpen,
     isStreamSettingOpen,
+    isDailyLogOpen,
   } = useSelector(({ modalReducer }) => modalReducer);
   const { isSideLogOpen } = useSelector(({ sideLogReducer }) => sideLogReducer);
   const isModal =
@@ -39,7 +40,8 @@ function App() {
     isWithdrawalOpen ||
     isUserInfoEditOpen ||
     isProfileModalOpen.boolean ||
-    isStreamSettingOpen;
+    isStreamSettingOpen ||
+    isDailyLogOpen.boolean;
 
   return (
     <>
@@ -65,6 +67,9 @@ function App() {
             <UserProfile username={isProfileModalOpen.username} />
           )}
           {isStreamSettingOpen && <StreamerSetting />}
+          {isDailyLogOpen.boolean && (
+            <DailyLog moment={isDailyLogOpen.moment} />
+          )}
         </Modal>
       )}
     </>
