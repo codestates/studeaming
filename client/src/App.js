@@ -52,7 +52,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={<Home />} />
         <Route path="/mypage" element={<Mypage />} />
-        {/* <Route path="/streamer" element={<Streamer />} /> */}
+        <Route path="/streamer" element={<Streamer />} />
         <Route path="/viewer" element={<Viewer />} />
         <Route path="/auth" element={<Verification />} />
       </Routes>
