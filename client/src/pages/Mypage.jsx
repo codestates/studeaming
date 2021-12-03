@@ -17,7 +17,7 @@ const Container = styled.div`
 const MonthlyContainer = styled.div`
   width: calc(100vw - 300px);
   height: calc(100vh - 61.69px);
-  padding: 2rem 2rem;
+  padding: 2.4rem 2.4rem;
   position: relative;
 
   @media screen and (max-width: 768px) {
@@ -60,6 +60,10 @@ const MonthlyContainer = styled.div`
     font-family: "Poppins-Regular", "OpenSans";
     font-weight: 700;
     color: var(--color-black-25);
+
+    @media (min-width: 768px) and (max-width: 820px) {
+      font-size: 1.8rem;
+    }
   }
 `;
 
