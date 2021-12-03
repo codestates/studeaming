@@ -13,14 +13,16 @@ function Verification() {
     const url = new URL(window.location.href);
     const authorizationCode = url.searchParams.get("code");
     console.log(authorizationCode);
-    try {
-      authAPI.verification(authorizationCode);
-      dispatch(
-        notify("이메일 인증이 완료되었습니다. 로그인 후 사용해주세요 :)")
-      );
-    } catch {
-      dispatch(notify("이메일 인증에 실패했습니다."));
-    }
+    authAPI
+      .verification(authorizationCode)
+      .then(() => {
+        dispatch(
+          notify("이메일 인증이 완료되었습니다. 로그인 후 사용해주세요 :)")
+        );
+      })
+      .catch(() => {
+        dispatch(notify("이메일 인증에 실패했습니다."));
+      });
   };
 
   useEffect(() => {
