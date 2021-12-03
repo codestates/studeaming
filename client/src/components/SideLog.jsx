@@ -14,6 +14,7 @@ import toggleApi from "../api/studyToggle";
 import logAPI from "../api/studyLog";
 import ToggleBox from "./ToggleBox";
 import LogChart from "./LogChart";
+import Loading from "./Loading";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
 const SideLogSection = styled.section`
@@ -25,6 +26,7 @@ const SideLogSection = styled.section`
   border-radius: 0 1rem 1rem 0;
   position: fixed;
   top: 20px;
+  left: -480px;
   overflow: scroll;
   z-index: 3000;
   background-color: white;
@@ -36,6 +38,8 @@ const SideLogSection = styled.section`
 
   @media screen and (max-width: 480px) {
     position: fixed;
+    top: -400px;
+    left: 0;
     width: 100%;
     height: 400px;
     align-items: center;
@@ -240,6 +244,12 @@ const SideLogUpIcon = styled(IoIosArrowUp)`
   }
 `;
 
+const ToggleLoading = styled.div`
+  width: 80px;
+  height: 80px;
+  margin: 20px 0;
+`;
+
 function SideLog() {
   const { profileImg, username, about } = useSelector(
     ({ userReducer }) => userReducer
@@ -250,9 +260,15 @@ function SideLog() {
   const [plusClick, setPlusClick] = useState(false);
   const [pickedColor, setPickedColor] = useState("lightgrey");
   const [inputValue, setInputValue] = useState("공부");
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const colorPick = ["#ffaeae", "#fdd4ae", "#b4e29e", "#565781", "#b094f2"];
+  const date = new Date();
+  const eightDigitDate = `${date.getFullYear()}${date.getMonth() + 1}${
+    date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
+  }`;
+  const offset = date.getTimezoneOffset();
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -320,14 +336,14 @@ function SideLog() {
   };
 
   const sideLogCloseBackIconHandler = () => {
-    gsap.to("#side_log", { x: -480, duration: 1 });
+    gsap.to("#side_log", { x: 0, duration: 1 });
     setTimeout(() => {
       dispatch(sideLogOpen(false));
     }, 1000);
   };
 
   const sideLogCloseUpIconHandler = () => {
-    gsap.to("#side_log", { y: -480, duration: 1 });
+    gsap.to("#side_log", { y: 0, duration: 1 });
     gsap.to("#landingcontainer", {
       y: 0,
       duration: 1,
@@ -338,14 +354,18 @@ function SideLog() {
     });
     setTimeout(() => {
       dispatch(sideLogOpen(false));
-    }, 500);
+    }, 1000);
   };
 
   useEffect(() => {
     toggleApi.getToggles().then((res) => {
       setToggleBox(res.data.toggleList);
+      setIsLoading(false);
     });
     toggleOnRequest();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
   }, [toggleBox]);
 
   useEffect(() => {
@@ -375,66 +395,72 @@ function SideLog() {
             <div className="comment">{about || "본인을 소개해보세요."}</div>
           </UserNameAndLogout>
         </UserBox>
-        <ToggleBoxWrapper>
-          {toggleBox.map((toggle, idx) => (
-            <ToggleBox
-              key={idx}
-              name={toggle.name}
-              color={toggle.color}
-              isOn={toggle.isOn}
-              idx={idx}
-              id={toggle.id}
-              toggleBox={toggleBox}
-              setToggleBox={setToggleBox}
-              toggleHandler={toggleHandler}
-            />
-          ))}
-          {toggleBox.length < 6 ? (
-            plusClick ? (
-              <ToggleEditBox>
-                <div className="edit_letter_box">
-                  <EditClose
-                    onClick={() => {
-                      setPlusClick(false);
-                    }}
-                  >
-                    취소
-                  </EditClose>
-                  <EditComplete onClick={editCompleteHandler}>
-                    완료
-                  </EditComplete>
-                </div>
-                <ColorSelectedBox
-                  color={pickedColor}
-                  placeholder="과목 입력"
-                  onChange={(e) => {
-                    setInputValue(e.target.value);
-                  }}
-                />
-                <ColorPickBox>
-                  {colorPick.map((color, idx) => (
-                    <ColorPick
-                      key={idx}
-                      color={color}
+        {isLoading ? (
+          <ToggleLoading>
+            <Loading wsize={20} hsize={20} />
+          </ToggleLoading>
+        ) : (
+          <ToggleBoxWrapper>
+            {toggleBox.map((toggle, idx) => (
+              <ToggleBox
+                key={idx}
+                name={toggle.name}
+                color={toggle.color}
+                isOn={toggle.isOn}
+                idx={idx}
+                id={toggle.id}
+                toggleBox={toggleBox}
+                setToggleBox={setToggleBox}
+                toggleHandler={toggleHandler}
+              />
+            ))}
+            {toggleBox.length < 6 ? (
+              plusClick ? (
+                <ToggleEditBox>
+                  <div className="edit_letter_box">
+                    <EditClose
                       onClick={() => {
-                        setPickedColor(color);
+                        setPlusClick(false);
                       }}
-                    />
-                  ))}
-                </ColorPickBox>
-              </ToggleEditBox>
-            ) : (
-              <ToggleAddBox>
-                <PlusIcon
-                  onClick={() => {
-                    setPlusClick(true);
-                  }}
-                />
-              </ToggleAddBox>
-            )
-          ) : null}
-        </ToggleBoxWrapper>
-        <LogChart />
+                    >
+                      취소
+                    </EditClose>
+                    <EditComplete onClick={editCompleteHandler}>
+                      완료
+                    </EditComplete>
+                  </div>
+                  <ColorSelectedBox
+                    color={pickedColor}
+                    placeholder="과목 입력"
+                    onChange={(e) => {
+                      setInputValue(e.target.value);
+                    }}
+                  />
+                  <ColorPickBox>
+                    {colorPick.map((color, idx) => (
+                      <ColorPick
+                        key={idx}
+                        color={color}
+                        onClick={() => {
+                          setPickedColor(color);
+                        }}
+                      />
+                    ))}
+                  </ColorPickBox>
+                </ToggleEditBox>
+              ) : (
+                <ToggleAddBox>
+                  <PlusIcon
+                    onClick={() => {
+                      setPlusClick(true);
+                    }}
+                  />
+                </ToggleAddBox>
+              )
+            ) : null}
+          </ToggleBoxWrapper>
+        )}
+        <LogChart date={eightDigitDate} offset={offset} />
         <SideLogCloseBackIcon onClick={sideLogCloseBackIconHandler} />
         <SideLogCloseUpIcon>
           <IoIosArrowUp size="24" onClick={sideLogCloseUpIconHandler} />
