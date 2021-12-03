@@ -15,7 +15,7 @@ import dummyBadges from "../assets/dummy/bages";
 const Container = styled.div`
   width: 300px;
   height: calc(100vh - 61.69px);
-  background-color: var(--color-main-25);
+  background-color: var(--color-main-0);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
