@@ -1,32 +1,45 @@
 const { User } = require("../../models");
 const { sendAccessToken, sendRefreshToken } = require("../functions/token");
 const generateName = require("../functions/usernameGenerator");
-const { getKakaoToken, getKakaoEmail } = require("../functions/OAuth");
+const { getKakaoToken, getKakaoSubId } = require("../functions/OAuth");
 
 module.exports = async (req, res) => {
   try {
-    const accessToken = await getKakaoToken(req.body.code); // todo:응답 객체 확인
-    const data = await getKakaoEmail(accessToken);
+    const accessToken = await getKakaoToken(req.body.kakaocode);
+    if (accessToken) {
+      const data = await getKakaoSubId(accessToken);
 
-    if (data) {
-      const oauthId = data.id;
-      const { nickname, profile_image_url } = data.kakao_account.profile;
-      const username = generateName(nickname);
+      if (data) {
+        const subId = data.id;
+        const nickname = data.kakao_account.profile_nickname_needs_agreement
+          ? data.kakao_account.profile.nickname
+          : undefined;
+        const profile_image_url = data.kakao_account
+          .profile_image_needs_agreement
+          ? data.kakao_account.profile.profile_image_url
+          : "";
 
-      const [user, created] = await User.findOrCreate({
-        where: { authCode: oauthId, platformType: "kakao" },
-        defaults: {
-          profileImg: profile_image_url,
-          username: username,
-          isEmailVerified: true,
-        },
-        raw: true,
-      });
+        const username = await generateName(nickname);
 
-      sendAccessToken(res, { id: user.id });
-      sendRefreshToken(res, { id: user.id });
+        const [user, created] = await User.findOrCreate({
+          where: { authCode: subId, platformType: "kakao" },
+          defaults: {
+            profileImg: profile_image_url,
+            username: username,
+            isEmailVerified: true,
+          },
+          raw: true,
+        });
+
+        sendAccessToken(res, { id: user.id });
+        sendRefreshToken(res, { id: user.id });
+
+        res.send({ id: user.id, username: user.username });
+      } else {
+        res.sendStatus(500);
+      }
     } else {
-      res.sendStatus(500);
+      res.status(401).send({ message: "Invalid authorization code" });
     }
   } catch {
     res.sendStatus(500);
