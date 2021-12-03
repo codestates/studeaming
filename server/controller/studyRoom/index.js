@@ -1,5 +1,12 @@
-let users = {};
-let socketToRoom = {};
+const { socketio_data } = require("../../models");
+
+const users = {};
+const socketToRoom = {};
+
+const newID = function () {
+  return Math.random().toString(36).substr(2, 16);
+};
+//todo: model require("")
 module.exports = {
   io: (socket, io) => {
     const maximum = 4;
@@ -10,11 +17,9 @@ module.exports = {
     //   })
     // );
     socket.on("join_room", (data) => {
-      console.log(data);
-      console.log("처음 데이터룸", data);
-      console.log("처음 이메일", data.email);
-      console.log("방 만드는시점", users[data.room]);
+      console.log("유유아이디", data.uuid);
       if (users[data.room]) {
+        //todo: 방이 이미 존재할때
         const length = users[data.room].length;
         if (length === maximum) {
           socket.to(socket.id).emit("room_full");
@@ -23,11 +28,17 @@ module.exports = {
         console.log("방이 존재할때", users[data.room]);
         users[data.room].push({ id: socket.id, email: data.email });
       } else {
-        console.log("방이름", data.room);
-        console.log("소켓아이디", socket.id);
-        users[data.room] = [{ id: socket.id, email: data.email }];
-        users = users;
-        console.log("유저스", users[data.room]);
+        //todo: 방이 존재하지 않을때
+        const socketData = socketio_data.findOrCreate({
+          where: { uuid: data.uuid },
+          defaults: {
+            studeamer_id: socket.id,
+          },
+        });
+        users[data.room] = [
+          { uuid: newID(), id: socket.id, email: data.email },
+        ];
+        console.log("방이 존재하지않을때 방정보", users[data.room]);
       }
       socketToRoom[socket.id] = data.room;
       console.log("소켓투룸", socketToRoom[socket.id]);
@@ -42,7 +53,6 @@ module.exports = {
       );
 
       console.log("방안에 누가있나요?", usersInThisRoom);
-
       io.sockets.to(socket.id).emit("all_users", users[data.room]);
     });
 

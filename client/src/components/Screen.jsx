@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Video from "./Video";
 import SocketIOClient, { io } from "socket.io-client";
-import { modalOff } from "../store/actions";
 import styled from "styled-components";
 import Viewer from "../pages/Viewer";
 
@@ -33,8 +32,10 @@ function Screen() {
   const [camHidden, setCamHidden] = useState(true);
   const [textInput, setTextInput] = useState("");
   const [roomname, setRoomname] = useState();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+
+  const newID = function () {
+    return Math.random().toString(36).substr(2, 16);
+  };
 
   // todo: input창에 방 제목 입력하면 접속
   // todo: 일단 이 함수는 보류
@@ -45,7 +46,7 @@ function Screen() {
   // };
 
   // //todo : Media 스트림 설정
-  const getLocalStream = useCallback(async () => {
+  export const getLocalStream = useCallback(async () => {
     try {
       const localStream = await navigator.mediaDevices.getUserMedia({
         audio: false,
@@ -57,7 +58,9 @@ function Screen() {
       localStreamRef.current = localStream;
       if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
       if (!socketRef.current) return;
+      console.log("방제목", textInput);
       socketRef.current.emit("join_room", {
+        uuid: newID(),
         room: textInput,
         email: "sample@naver.com",
       });
@@ -367,11 +370,6 @@ function Screen() {
     setTextInput(data.target.value);
   };
 
-  const navigateLanding = () => {
-    dispatch(modalOff());
-    navigate("../Viewer");
-  };
-
   return (
     <>
       <div>스터디밍 시작하기</div>
@@ -383,16 +381,7 @@ function Screen() {
           height="500"
           ref={localVideoRef}
         />
-        <div className="welcome">
-          <input
-            placeholder="roomName"
-            type="text"
-            value={textInput}
-            onChange={Findinput}
-          />
-          //todo: 함수를 만들어야하나?
-          <button onClick={navigateLanding}>Enter Room</button>
-        </div>
+        <div className="welcome"></div>
       </div>
     </>
   );
