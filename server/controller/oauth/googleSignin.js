@@ -1,4 +1,4 @@
-const { User } = require("../../models");
+const { User, Currentlog } = require("../../models");
 const { sendAccessToken, sendRefreshToken } = require("../functions/token");
 const generateName = require("../functions/usernameGenerator");
 const { getGoogleToken, getGoogleSubId } = require("../functions/OAuth");
@@ -20,6 +20,13 @@ module.exports = async (req, res) => {
           defaults: { username: username, isEmailVerified: true, email: email },
           raw: true,
         });
+
+        if (created) {
+          await Currentlog.create({
+            user_id: user.id,
+            name: "휴식",
+          });
+        }
 
         sendAccessToken(res, { id: user.id });
         sendRefreshToken(res, { id: user.id });

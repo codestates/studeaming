@@ -31,6 +31,13 @@ module.exports = async (req, res) => {
           raw: true,
         });
 
+        if (created) {
+          await Currentlog.create({
+            user_id: user.id,
+            name: "휴식",
+          });
+        }
+
         sendAccessToken(res, { id: user.id });
         sendRefreshToken(res, { id: user.id });
 
