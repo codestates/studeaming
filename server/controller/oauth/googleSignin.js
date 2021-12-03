@@ -1,32 +1,37 @@
 const { User } = require("../../models");
 const { sendAccessToken, sendRefreshToken } = require("../functions/token");
 const generateName = require("../functions/usernameGenerator");
-const { getGoogleToken, getGoogleEmail } = require("../functions/OAuth");
+const { getGoogleToken, getGoogleSubId } = require("../functions/OAuth");
 
 module.exports = async (req, res) => {
   try {
-    //todo:인증 실패 시 응답
-    const accessToken = await getGoogleToken(req.body.code); // todo:응답 객체 확인
-    const data = await getGoogleEmail(accessToken);
+    const accessToken = await getGoogleToken(req.body.googlecode);
 
-    //todo:응답 객체 확인 email, name
-    //todo:구글 인증 오류 처리
-    if (data) {
-      const email = data.email;
-      const username = generateName(data.name);
+    if (accessToken) {
+      const data = await getGoogleSubId(accessToken);
 
-      const [user, created] = await User.findOrCreate({
-        where: { email: email, platformType: "google" },
-        defaults: { username: username, isEmailVerified: true },
-        raw: true,
-      });
+      if (data) {
+        const email = data.email;
+        const username = await generateName(data.name);
+        const subId = data.sub;
 
-      sendAccessToken(res, { id: user.id });
-      sendRefreshToken(res, { id: user.id });
+        const [user, created] = await User.findOrCreate({
+          where: { authCode: subId, platformType: "google" },
+          defaults: { username: username, isEmailVerified: true, email: email },
+          raw: true,
+        });
+
+        sendAccessToken(res, { id: user.id });
+        sendRefreshToken(res, { id: user.id });
+
+        res.send({ id: user.id, username: user.username });
+      } else {
+        res.sendStatus(500);
+      }
     } else {
-      res.sendStatus(500);
+      res.status(401).send({ message: "Invalid authorization code" });
     }
-  } catch {
-    res.sendStatus(500);
+  } catch (e) {
+    res.status(500).send(e);
   }
 };
