@@ -1,8 +1,8 @@
 import api from "./index";
 
 const logAPI = {
-  getLogs: (offset) => {
-    return api.get(`/studylog?offset=${offset}`);
+  getLogs: (date, offset) => {
+    return api.get(`/studylog?date=${date}&offset=${offset}`);
   },
 
   initiateLog: (id) => {
