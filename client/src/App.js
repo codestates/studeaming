@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Landing from "./pages/Landing";
-import Main from "./pages/Main";
+import Home from "./pages/Home";
 import Mypage from "./pages/Mypage";
 import Streamer from "./pages/Streamer";
 import Viewer from "./pages/Viewer";
@@ -48,7 +48,7 @@ function App() {
       <NotificationCenter />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/main" element={<Main />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/mypage" element={<Mypage />} />
         {/* <Route path="/streamer" element={<Streamer />} /> */}
         <Route path="/viewer" element={<Viewer />} />
