@@ -17,7 +17,7 @@ const Container = styled.div`
 const MonthlyContainer = styled.div`
   width: calc(100vw - 300px);
   height: calc(100vh - 61.69px);
-  padding: 2rem 1rem;
+  padding: 2rem 2rem;
   position: relative;
 
   @media screen and (max-width: 768px) {
@@ -30,7 +30,7 @@ const MonthlyContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: end;
-    margin-bottom: 1rem;
+    margin-bottom: 0.2rem;
     min-width: 370px;
     height: 14%;
   }
@@ -98,14 +98,14 @@ function Mypage() {
           <span className="study_time">
             <span className="hour_title">총 스터디밍 시간</span>
             <span className="study_hour">
-              {studeamingTime.hour}h {studeamingTime.minute}m
+              {studeamingTime.hour}시간 {studeamingTime.minute}분
             </span>
           </span>
           <div id="division_line"></div>
           <span className="study_time">
             <span className="hour_title">총 공부 시간</span>
             <span className="study_hour">
-              {studyTime.hour}h {studyTime.minute}m
+              {studyTime.hour}시간 {studyTime.minute}분
             </span>
           </span>
         </section>
