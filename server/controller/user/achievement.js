@@ -1,5 +1,5 @@
-const { Achievement, user_achievement, User } = require("../models");
-const { isAccessAuthorized } = require("./functions/tokenFunc");
+const { Achievement, user_achievement, User } = require("../../models");
+const { isAccessAuthorized } = require("../functions/token");
 
 module.exports = {
   getMyAchieve: async (req, res) => {

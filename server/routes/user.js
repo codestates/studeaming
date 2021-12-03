@@ -1,28 +1,25 @@
 const express = require("express");
-const router = express.Router();
-const {
-  getUser,
-  editUser,
-  editPassword,
-  getProfile,
-  getFollows,
-  followUser,
-  deleteFollow,
-} = require("../controller/user");
-const { getMyAchieve, getOtherAchieve } = require("../controller/achievement");
-const { getStudyData, getMonthlyReport } = require("../controller/report");
 const checkAuth = require("../middleware/checkAuth");
+const router = express.Router();
 
-router.get("/", checkAuth, getUser);
-router.patch("/", checkAuth, editUser);
-router.patch("/password", checkAuth, editPassword);
-router.get("/:username/profile", getProfile);
-router.get("/follows", checkAuth, getFollows);
-router.post("/follows/:username", checkAuth, followUser);
-router.delete("/follows/:username", checkAuth, deleteFollow);
-router.get("/achievement", checkAuth, getMyAchieve);
-router.get("/:username/achievement", getOtherAchieve);
-router.get("/report", checkAuth, getStudyData);
-router.get("/monthly_report", checkAuth, getMonthlyReport);
+const {
+  userInfo,
+  profile,
+  follows,
+  achievement,
+  report,
+} = require("../controller");
+
+router.get("/", checkAuth, userInfo.getUser);
+router.patch("/", checkAuth, userInfo.editUser);
+router.patch("/password", checkAuth, userInfo.editPassword);
+router.get("/:username/profile", profile);
+router.get("/follows", checkAuth, follows.get);
+router.post("/follows/:username", checkAuth, follows.post);
+router.delete("/follows/:username", checkAuth, follows.delete);
+router.get("/achievement", checkAuth, achievement.getMyAchieve);
+router.get("/:username/achievement", achievement.getOtherAchieve);
+router.get("/report", checkAuth, report.getReport);
+router.get("/monthly_report", checkAuth, report.getMonthlyReport);
 
 module.exports = router;

@@ -24,7 +24,7 @@ module.exports = {
   },
 
   sendVerifyEmail: async (email, code) => {
-    const url = process.env.SERVER_URL + "/verification/" + code.toString(); //todo: use client url
+    const url = process.env.CLIENT_URL + "/auth?code=" + code.toString();
 
     const transporter = nodemailer.createTransport({
       service: "gmail",

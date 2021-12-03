@@ -1,9 +1,9 @@
-const { User } = require("../models");
-const { getStudyTime, getStudyLogs } = require("./functions/modelFunc");
-const { isAccessAuthorized } = require("./functions/tokenFunc");
+const { User } = require("../../models");
+const { getStudyTime, getStudyLogs } = require("../functions/model");
+const { isAccessAuthorized } = require("../functions/token");
 
 module.exports = {
-  getStudyData: async (req, res) => {
+  getReport: async (req, res) => {
     try {
       const id = isAccessAuthorized(req).id;
       const now = Math.round(Date.now() / (60 * 1000));

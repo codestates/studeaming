@@ -1,5 +1,5 @@
-const { Currentlog } = require("../models");
-const { isAccessAuthorized } = require("./functions/tokenFunc");
+const { Currentlog } = require("../../models");
+const { isAccessAuthorized } = require("../functions/token");
 
 module.exports = {
   get: async (req, res) => {
