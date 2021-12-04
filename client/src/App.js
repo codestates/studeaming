@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { loadingHandler } from "./store/actions/index";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import Mypage from "./pages/Mypage";
@@ -18,6 +20,8 @@ import Header from "./components/Header";
 import NotificationCenter from "./components/NotificationCenter";
 import SideLog from "./components/SideLog";
 import DailyLog from "./components/DailyLog";
+import api from "./api/index";
+import axios from "axios";
 
 require("dotenv").config();
 
@@ -42,7 +46,36 @@ function App() {
     isProfileModalOpen.boolean ||
     isStreamSettingOpen ||
     isDailyLogOpen.boolean;
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    api.interceptors.request.use((config) => {
+      dispatch(loadingHandler(true));
+      return config;
+    }, null);
+    api.interceptors.response.use(
+      (config) => {
+        dispatch(loadingHandler(false));
+        return config;
+      },
+      async (err) => {
+        dispatch(loadingHandler(false));
+        const originalRequest = err.config;
+        if (err.response.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          await axios.post(
+            `${process.env.REACT_APP_BASE_URL}/auth/token`,
+            null,
+            {
+              withCredentials: true,
+            }
+          );
+          return api(originalRequest);
+        }
+        return Promise.reject(err);
+      }
+    );
+  }, []);
   return (
     <>
       <Header />
