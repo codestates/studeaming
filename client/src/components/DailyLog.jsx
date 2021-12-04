@@ -161,7 +161,7 @@ function DailyLog({ moment }) {
   return (
     <Container>
       <div id="left">
-        <span id="date">{moment.locale("ko").format("YYYY년 MM월 D일")}</span>{" "}
+        <span id="date">{moment.locale("ko").format("YYYY년 MM월 DD일")}</span>{" "}
         <span id="day">{moment.locale("ko").format("dddd")}</span>
         <section className="comment-area">
           <div className="comment-header">
