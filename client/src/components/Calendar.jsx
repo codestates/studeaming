@@ -108,11 +108,6 @@ const Date = styled.div`
 
 function Calendar() {
   const [standard, setStandard] = useState(() => dayjs()); /* 월 변경 기준*/
-  const [report, setReport] = useState(
-    Array(31)
-      .fill(0)
-      .map((date) => Math.floor(Math.random() * 721))
-  ); /* 임시 더미 */
   const [grape, setGrape] = useState([]);
   const dispatch = useDispatch();
   const today = dayjs();
@@ -121,21 +116,20 @@ function Calendar() {
     const year = parseInt(moment.format("YYYY"));
     const month = parseInt(moment.format("MM"));
     const offset = new window.Date().getTimezoneOffset();
-    statisticsAPI.getMonthlyReport(year, month, offset).then((res) => {
-      // setReport(res.data.report);
-    });
-  };
-
-  const makeGrape = (report) => {
-    const grapeFarm = report.map((time) => {
-      if (time <= 0) return 0;
-      else if (0 < time && time <= 120) return 25;
-      else if (120 < time && time <= 240) return 50;
-      else if (240 < time && time <= 360) return 75;
-      else if (360 < time) return 100;
-      else return 0;
-    });
-    setGrape(grapeFarm);
+    statisticsAPI
+      .getMonthlyReport(year, month, offset)
+      .then((res) => {
+        const report = res.data.report.map((time) => {
+          if (time <= 0) return 0;
+          else if (0 < time && time <= 120) return 25;
+          else if (120 < time && time <= 240) return 50;
+          else if (240 < time && time <= 360) return 75;
+          else if (360 < time) return 100;
+          else return 0;
+        });
+        setGrape(report);
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleDayClick = (moment, isFuture) => {
@@ -210,7 +204,6 @@ function Calendar() {
 
   useEffect(() => {
     getReport(standard);
-    makeGrape(report);
   }, [standard]);
 
   return (
