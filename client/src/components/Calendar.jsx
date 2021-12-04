@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import moment from "moment";
+import dayjs from "dayjs";
 import { VscChevronLeft, VscChevronRight } from "react-icons/vsc";
 import statisticsAPI from "../api/statistics";
 import { dailyLogOpen } from "../store/actions";
+
+const weekOfYear = require("dayjs/plugin/weekOfYear");
+dayjs.extend(weekOfYear);
 
 const Container = styled.section`
   width: 100%;
@@ -104,7 +107,7 @@ const Date = styled.div`
 `;
 
 function Calendar() {
-  const [standard, setStandard] = useState(() => moment()); /* 월 변경 기준*/
+  const [standard, setStandard] = useState(() => dayjs()); /* 월 변경 기준*/
   const [report, setReport] = useState(
     Array(31)
       .fill(0)
@@ -112,7 +115,7 @@ function Calendar() {
   ); /* 임시 더미 */
   const [grape, setGrape] = useState([]);
   const dispatch = useDispatch();
-  const today = moment();
+  const today = dayjs();
 
   const getReport = (moment) => {
     const year = parseInt(moment.format("YYYY"));
@@ -140,7 +143,7 @@ function Calendar() {
   };
 
   const returnToday = () => {
-    return setStandard(moment());
+    return setStandard(dayjs());
   };
 
   const jumpToMonth = (num) => {

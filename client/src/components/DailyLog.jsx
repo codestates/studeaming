@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import "moment/locale/ko";
+import "dayjs/locale/ko";
 import logAPI from "../api/studyLog";
 import LogChart from "./LogChart";
 
@@ -161,7 +161,7 @@ function DailyLog({ moment }) {
   return (
     <Container>
       <div id="left">
-        <span id="date">{moment.locale("ko").format("YYYY년 MMMM Do")}</span>{" "}
+        <span id="date">{moment.locale("ko").format("YYYY년 MM월 D일")}</span>{" "}
         <span id="day">{moment.locale("ko").format("dddd")}</span>
         <section className="comment-area">
           <div className="comment-header">
