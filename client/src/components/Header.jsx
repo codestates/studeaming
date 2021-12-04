@@ -196,13 +196,12 @@ function Header() {
           </>
         ) : (
           <>
-            {/* <HomeIcon
+            <HomeIcon
               onClick={() => {
                 navigate("/home");
               }}
               title="home"
-            /> */}
-            <Video onClick={streamHandler} title="start studeaming" />
+            />
             <LoginIcon onClick={loginHandler} title="login" />
           </>
         )}
