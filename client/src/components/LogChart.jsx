@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Loading from "./Loading";
 import logAPI from "../api/studyLog";
@@ -75,30 +76,31 @@ const LoadingBox = styled.div`
 `;
 
 function LogChart({ date, offset }) {
+  const { isLogin } = useSelector(({ userReducer }) => userReducer);
   const [log, setLog] = useState([]);
   const [studylogList, setStudylogList] = useState([
-    { name: "영어", color: "#ffaeae", startedAt: 20, finishedAt: 80 },
-    { name: "휴식", color: "#a5c7e5", startedAt: 80, finishedAt: 100 },
-    { name: "수학", color: "#fdd4ae", startedAt: 100, finishedAt: 160 },
-    { name: "휴식", color: "#a5c7e5", startedAt: 160, finishedAt: 190 },
-    { name: "수학", color: "#fdd4ae", startedAt: 190, finishedAt: 250 },
-    { name: "휴식", color: "#a5c7e5", startedAt: 250, finishedAt: 280 },
-    { name: "국어", color: "#b4e29e", startedAt: 280, finishedAt: 350 },
-    { name: "휴식", color: "#a5c7e5", startedAt: 350, finishedAt: 360 },
-    { name: "과학", color: "#565781", startedAt: 360, finishedAt: 440 },
-    { name: "휴식", color: "#a5c7e5", startedAt: 440, finishedAt: 460 },
-    { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 540 },
-    { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 590 },
-    { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 620 },
+    // { name: "영어", color: "#ffaeae", startedAt: 20, finishedAt: 80 },
+    // { name: "휴식", color: "#a5c7e5", startedAt: 80, finishedAt: 100 },
+    // { name: "수학", color: "#fdd4ae", startedAt: 100, finishedAt: 160 },
+    // { name: "휴식", color: "#a5c7e5", startedAt: 160, finishedAt: 190 },
+    // { name: "수학", color: "#fdd4ae", startedAt: 190, finishedAt: 250 },
+    // { name: "휴식", color: "#a5c7e5", startedAt: 250, finishedAt: 280 },
+    // { name: "국어", color: "#b4e29e", startedAt: 280, finishedAt: 350 },
+    // { name: "휴식", color: "#a5c7e5", startedAt: 350, finishedAt: 360 },
+    // { name: "과학", color: "#565781", startedAt: 360, finishedAt: 440 },
+    // { name: "휴식", color: "#a5c7e5", startedAt: 440, finishedAt: 460 },
+    // { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 540 },
+    // { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 590 },
+    // { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 620 },
   ]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const minute = ["", 10, 20, 30, 40, 50, 60];
   const hour = new Array(24).fill(0).map((_, idx) => idx);
 
-  const fillLog = () => {
+  const fillLog = (loglist) => {
     const newLog = [];
-    for (let i = 0; i < studylogList.length; i++) {
-      const studylog = studylogList[i];
+    for (let i = 0; i < loglist.length; i++) {
+      const studylog = [...loglist][i];
       const start = studylog.startedAt;
       const finish = studylog.finishedAt;
       const startTime = Math.floor(start / 60);
@@ -137,15 +139,16 @@ function LogChart({ date, offset }) {
           });
         }
       }
-      setLog([...log, ...newLog]);
+      setLog([...newLog]);
     }
   };
 
   const getLogsHandler = () => {
+    setIsLoading(true);
     logAPI.getLogs(date, offset).then((res) => {
       const compileStudylogList = res.data.studylogList.map((list) => {
-        const utcStart = list.startedAt * 6000;
-        const utcFinish = list.finishedAt * 6000;
+        const utcStart = list.startedAt * 60000;
+        const utcFinish = list.finishedAt * 60000;
         const startedAt =
           new Date(utcStart).getHours() * 60 + new Date(utcStart).getMinutes();
         const finishedAt =
@@ -155,18 +158,19 @@ function LogChart({ date, offset }) {
         return newList;
       });
       setStudylogList(compileStudylogList);
-      fillLog();
       setIsLoading(false);
     });
   };
 
   useEffect(() => {
-    fillLog(); //서버 연결되면 지우기
-    getLogsHandler();
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    if (isLogin) {
+      getLogsHandler();
+    }
   }, []);
+
+  useEffect(() => {
+    fillLog(studylogList);
+  }, [studylogList]);
 
   return (
     <LogChartSection>

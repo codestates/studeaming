@@ -12,6 +12,7 @@ import styled from "styled-components";
 import { IoIosArrowUp, IoIosArrowBack, IoIosAdd } from "react-icons/io";
 import toggleAPI from "../api/studyToggle";
 import logAPI from "../api/studyLog";
+import authAPI from "../api/auth";
 import ToggleBox from "./ToggleBox";
 import LogChart from "./LogChart";
 import Loading from "./Loading";
@@ -63,7 +64,7 @@ const UserBox = styled.div`
   justify-content: start;
 `;
 
-const UserImg = styled.image`
+const UserImg = styled.div`
   width: 50px;
   height: 50px;
   border-radius: 100%;
@@ -252,12 +253,12 @@ function SideLog() {
     ({ userReducer }) => userReducer
   );
   const [toggleBox, setToggleBox] = useState([
-    { name: "휴식", isOn: false, color: "#a5c7e5" },
+    { name: "휴식", isOn: 0, color: "#a5c7e5" },
   ]);
   const [plusClick, setPlusClick] = useState(false);
   const [pickedColor, setPickedColor] = useState("lightgrey");
   const [inputValue, setInputValue] = useState("공부");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const colorPick = ["#ffaeae", "#fdd4ae", "#b4e29e", "#565781", "#b094f2"];
@@ -268,16 +269,18 @@ function SideLog() {
   const offset = date.getTimezoneOffset();
 
   const logoutHandler = () => {
-    dispatch(logout());
-    dispatch(sideLogOpen(false));
-    navigate("/");
-    dispatch(notify("로그아웃 되었습니다."));
+    authAPI.signout().then(() => {
+      dispatch(logout());
+      dispatch(sideLogOpen(false));
+      navigate("/home");
+      dispatch(notify("로그아웃 되었습니다."));
+    });
   };
 
   const editCompleteHandler = () => {
     const newToggle = {
       name: inputValue,
-      isOn: false,
+      isOn: 0,
       color: pickedColor,
     };
     toggleAPI.makeToggle(newToggle.name, newToggle.color).then((res) => {
@@ -288,33 +291,37 @@ function SideLog() {
       setInputValue("공부");
     });
   };
+  console.log("toggleBox", toggleBox);
 
   const toggleHandler = (idx) => {
-    const numOfIsOn = toggleBox.filter((el) => el.isOn === true);
+    const numOfIsOn = [...toggleBox].filter((el) => el.isOn === 1);
 
     if (numOfIsOn.length > 0) {
-      const allOff = toggleBox.map((el) => ({ ...el, isOn: false }));
+      const allOff = [...toggleBox].map((el) => ({ ...el, isOn: 0 }));
       if (numOfIsOn[0].id === toggleBox[idx].id) {
         //토글 끄는 조건
-        setToggleBox(allOff);
         logAPI.finishLog(numOfIsOn[0].id);
+        setToggleBox(allOff);
       } else {
         //토글 하나 켜져있을 때 다른 토글 바로 켜는 조건
-        allOff[idx].isOn = !allOff[idx].isOn;
+        allOff[idx].isOn = 1;
         logAPI.finishLog(numOfIsOn[0].id);
         setToggleBox(allOff);
+        toggleOnRequest(allOff);
       }
     } else {
       //아무것도 안켜져있을 때 켜는 조건
       const newToggleBox = [...toggleBox];
-      newToggleBox[idx].isOn = !newToggleBox[idx].isOn;
+      newToggleBox[idx].isOn = 1;
       setToggleBox(newToggleBox);
+      toggleOnRequest(newToggleBox);
     }
   };
 
   //토글 켜지면 로그기록 시작 요청 보내는 함수
-  const toggleOnRequest = () => {
-    const onToggle = [...toggleBox].filter((el) => el.isOn === true);
+  const toggleOnRequest = (toggleBox) => {
+    const onToggle = [...toggleBox].filter((el) => el.isOn === 1);
+    // 켜져있던 토글이면 안보내야하는 조건 만들어야함.
     if (onToggle.length) {
       logAPI.initiateLog(onToggle[0].id);
     }
@@ -339,15 +346,14 @@ function SideLog() {
   };
 
   useEffect(() => {
-    toggleAPI.getToggles().then((res) => {
-      setToggleBox(res.data.toggleList);
-      setIsLoading(false);
-    });
+    if (isLogin) {
+      setIsLoading(true);
+      toggleAPI.getToggles().then((res) => {
+        setToggleBox(res.data.toggleList);
+        setIsLoading(false);
+      });
+    }
   }, []);
-
-  useEffect(() => {
-    toggleOnRequest();
-  }, [toggleBox]);
 
   return (
     <SideLogSection id="side_log">
