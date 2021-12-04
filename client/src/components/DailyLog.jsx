@@ -124,8 +124,8 @@ function DailyLog({ moment }) {
       const commentRes = await logAPI.getComment(date);
       const hour = Math.floor(logRes.data.studyTime / 60);
       const minute = logRes.data.studyTime % 60;
-      // setStudyTime({hour, minute});
-      // setComment(commentRes.data.comment);
+      setStudyTime({ hour, minute });
+      setComment(commentRes.data.comment);
     } catch {}
   };
 
