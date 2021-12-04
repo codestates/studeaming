@@ -29,7 +29,7 @@ function Verification() {
     getVerificationCode();
     dispatch(signinModalOpen(true));
     if (!isSigninOpen) {
-      navigate("/main");
+      navigate("/home");
     }
   }, [isSigninOpen]);
 
