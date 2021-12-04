@@ -110,10 +110,10 @@ function Signin() {
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            if (err.responsed.data.message === "Wrong email or password") {
-              dispatch(notify("잘못된 아이디 이거나 비밀번호가 틀렸습니다."));
+            if (err.response.data.message === "Verify email address") {
+              dispatch(notify("이메일 인증을 완료해주세요."));
             } else {
-              dispatch(notify("이메일 인증이 완료되지 않았습니다."));
+              dispatch(notify("아이디와 비밀번호를 다시 확인해주세요."));
             }
           } else {
             dispatch(notify("새로고침 후 다시 시도해주세요."));
