@@ -36,8 +36,8 @@ export const Desc = styled.label`
 `;
 
 export const Input = styled.input`
-  /* box-sizing: border-box; */
-  /* margin: 0 60px 30px 60px; */
+  font-family: "NotoSans" !important;
+  font-size: 0.9rem;
   margin-bottom: 5px;
   border: none;
   border-radius: 8px;
