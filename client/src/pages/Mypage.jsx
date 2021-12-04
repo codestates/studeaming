@@ -61,7 +61,7 @@ const MonthlyContainer = styled.div`
     font-weight: 700;
     color: var(--color-black-25);
 
-    @media (min-width: 768px) and (max-width: 820px) {
+    @media (min-width: 768px) and (max-width: 833px) {
       font-size: 1.8rem;
     }
   }
