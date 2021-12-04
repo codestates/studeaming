@@ -6,28 +6,25 @@ const StyledMainContents = styled.section`
   place-items: center;
   grid-template-rows: repeat(auto-fill, 1fr);
   grid-template-columns: repeat(5, 1fr);
-  padding: 0 50px;
-  gap: 40px 10px;
+  gap: 10px 10px;
+  padding: 5px;
 
-  @media screen and (max-width: 1200px) {
+  @media screen and (max-width: 1480px) {
     grid-template-rows: repeat(auto-fill, 1fr);
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px 10px;
   }
 
-  @media screen and (max-width: 970px) {
-    margin: 0;
-    padding: 0;
+  @media screen and (max-width: 1130px) {
     grid-template-rows: repeat(auto-fill, 1fr);
     grid-template-columns: repeat(3, 1fr);
   }
 
-  @media screen and (max-width: 620px) {
+  @media screen and (max-width: 780px) {
     grid-template-rows: repeat(auto-fill, 1fr);
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 530px) {
     grid-template-rows: repeat(auto-fill, 1fr);
     grid-template-columns: repeat(1, 1fr);
   }
@@ -35,68 +32,78 @@ const StyledMainContents = styled.section`
 
 const Contents = styled.div`
   width: 100%;
-  max-width: 240px;
-  height: 200px;
+  max-width: 360px;
+  height: 100%;
+  min-height: 320px;
 
-  @media screen and (max-width: 480px) {
-    width: 100%;
-    height: 350px;
+  @media screen and (max-width: 530px) {
     max-width: 100%;
+    height: 360px;
   }
 `;
 
 const Thumbnail = styled.div`
   width: 100%;
   height: 70%;
+  background-image: url(${(props) => props.img});
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   border: 1px solid;
-  /* background-image: url(); */
-  object-fit: cover;
+
+  @media screen and (max-width: 530px) {
+    height: 75%;
+  }
 `;
 
 const Desc = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 100%;
   height: 30%;
-  padding: 3px 0px;
-  border: 1px solid; //나중에 지우기
+  padding: 6px;
+  background-color: #f8f8f8;
 
-  @media screen and (max-width: 480px) {
-    padding-top: 6px;
-    padding-left: 8px;
+  @media screen and (max-width: 530px) {
+    height: 25%;
   }
 
   > .thumbnail_title {
-    font-size: 12px;
+    display: inline-block;
+    max-width: 360px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-    @media screen and (max-width: 480px) {
-      margin-bottom: 4px;
-      font-size: 14px;
-    }
+    white-space: normal;
+    height: 45px;
+    text-align: left;
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-size: 14px;
   }
 
   > .thumbnail_info {
     display: flex;
-    height: 70%;
+    align-items: center;
+    height: 100%;
 
     > img {
-      height: 100%;
-      width: 36.4px;
+      height: 45px;
+      width: 45px;
       border-radius: 50%;
       object-fit: cover;
       margin-right: 4px;
-
-      @media screen and (max-width: 480px) {
-        width: 65.8px;
-      }
     }
 
     > .thumbnail_info_name {
+      padding: 2px;
       > div {
-        padding-top: 3px;
-        font-size: 12px;
-
-        @media screen and (max-width: 480px) {
-          font-size: 14px;
-        }
+        padding: 3px;
+        font-size: 14px;
       }
     }
   }
@@ -105,32 +112,21 @@ const Desc = styled.div`
 function MainContents({ contents }) {
   return (
     <StyledMainContents>
-      {/*contents */}
-      {Array(20)
-        .fill("")
-        .map((el, idx) => (
-          <Contents key={idx}>
-            <Thumbnail img={el.thumnail}></Thumbnail>
-            <Desc>
-              <div className="thumbnail_title">
-                딸래미 시험 D-2 / 같이 공부해요 {/* el.title */}
+      {contents.map((el, idx) => (
+        <Contents key={idx}>
+          <Thumbnail img={el.thumbnail} />
+          <Desc>
+            <div className="thumbnail_title">{el.title}</div>
+            <div className="thumbnail_info">
+              <img src={el.progileImg || defaultImg} alt="" />
+              <div className="thumbnail_info_name">
+                <div style={{ fontWeight: "bold" }}>{el.username}</div>
+                <div style={{ color: "#838080" }}>{el.viewer}명</div>
               </div>
-              <div className="thumbnail_info">
-                <img src={defaultImg} alt="" /> {/*el.profileImg*/}
-                <div
-                  className="thumbnail_info_name"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <div>김코딩{el.username}</div>
-                  <div style={{ color: "#838080" }}>100명{el.viewer}</div>
-                </div>
-              </div>
-            </Desc>
-          </Contents>
-        ))}
+            </div>
+          </Desc>
+        </Contents>
+      ))}
     </StyledMainContents>
   );
 }
