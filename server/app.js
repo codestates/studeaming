@@ -29,7 +29,7 @@ app.use(
   })
 );
 
-cron.schedule("54 * * * *", () => {
+cron.schedule("* * * * 1", () => {
   cronJob();
 });
 
