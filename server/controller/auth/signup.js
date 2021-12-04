@@ -8,6 +8,7 @@ const {
 
 module.exports = async (req, res) => {
   if (req.body.username && req.body.password && req.body.email) {
+    const profileImg = req.body.profileImg || "";
     encryptPassword.encrypt(res, req.body.password, async (hash) => {
       try {
         const [newUser, created] = await User.findOrCreate({
@@ -17,6 +18,7 @@ module.exports = async (req, res) => {
             isEmailVerified: false,
             password: hash,
             platformType: "original",
+            profileImg: profileImg,
           },
           raw: true,
         });
