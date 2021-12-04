@@ -18,6 +18,7 @@ export const DAILY_LOG_OPEN = "DAILY_LOG_OPEN";
 export const MODAL_OFF = "MODAL_OFF";
 export const ENQUEUE_NOTIFICATION = "ENQUEUE_NOTIFICATION";
 export const DEQUEUE_NOTIFICATION = "DEQUEUE_NOTIFICATION";
+export const LOADING_ACTION = "LOADING_ACTION";
 
 export const loginStateChange = (boolean) => {
   return {
@@ -162,5 +163,12 @@ export const enqueueNotification = (message, link, dismissTime, uuid) => {
 export const dequeueNotification = () => {
   return {
     type: DEQUEUE_NOTIFICATION,
+  };
+};
+
+export const loadingHandler = (boolean) => {
+  return {
+    type: LOADING_ACTION,
+    payload: boolean,
   };
 };
