@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { BsCheckCircle } from "react-icons/bs";
+import { logout, notify } from "../store/actions";
 import authAPI from "../api/auth";
 import Button from "./Button";
 import { Title, Input } from "./reusableStyle";
@@ -46,6 +47,8 @@ function Withdrawal() {
   const { isSocialLogined } = useSelector(({ userReducer }) => userReducer);
   const [password, setPassword] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const input = useRef(null);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const getPassword = (e) => {
@@ -53,13 +56,33 @@ function Withdrawal() {
   };
 
   const withdrawalHandler = () => {
-    authAPI
-      .withdraw(password)
-      .then(() => {
-        setIsSuccess(true);
-        navigate("/main");
-      })
-      .catch(() => {});
+    if (isSocialLogined) {
+      if (password === "잘있어요 스터디밍") {
+        authAPI
+          .withdraw()
+          .then(() => {
+            setIsSuccess(true);
+            dispatch(logout());
+            navigate("/home");
+          })
+          .catch(() => {});
+      } else {
+        dispatch(notify("메세지를 바르게 입력해주세요."));
+        input.current.focus();
+      }
+    } else {
+      authAPI
+        .withdraw(password)
+        .then(() => {
+          setIsSuccess(true);
+          dispatch(logout());
+          navigate("/home");
+        })
+        .catch(() => {
+          dispatch(notify("비밀번호가 일치하지 않습니다."));
+          input.current.focus();
+        });
+    }
   };
 
   return (
@@ -84,8 +107,9 @@ function Withdrawal() {
             있습니다.
           </div>
           <Input
-            type="password"
+            type={isSocialLogined ? "text" : "password"}
             onChange={getPassword}
+            ref={input}
             placeholder={
               isSocialLogined
                 ? `'잘있어요 스터디밍'을 입력해주세요`
