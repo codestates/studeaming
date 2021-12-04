@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -11,7 +10,6 @@ import {
   AiOutlineMenu,
   AiOutlineVideoCamera,
   AiOutlineUser,
-  AiOutlineClose,
   AiOutlineHome,
   AiOutlineLogin,
 } from "react-icons/ai";
@@ -33,16 +31,6 @@ const HeaderSection = styled.section`
 `;
 
 const Hamburger = styled(AiOutlineMenu)`
-  position: fixed;
-  left: 1.5rem;
-  cursor: pointer;
-
-  @media screen and (max-width: 480px) {
-    display: none;
-  }
-`;
-
-const HamburgerClose = styled(AiOutlineClose)`
   position: fixed;
   left: 1.5rem;
   cursor: pointer;
@@ -133,17 +121,12 @@ function Header() {
     if (!isSideLogOpen) {
       dispatch(sideLogOpen(true));
       setTimeout(() => {
-        // gsap.from("#side_log", { x: -480, duration: 1 });
-        gsap.to("#side_log", { x: 480, duration: 1 });
+        gsap.from("#side_log", { x: -480, duration: 1 });
       }, 0);
     } else {
       gsap.to("#side_log", { x: -480, duration: 1 });
       setTimeout(() => {
         dispatch(sideLogOpen(false));
-        gsap.from(".hamburger", {
-          opacity: 0,
-          duration: 1,
-        });
       }, 500);
     }
   };
@@ -151,28 +134,14 @@ function Header() {
   const sidelogDownHandler = () => {
     dispatch(sideLogOpen(true));
     setTimeout(() => {
-      gsap.to("#side_log", {
-        y: 400,
-      });
-      gsap.to("#landingcontainer", {
-        y: 358.3,
-      });
-      gsap.to("#main", {
-        y: 358.3,
+      gsap.from("#side_log", {
+        y: -400,
       });
     }, 0);
   };
 
   const sidelogUpHandler = () => {
-    gsap.to("#side_log", { y: 0, duration: 1 });
-    gsap.to("#landingcontainer", {
-      y: 0,
-      duration: 1,
-    });
-    gsap.to("#main", {
-      y: 0,
-      duration: 1,
-    });
+    gsap.to("#side_log", { y: -400, duration: 1 });
     setTimeout(() => {
       dispatch(sideLogOpen(false));
     }, 500);
@@ -194,21 +163,11 @@ function Header() {
     navigate("/mypage");
   };
 
-  useEffect(() => {
-    gsap.from(".hamburger_close", {
-      opacity: 0,
-      duration: 2,
-    });
-  });
-
   return (
     <HeaderSection>
-      {isLogin || isSideLogOpen ? (
+      {isSideLogOpen ? (
         <>
-          <HamburgerClose
-            className="hamburger_close"
-            onClick={sidelogHandler}
-          />
+          <Hamburger />
           <HamburgerUp onClick={sidelogUpHandler} />
         </>
       ) : (
@@ -223,7 +182,7 @@ function Header() {
       )}
       <Logo onClick={navigateLanding}>studeaming</Logo>
       <UserBox>
-        {!isLogin ? (
+        {isLogin ? (
           <>
             <HomeIcon
               onClick={() => {
