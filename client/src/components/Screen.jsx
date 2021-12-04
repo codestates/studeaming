@@ -6,10 +6,10 @@ import SocketIOClient, { io } from "socket.io-client";
 import styled from "styled-components";
 import Viewer from "../pages/Viewer";
 
-export const LiveVideo = styled.video`
+const LiveVideo = styled.video`
   transform: rotateY(180deg);
-  webkit-transform: rotateY(180deg); *여기는 사파리*
-  moz-transform: rotateY(180deg); *이거는 파이어폭스*
+  -webkit-transform: rotateY(180deg); /*여기는 사파리*/
+  -moz-transform: rotateY(180deg); /*이거는 파이어폭스*/
 `;
 
 // todo: stun 서버 여러개
