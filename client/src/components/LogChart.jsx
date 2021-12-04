@@ -8,6 +8,7 @@ const LogChartSection = styled.section`
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: #f8f8f8;
 
   > .ten_minute {
     display: flex;
@@ -29,7 +30,7 @@ const HourListAndChartContainer = styled.div`
   > .hour_block_wrapper {
     display: flex;
     flex-direction: column;
-    height: 96%;
+    height: 100%;
     width: calc(100% / 7);
 
     > .hour_block {
@@ -49,14 +50,9 @@ const LogChartTimeSpan = styled.span`
 
 const Chart = styled.section`
   width: ${100 - 100 / 7}%;
-  height: 96%;
+  height: 100%;
   position: relative;
   overflow: hidden;
-`;
-
-const Hour = styled.div`
-  width: 100%;
-  height: calc(100% / 24);
 `;
 
 const Log = styled.div`
@@ -71,6 +67,11 @@ const Log = styled.div`
   :hover {
     transform: scaleY(1.1);
   }
+`;
+
+const LoadingBox = styled.div`
+  width: 240px;
+  height: 100%;
 `;
 
 function LogChart({ date, offset }) {
@@ -164,8 +165,8 @@ function LogChart({ date, offset }) {
     getLogsHandler();
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
-  }, [studylogList]);
+    }, 1000);
+  }, []);
 
   return (
     <LogChartSection>
@@ -185,25 +186,26 @@ function LogChart({ date, offset }) {
           ))}
         </div>
         {isLoading ? (
-          <Loading wsize={30} hsize={30} />
+          <LoadingBox>
+            <Loading wsize={30} hsize={30} />
+          </LoadingBox>
         ) : (
           <Chart>
             {log.map((el, idx) => (
-              <Hour key={idx}>
-                <Log
-                  color={log[idx].color}
-                  left={log[idx].left}
-                  top={log[idx].top}
-                  width={log[idx].width}
-                  title={
-                    log[idx].hour === 0 && log[idx].minute > 0
-                      ? `${log[idx].name} ${log[idx].minute}분`
-                      : log[idx].hour > 0 && log[idx].minute === 0
-                      ? `${log[idx].name} ${log[idx].hour}시간`
-                      : `${log[idx].name} ${log[idx].hour}시간 ${log[idx].minute}분`
-                  }
-                />
-              </Hour>
+              <Log
+                key={idx}
+                color={log[idx].color}
+                left={log[idx].left}
+                top={log[idx].top}
+                width={log[idx].width}
+                title={
+                  log[idx].hour === 0 && log[idx].minute > 0
+                    ? `${log[idx].name} ${log[idx].minute}분`
+                    : log[idx].hour > 0 && log[idx].minute === 0
+                    ? `${log[idx].name} ${log[idx].hour}시간`
+                    : `${log[idx].name} ${log[idx].hour}시간 ${log[idx].minute}분`
+                }
+              />
             ))}
           </Chart>
         )}
