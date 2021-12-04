@@ -16,7 +16,8 @@ module.exports = {
     //     console.log(data.room);
     //   })
     // );
-    socket.on("join_room", async (data) => {
+    socket.on("join_room", (data) => {
+      console.log("썸네일", data.thumbnail);
       if (users[data.room]) {
         //todo: 방이 이미 존재할때
         const length = users[data.room].length;
@@ -24,20 +25,36 @@ module.exports = {
           socket.to(socket.id).emit("room_full");
           return;
         }
-        users[data.room].push({ id: socket.id, email: data.email });
+        users[data.room].push({
+          id: socket.id,
+          email: data.email,
+          studeamer_id: socket.id,
+          thumbnail: data.thumbnail,
+        });
       } else {
         //todo: 방이 존재하지 않을때
         console.log("방제목", data.room);
-        const [socketData, created] = await socketio_data.findOrCreate({
-          where: { uuid: data.uuid },
-          defaults: {
-            studeamer_id: socket.id,
-          },
-        });
-        //todo: 새로 만들어지는 상황이 아니라면 그냥 return
-        if (!created) return;
+        socketio_data
+          .findOrCreate({
+            where: { uuid: data.uuid },
+            defaults: {
+              studeamer_id: socket.id,
+              thumbnail: data.thumbnail,
+            },
+          })
+          .then(([data, created]) => {
+            //todo: 새로 만들어지는 상황이 아니라면 그냥 return
+            if (!created) return;
+          })
+          .catch((e) => console.log(e));
         users[data.room] = [
-          { uuid: newID(), id: socket.id, email: data.email },
+          {
+            uuid: newID(),
+            id: socket.id,
+            email: data.email,
+            studeamer_id: socket.id,
+            thumbnail: data.thumbnail,
+          },
         ];
       }
       socketToRoom[socket.id] = data.room;
