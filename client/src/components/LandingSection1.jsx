@@ -143,12 +143,12 @@ function LandingSection1() {
         <span>열심히 공부 중인</span>
         <span>studeamer와 함께</span>
         <span>공부해볼까요?</span>
-        <Button1 onClick={() => navigate("/main")}>
+        <Button1 onClick={() => navigate("/home")}>
           studeaming 함께 하기
         </Button1>
       </Intro>
       <IntroImg className="intro_img" />
-      <Button2 className="btn2" onClick={() => navigate("/main")}>
+      <Button2 className="btn2" onClick={() => navigate("/home")}>
         studeaming 함께 하기
       </Button2>
     </Section>
