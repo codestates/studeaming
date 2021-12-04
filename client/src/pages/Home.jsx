@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { AiOutlineSearch } from "react-icons/ai";
 import Fuse from "fuse.js";
-import { verifySocialLogined, getUserInfo, getFollows } from "../store/actions";
+import {
+  loginStateChange,
+  verifySocialLogined,
+  getUserInfo,
+  getFollows,
+} from "../store/actions";
 import Slider from "../components/Slider";
 import MainContents from "../components/MainContents";
 import TopBtn from "../components/TopBtn";
@@ -177,6 +183,7 @@ function Home() {
   const [selectedFilterOpt, setSelectedFilterOpt] = useState("시청자 순");
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const filterOpt = ["시청자 순", "최신 순", "오래 공부한 순"];
   const url = new URL(window.location.href);
   const code = url.searchParams.get("code");
@@ -186,17 +193,19 @@ function Home() {
     authAPI
       .kakaoOAuth(authorizationCode)
       .then(() => {
+        dispatch(loginStateChange(true));
         dispatch(verifySocialLogined(true));
         return userAPI.getUserInfo();
       })
       .then((res) => {
-        const { username, profileImg, about, studeaming } = res;
+        const { username, profileImg, about, studeaming } = res.data.user;
         const data = { username, profileImg, about, studeaming };
         dispatch(getUserInfo(data));
         return userAPI.getFollows();
       })
       .then((res) => {
         dispatch(getFollows(res.data.studeamerList));
+        navigate("/home");
       })
       .catch((err) => console.log(err));
   };
@@ -205,17 +214,19 @@ function Home() {
     authAPI
       .googleOAuth(authorizationCode)
       .then(() => {
+        dispatch(loginStateChange(true));
         dispatch(verifySocialLogined(true));
         return userAPI.getUserInfo();
       })
       .then((res) => {
-        const { username, profileImg, about, studeaming } = res;
+        const { username, profileImg, about, studeaming } = res.data.user;
         const data = { username, profileImg, about, studeaming };
         dispatch(getUserInfo(data));
         return userAPI.getFollows();
       })
       .then((res) => {
         dispatch(getFollows(res.data.studeamerList));
+        navigate("/home");
       })
       .catch((err) => console.log(err));
   };
