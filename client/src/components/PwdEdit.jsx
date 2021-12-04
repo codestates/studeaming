@@ -69,16 +69,8 @@ function PwdEdit() {
       dispatch(notify("현재 비밀번호를 입력해주세요."));
       currentPwInput.current.focus();
     } else if (isValid.fresh && isValid.check) {
-      const encryptedCurrentPwd = crypto.AES.encrypt(
-        password.current,
-        process.env.REACT_APP_SECRET_KEY
-      ).toString();
-      const encryptedNewPwd = crypto.AES.encrypt(
-        password.fresh,
-        process.env.REACT_APP_SECRET_KEY
-      ).toString();
       userAPI
-        .modifyUserInfo(encryptedCurrentPwd, encryptedNewPwd)
+        .modifyUserInfo(password.current, password.fresh)
         .then(() => {
           dispatch(notify("비밀번호가 변경되었습니다."));
           dispatch(modalOff());

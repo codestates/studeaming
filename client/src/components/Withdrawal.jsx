@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { BsCheckCircle } from "react-icons/bs";
-import crypto from "crypto-js";
 import authAPI from "../api/auth";
 import Button from "./Button";
 import { Title, Input } from "./reusableStyle";
@@ -54,13 +53,8 @@ function Withdrawal() {
   };
 
   const withdrawalHandler = () => {
-    const encryptedPwd = crypto.AES.encrypt(
-      password,
-      process.env.REACT_APP_SECRET_KEY
-    ).toString();
-
     authAPI
-      .withdraw(encryptedPwd)
+      .withdraw(password)
       .then(() => {
         setIsSuccess(true);
         navigate("/main");

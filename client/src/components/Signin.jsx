@@ -10,7 +10,6 @@ import {
   getFollows,
 } from "../store/actions/index";
 import styled from "styled-components";
-import crypto from "crypto-js";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "./Button";
@@ -91,12 +90,8 @@ function Signin() {
       dispatch(notify("올바른 이메일 형식이 아닙니다."));
     } else {
       // signin request
-      const encryptedPwd = crypto.AES.encrypt(
-        signinInfo.password,
-        process.env.REACT_APP_SECRET_KEY
-      ).toString();
       authAPI
-        .signin(signinInfo.email, encryptedPwd)
+        .signin(signinInfo.email, signinInfo.password)
         .then(() => {
           dispatch(loginStateChange(true));
           dispatch(modalOff());
@@ -104,7 +99,7 @@ function Signin() {
         })
         .then((res) => {
           // set userinfo state
-          const { username, profileImg, about, studeaming } = res;
+          const { username, profileImg, about, studeaming } = res.data.user;
           const data = { username, profileImg, about, studeaming };
           dispatch(getUserInfo(data));
           return userAPI.getFollows();
