@@ -10,7 +10,7 @@ import {
 import { gsap } from "gsap";
 import styled from "styled-components";
 import { IoIosArrowUp, IoIosArrowBack, IoIosAdd } from "react-icons/io";
-import toggleApi from "../api/studyToggle";
+import toggleAPI from "../api/studyToggle";
 import logAPI from "../api/studyLog";
 import ToggleBox from "./ToggleBox";
 import LogChart from "./LogChart";
@@ -26,7 +26,6 @@ const SideLogSection = styled.section`
   border-radius: 0 1rem 1rem 0;
   position: fixed;
   top: 20px;
-  left: -480px;
   overflow: scroll;
   z-index: 3000;
   background-color: white;
@@ -38,8 +37,6 @@ const SideLogSection = styled.section`
 
   @media screen and (max-width: 480px) {
     position: fixed;
-    top: -400px;
-    left: 0;
     width: 100%;
     height: 400px;
     align-items: center;
@@ -106,7 +103,7 @@ const UserNameAndLogout = styled.div`
     }
   }
 
-  > .comment {
+  > .about {
     margin-top: 5px;
     margin-left: 5px;
     font-size: 12px;
@@ -251,11 +248,11 @@ const ToggleLoading = styled.div`
 `;
 
 function SideLog() {
-  const { profileImg, username, about } = useSelector(
+  const { isLogin, profileImg, username, about } = useSelector(
     ({ userReducer }) => userReducer
   );
   const [toggleBox, setToggleBox] = useState([
-    { name: "휴식", isOn: false, color: "#a5c7e5", id: 0 },
+    { name: "휴식", isOn: false, color: "#a5c7e5" },
   ]);
   const [plusClick, setPlusClick] = useState(false);
   const [pickedColor, setPickedColor] = useState("lightgrey");
@@ -278,26 +275,18 @@ function SideLog() {
   };
 
   const editCompleteHandler = () => {
-    const num = toggleBox[toggleBox.length - 1].id + 1; //get 요청 받아오면 없애야할 부분
     const newToggle = {
       name: inputValue,
       isOn: false,
       color: pickedColor,
-      id: num, //get 요청 받아오면 없애야할 부분
     };
-    setToggleBox([...toggleBox, newToggle]);
-    setPlusClick(false);
-    setPickedColor("lightgrey");
-    setInputValue("공부");
-    // toggleApi
-    //   .makeToggle(newToggle.name, newToggle.color)
-    //   .then((res) => {
-    //     const { id } = res.data.newToggle;
-    //     setToggleBox([...toggleBox, { ...newToggle, id }]);
-    //     setPlusClick(false);
-    //     setPickedColor("lightgrey");
-    //     setInputValue("공부");
-    //   });
+    toggleAPI.makeToggle(newToggle.name, newToggle.color).then((res) => {
+      const { id } = res.data.newToggle;
+      setToggleBox([...toggleBox, { ...newToggle, id }]);
+      setPlusClick(false);
+      setPickedColor("lightgrey");
+      setInputValue("공부");
+    });
   };
 
   const toggleHandler = (idx) => {
@@ -325,7 +314,7 @@ function SideLog() {
 
   //토글 켜지면 로그기록 시작 요청 보내는 함수
   const toggleOnRequest = () => {
-    const onToggle = toggleBox.filter((el) => el.isOn === true);
+    const onToggle = [...toggleBox].filter((el) => el.isOn === true);
     if (onToggle.length) {
       logAPI.initiateLog(onToggle[0].id);
     }
@@ -336,43 +325,29 @@ function SideLog() {
   };
 
   const sideLogCloseBackIconHandler = () => {
-    gsap.to("#side_log", { x: 0, duration: 1 });
+    gsap.to("#side_log", { x: -400, duration: 1 });
     setTimeout(() => {
       dispatch(sideLogOpen(false));
     }, 1000);
   };
 
   const sideLogCloseUpIconHandler = () => {
-    gsap.to("#side_log", { y: 0, duration: 1 });
-    gsap.to("#landingcontainer", {
-      y: 0,
-      duration: 1,
-    });
-    gsap.to("#main", {
-      y: 0,
-      duration: 1,
-    });
+    gsap.to("#side_log", { y: -450, duration: 1 });
     setTimeout(() => {
       dispatch(sideLogOpen(false));
     }, 1000);
   };
 
   useEffect(() => {
-    toggleApi.getToggles().then((res) => {
+    toggleAPI.getToggles().then((res) => {
       setToggleBox(res.data.toggleList);
       setIsLoading(false);
     });
-    toggleOnRequest();
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  }, [toggleBox]);
+  }, []);
 
   useEffect(() => {
-    if (new Date().getHours() === 0) {
-      toggleOnRequest();
-    }
-  }, [new Date().getHours()]);
+    toggleOnRequest();
+  }, [toggleBox]);
 
   return (
     <SideLogSection id="side_log">
@@ -385,14 +360,22 @@ function SideLog() {
           <UserNameAndLogout>
             <div>
               <span className="nickname">{username || "김코딩"}</span>
-              <span className="user_edit" onClick={userInfoEditHandler}>
-                편집
-              </span>
-              <span className="logout" onClick={logoutHandler}>
-                로그아웃
-              </span>
+              {isLogin ? (
+                <>
+                  <span className="user_edit" onClick={userInfoEditHandler}>
+                    편집
+                  </span>
+                  <span className="logout" onClick={logoutHandler}>
+                    로그아웃
+                  </span>
+                </>
+              ) : null}
             </div>
-            <div className="comment">{about || "본인을 소개해보세요."}</div>
+            {isLogin ? (
+              <div className="about">{about || "본인을 소개해보세요."}</div>
+            ) : (
+              <div className="about">안녕하세요.</div>
+            )}
           </UserNameAndLogout>
         </UserBox>
         {isLoading ? (
