@@ -121,7 +121,10 @@ function Signup() {
       authAPI
         .checkAvailability("email", signupInfo.email)
         .then(() => {
-          setMessage({ ...message, email: "" });
+          setMessage({
+            ...message,
+            email: "위 이메일로 인증 메일이 전송됩니다.",
+          });
           setIsValid({ ...isValid, email: true });
         })
         .catch(() => {
@@ -185,7 +188,9 @@ function Signup() {
           signupInfo.password
         )
         .then(() => {
-          dispatch(notify("회원가입이 완료되었습니다."));
+          dispatch(
+            notify("회원가입이 완료되었습니다. 이메일 인증 후 로그인해주세요.")
+          );
           dispatch(modalOff());
         })
         .catch(() => {
@@ -228,7 +233,9 @@ function Signup() {
           onChange={handleInputValue("email")}
           onBlur={checkEmail}
         ></Input>
-        <ErrorMsg>{message.email}</ErrorMsg>
+        <ErrorMsg isNoti={message.email.includes("인증")}>
+          {message.email}
+        </ErrorMsg>
       </InputContainer>
       <InputContainer>
         <Desc htmlFor="username">닉네임</Desc>

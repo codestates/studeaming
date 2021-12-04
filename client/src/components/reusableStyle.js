@@ -61,6 +61,6 @@ export const Input = styled.input`
 
 export const ErrorMsg = styled.span`
   display: inline-block;
-  color: #f04949;
+  color: ${(props) => (props.isNoti ? "green" : "#f04949")};
   font-size: 10px;
 `;
