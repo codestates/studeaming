@@ -21,7 +21,7 @@ const authAPI = {
   },
 
   signout: () => {
-    return api.post(`/auth/logout`);
+    return api.post(`/auth/signout`);
   },
 
   withdraw: (password) => {
