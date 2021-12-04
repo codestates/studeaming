@@ -4,15 +4,18 @@ const logger = require("morgan");
 const fs = require("fs");
 const https = require("https");
 const cors = require("cors");
-const app = express();
-const studyRoom = require("./controller/studyRoom");
+const cron = require("node-cron");
 const { Server } = require("socket.io");
-require("dotenv").config();
+const studyRoom = require("./controller/studyRoom");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const studyToggleRouter = require("./routes/studyToggle");
 const studyLogRouter = require("./routes/studyLog");
 const verifyRouter = require("./routes/verify");
+const cronJob = require("./controller/functions/cronJob");
+require("dotenv").config();
+
+const app = express();
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -26,15 +29,15 @@ app.use(
   })
 );
 
-app.get("/favicon.ico", function (req, res) {
-  res.sendStatus(204);
+cron.schedule("54 * * * *", () => {
+  cronJob();
 });
+
+app.get("/favicon.ico", (req, res) => res.status(204));
 
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
-
-// app.get("/*", (_, res) => res.redirect("/"));
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -43,15 +46,9 @@ app.use("/studytoggle", studyToggleRouter);
 app.use("/verification", verifyRouter);
 //경로 설정
 
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+//app.get("/*", (_, res) => res.redirect("/"));
 
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
   res.status(err.status || 404);
   res.send(err);
 });
