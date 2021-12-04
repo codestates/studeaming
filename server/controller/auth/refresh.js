@@ -9,7 +9,7 @@ module.exports = (req, res) => {
     const data = isRefreshAuthorized(req);
     if (data) {
       clearToken(res);
-      sendAccessToken(res, data);
+      sendAccessToken(res, { id: data.id });
     } else {
       res.status(401).send({ message: "Invalid refresh token" });
     }

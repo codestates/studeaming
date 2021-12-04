@@ -10,18 +10,18 @@ const cookieOpt = {
 module.exports = {
   sendAccessToken: (res, data) => {
     const accessToken = sign(data, process.env.ACCESS_SECRET, {
-      expiresIn: "50m",
+      expiresIn: "1h",
     });
     res.cookie("authorization", accessToken, cookieOpt);
   },
   sendRefreshToken: (res, data) => {
     const refreshToken = sign(data, process.env.REFRESH_SECRET, {
-      expiresIn: "24h",
+      expiresIn: "100h",
     });
     console.log("refresh token", refreshToken);
     res.cookie("refresh", refreshToken, {
       ...cookieOpt,
-      path: "/auth/refresh",
+      Path: "/auth/token",
     });
   },
   isAccessAuthorized: (req) => {
@@ -36,7 +36,7 @@ module.exports = {
     }
   },
   isRefreshAuthorized: (req) => {
-    const refreshToken = req.cookies["refreshToken"];
+    const refreshToken = req.cookies["refresh"];
     if (!refreshToken) {
       return null;
     }
