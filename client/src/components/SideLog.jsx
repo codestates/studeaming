@@ -249,16 +249,16 @@ const ToggleLoading = styled.div`
 `;
 
 function SideLog() {
-  const { isLogin, profileImg, username, about } = useSelector(
+  const { isLogin, profileImg, username, about, isSocialLogined } = useSelector(
     ({ userReducer }) => userReducer
   );
+  const { isLoading } = useSelector(({ loadingReducer }) => loadingReducer);
   const [toggleBox, setToggleBox] = useState([
     { name: "휴식", isOn: 0, color: "#a5c7e5" },
   ]);
   const [plusClick, setPlusClick] = useState(false);
   const [pickedColor, setPickedColor] = useState("lightgrey");
   const [inputValue, setInputValue] = useState("공부");
-  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const colorPick = ["#ffaeae", "#fdd4ae", "#b4e29e", "#565781", "#b094f2"];
@@ -291,7 +291,6 @@ function SideLog() {
       setInputValue("공부");
     });
   };
-  console.log("toggleBox", toggleBox);
 
   const toggleHandler = (idx) => {
     const numOfIsOn = [...toggleBox].filter((el) => el.isOn === 1);
@@ -307,25 +306,24 @@ function SideLog() {
         allOff[idx].isOn = 1;
         logAPI.finishLog(numOfIsOn[0].id);
         setToggleBox(allOff);
-        toggleOnRequest(allOff);
+        logAPI.initiateLog(allOff[idx].id);
       }
     } else {
       //아무것도 안켜져있을 때 켜는 조건
       const newToggleBox = [...toggleBox];
       newToggleBox[idx].isOn = 1;
       setToggleBox(newToggleBox);
-      toggleOnRequest(newToggleBox);
+      logAPI.initiateLog(newToggleBox[idx].id);
     }
   };
 
   //토글 켜지면 로그기록 시작 요청 보내는 함수
-  const toggleOnRequest = (toggleBox) => {
-    const onToggle = [...toggleBox].filter((el) => el.isOn === 1);
-    // 켜져있던 토글이면 안보내야하는 조건 만들어야함.
-    if (onToggle.length) {
-      logAPI.initiateLog(onToggle[0].id);
-    }
-  };
+  // const toggleOnRequest = (toggleBox) => {
+  //   const onToggle = [...toggleBox].filter((el) => el.isOn === 1);
+  //   if (onToggle.length) {
+  //     logAPI.initiateLog(onToggle[0].id);
+  //   }
+  // };
 
   const userInfoEditHandler = () => {
     dispatch(userInfoEditModalOpen(true));
@@ -346,12 +344,18 @@ function SideLog() {
   };
 
   useEffect(() => {
-    if (isLogin) {
-      setIsLoading(true);
-      toggleAPI.getToggles().then((res) => {
-        setToggleBox(res.data.toggleList);
-        setIsLoading(false);
-      });
+    if (isLogin || isSocialLogined) {
+      toggleAPI
+        .getToggles()
+        .then((res) => {
+          console.log(res);
+          setToggleBox(res.data.toggleList);
+        })
+        .catch((e) => {
+          dispatch(logout());
+          dispatch(sideLogOpen(false));
+          dispatch(notify("로그인이 만료되었습니다."));
+        });
     }
   }, []);
 

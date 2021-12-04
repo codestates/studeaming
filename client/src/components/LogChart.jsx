@@ -145,21 +145,27 @@ function LogChart({ date, offset }) {
 
   const getLogsHandler = () => {
     setIsLoading(true);
-    logAPI.getLogs(date, offset).then((res) => {
-      const compileStudylogList = res.data.studylogList.map((list) => {
-        const utcStart = list.startedAt * 60000;
-        const utcFinish = list.finishedAt * 60000;
-        const startedAt =
-          new Date(utcStart).getHours() * 60 + new Date(utcStart).getMinutes();
-        const finishedAt =
-          new Date(utcFinish).getHours() * 60 +
-          new Date(utcFinish).getMinutes();
-        const newList = { ...list, startedAt, finishedAt };
-        return newList;
+    logAPI
+      .getLogs(date, offset)
+      .then((res) => {
+        const compileStudylogList = res.data.studylogList.map((list) => {
+          const utcStart = list.startedAt * 60000;
+          const utcFinish = list.finishedAt * 60000;
+          const startedAt =
+            new Date(utcStart).getHours() * 60 +
+            new Date(utcStart).getMinutes();
+          const finishedAt =
+            new Date(utcFinish).getHours() * 60 +
+            new Date(utcFinish).getMinutes();
+          const newList = { ...list, startedAt, finishedAt };
+          return newList;
+        });
+        setStudylogList(compileStudylogList);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        // getLogsHandler()
       });
-      setStudylogList(compileStudylogList);
-      setIsLoading(false);
-    });
   };
 
   useEffect(() => {
