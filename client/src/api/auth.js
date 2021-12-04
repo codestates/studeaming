@@ -10,8 +10,10 @@ const authAPI = {
     switch (type) {
       case "email":
         payload = { email: input };
+        break;
       case "username":
         payload = { username: input };
+        break;
     }
     return api.post(`auth/signup/availability`, { type, ...payload });
   },
