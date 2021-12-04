@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import crypto from "crypto-js";
 import authAPI from "../api/auth";
 import { modalOff, notify } from "../store/actions";
 import Button from "./Button";
@@ -178,16 +177,12 @@ function Signup() {
   const signupHandler = () => {
     const { email, username, password, check } = isValid;
     if (email && username && password && check) {
-      const encryptedPwd = crypto.AES.encrypt(
-        signupInfo.password,
-        process.env.REACT_APP_SECRET_KEY
-      ).toString();
       authAPI
         .signup(
           signupInfo.image,
           signupInfo.username,
           signupInfo.email,
-          encryptedPwd
+          signupInfo.password
         )
         .then(() => {
           dispatch(notify("회원가입이 완료되었습니다."));
