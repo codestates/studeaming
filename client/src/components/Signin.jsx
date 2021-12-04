@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   getUserInfo,
   loginStateChange,
@@ -74,6 +75,7 @@ const ButtonContainer = styled.div`
 function Signin() {
   const [signinInfo, setSigninInfo] = useState({ email: "", password: "" });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const regExpEmail =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
 
@@ -107,6 +109,7 @@ function Signin() {
         .then((res) => {
           // set follows state
           dispatch(getFollows(res.data.studeamerList));
+          navigate("/home");
         })
         .catch((err) => {
           if (err.response.status === 401) {
