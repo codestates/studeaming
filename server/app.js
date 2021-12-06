@@ -5,7 +5,10 @@ const fs = require("fs");
 const https = require("https");
 const cors = require("cors");
 const cron = require("node-cron");
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc");
 const { Server } = require("socket.io");
+
 const studyRoom = require("./controller/studyRoom");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
@@ -13,6 +16,9 @@ const studyToggleRouter = require("./routes/studyToggle");
 const studyLogRouter = require("./routes/studyLog");
 const verifyRouter = require("./routes/verify");
 const cronJob = require("./controller/functions/cronJob");
+const options = require("./swagger.js");
+
+const apiSpec = swaggerJsdoc(options);
 require("dotenv").config();
 
 const app = express();
@@ -29,14 +35,18 @@ app.use(
   })
 );
 
-cron.schedule("* * * * 1", () => {
+cron.schedule("* * * * 2", () => {
   cronJob();
 });
 
-app.get("/favicon.ico", (req, res) => res.status(204));
+app.get("/favicon.ico", (req, res) => {
+  res.status(204);
+  // #swagger.ignore = true
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World");
+  // #swagger.ignore = true
 });
 
 app.use("/auth", authRouter);
@@ -44,6 +54,7 @@ app.use("/user", userRouter);
 app.use("/studylog", studyLogRouter);
 app.use("/studytoggle", studyToggleRouter);
 app.use("/verification", verifyRouter);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(apiSpec));
 //경로 설정
 
 //app.get("/*", (_, res) => res.redirect("/"));
