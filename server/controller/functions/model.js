@@ -24,6 +24,7 @@ module.exports = {
       return null;
     }
   },
+
   verifyEmail: async (email) => {
     try {
       const user = await User.findOne({
@@ -39,6 +40,18 @@ module.exports = {
       return null;
     }
   },
+
+  setDefault: async (id) => {
+    try {
+      await Currentlog.create({
+        user_id: id,
+        name: "휴식",
+      });
+    } catch {
+      return null;
+    }
+  },
+
   getStudyTime: async (studyLogList, start, end) => {
     return studyLogList.reduce((acc, cur) => {
       if (

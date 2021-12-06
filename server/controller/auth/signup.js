@@ -1,10 +1,12 @@
-const { User, Currentlog } = require("../../models");
+const { User } = require("../../models");
 const encryptPassword = require("../functions/encryption");
 
 const {
   generateVerification,
   sendVerifyEmail,
 } = require("../functions/emailVerification");
+
+const { setDefault } = require("../functions/model");
 
 module.exports = async (req, res) => {
   if (req.body.username && req.body.password && req.body.email) {
@@ -24,12 +26,11 @@ module.exports = async (req, res) => {
         });
 
         if (created) {
-          await Currentlog.create({
-            user_id: newUser.id,
-            name: "휴식",
-          });
+          await setDefault(newUser.id);
+
           const code = await generateVerification(newUser.id);
           sendVerifyEmail(newUser.email, code);
+
           res.send({
             user: {
               id: newUser.id,
