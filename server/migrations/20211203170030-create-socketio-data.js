@@ -1,36 +1,47 @@
-'use strict';
+"use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('socketio_data', {
+    await queryInterface.createTable("socketio_data", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       uuid: {
-        type: Sequelize.STRING
+        allowNull: false,
+        type: Sequelize.STRING,
       },
-      studeamer_id: {
-        type: Sequelize.STRING
+      title: {
+        allowNull: false,
+        type: Sequelize.STRING,
       },
-      HeadCount: {
-        type: Sequelize.INTEGER
+      user_id: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      headCount: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
       },
       thumbnail: {
-        type: Sequelize.STRING
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: "",
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("NOW()"),
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("NOW()"),
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('socketio_data');
-  }
+    await queryInterface.dropTable("socketio_data");
+  },
 };

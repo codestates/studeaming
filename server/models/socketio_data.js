@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class socketio_data extends Model {
     /**
@@ -12,15 +10,19 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-  };
-  socketio_data.init({
-    uuid: DataTypes.STRING,
-    studeamer_id: DataTypes.STRING,
-    HeadCount: DataTypes.INTEGER,
-    thumbnail: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'socketio_data',
-  });
+  }
+  socketio_data.init(
+    {
+      uuid: DataTypes.STRING,
+      title: DataTypes.STRING,
+      user_id: DataTypes.STRING,
+      headCount: DataTypes.INTEGER,
+      thumbnail: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "socketio_data",
+    }
+  );
   return socketio_data;
 };
