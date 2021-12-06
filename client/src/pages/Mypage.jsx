@@ -8,22 +8,37 @@ const Container = styled.div`
   display: flex;
   justify-content: flex-start;
 
+  .monthly-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(100vw - 300px);
+    height: calc(100vh - 61.69px);
+    @media screen and (max-width: 768px) {
+      width: 100vw;
+      height: 70vh;
+      min-width: 330px;
+      order: -1;
+    }
+  }
+
   @media screen and (max-width: 768px) {
     justify-content: flex-end;
     flex-direction: column;
   }
 `;
 
-const MonthlyContainer = styled.div`
-  width: calc(100vw - 300px);
-  height: calc(100vh - 61.69px);
+const MonthlyBody = styled.div`
+  width: 100%;
+  height: 100%;
+  max-width: 1000px;
+  min-width: 330px;
   padding: 2.4rem 2.4rem;
   position: relative;
-
   @media screen and (max-width: 768px) {
-    width: 100vw;
-    min-width: 370px;
-    order: -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   #study_time_section {
@@ -31,7 +46,7 @@ const MonthlyContainer = styled.div`
     align-items: center;
     justify-content: end;
     margin-bottom: 0.2rem;
-    min-width: 370px;
+    min-width: 330px;
     height: 14%;
   }
 
@@ -97,24 +112,26 @@ function Mypage() {
   return (
     <Container>
       <Sidebar />
-      <MonthlyContainer>
-        <section id="study_time_section">
-          <span className="study_time">
-            <span className="hour_title">총 스터디밍 시간</span>
-            <span className="study_hour">
-              {studeamingTime.hour}시간 {studeamingTime.minute}분
+      <div className="monthly-container">
+        <MonthlyBody>
+          <section id="study_time_section">
+            <span className="study_time">
+              <span className="hour_title">총 스터디밍 시간</span>
+              <span className="study_hour">
+                {studeamingTime.hour}시간 {studeamingTime.minute}분
+              </span>
             </span>
-          </span>
-          <div id="division_line"></div>
-          <span className="study_time">
-            <span className="hour_title">총 공부 시간</span>
-            <span className="study_hour">
-              {studyTime.hour}시간 {studyTime.minute}분
+            <div id="division_line"></div>
+            <span className="study_time">
+              <span className="hour_title">총 공부 시간</span>
+              <span className="study_hour">
+                {studyTime.hour}시간 {studyTime.minute}분
+              </span>
             </span>
-          </span>
-        </section>
-        <Calendar></Calendar>
-      </MonthlyContainer>
+          </section>
+          <Calendar></Calendar>
+        </MonthlyBody>
+      </div>
     </Container>
   );
 }
