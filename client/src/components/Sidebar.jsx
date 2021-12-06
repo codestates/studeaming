@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import userAPI from "../api/user";
 import {
@@ -18,7 +19,7 @@ const Container = styled.div`
   background-color: var(--color-main-0);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: column;
   align-items: center;
   padding: 1.2rem 0;
 
@@ -29,6 +30,10 @@ const Container = styled.div`
 
   #following {
     flex: 1 0 auto;
+  }
+
+  section {
+    display: inline-block;
   }
 
   button {
@@ -44,7 +49,6 @@ const Container = styled.div`
     width: 100vw;
     min-width: 370px;
     height: fit-content;
-    min-witdth: 400px;
   }
 `;
 
@@ -86,9 +90,9 @@ const BadgeContainer = styled.div`
   height: 220px;
 
   @media screen and (max-width: 768px) {
-    width: 100%;
-    height: fit-content;
-    overflow: scroll;
+    /* width: 100%;
+    height: fit-content; */
+    /* overflow: scroll; */
 
     /* hide scroll bar */
     -ms-overflow-style: none; /* IE and Edge */
@@ -108,22 +112,25 @@ function Sidebar() {
   ]);
   const [badges, setBadges] = useState(dummyBadges);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const getFollowing = async () => {
     try {
       const res = await userAPI.getFollows();
-      // setFollowing(res);
+      setFollowing(res);
     } catch {
-      // dispatch(notify("로그인이 만료되었습니다."));
+      // navigate("/home")
+      // dispatch(notify("다시 로그인해주세요."));
     }
   };
 
   const getBadge = async () => {
     try {
       const res = await userAPI.getAchievement();
-      // setBadges(res)
+      setBadges(res);
     } catch {
-      // dispatch(notify("로그인이 만료되었습니다."));
+      // navigate("/home")
+      // dispatch(notify("다시 로그인해주세요."));
     }
   };
 
