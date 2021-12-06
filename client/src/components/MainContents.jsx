@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import defaultImg from "../assets/images/img_profile_default.svg";
+import empty from "../assets/images/empty.png";
 
 const StyledMainContents = styled.section`
   display: grid;
   place-items: center;
+  max-width: 2000px;
   grid-template-rows: repeat(auto-fill, 1fr);
   grid-template-columns: repeat(5, 1fr);
   gap: 10px 10px;
@@ -70,19 +72,14 @@ const Desc = styled.div`
   }
 
   > .thumbnail_title {
-    display: inline-block;
-    max-width: 360px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    white-space: normal;
-    height: 45px;
-    text-align: left;
-    word-wrap: break-word;
     display: -webkit-box;
+    height: 50px;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 14px;
   }
 
@@ -109,24 +106,36 @@ const Desc = styled.div`
   }
 `;
 
+const NoContents = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 function MainContents({ contents }) {
   return (
     <StyledMainContents>
-      {contents.map((el, idx) => (
-        <Contents key={idx}>
-          <Thumbnail img={el.thumbnail} />
-          <Desc>
-            <div className="thumbnail_title">{el.title}</div>
-            <div className="thumbnail_info">
-              <img src={el.progileImg || defaultImg} alt="" />
-              <div className="thumbnail_info_name">
-                <div style={{ fontWeight: "bold" }}>{el.username}</div>
-                <div style={{ color: "#838080" }}>{el.viewer}명</div>
+      {contents.length ? (
+        contents.map((el, idx) => (
+          <Contents key={idx}>
+            <Thumbnail img={el.thumbnail} />
+            <Desc>
+              <div className="thumbnail_title">{el.title}</div>
+              <div className="thumbnail_info">
+                <img src={el.progileImg || defaultImg} alt="" />
+                <div className="thumbnail_info_name">
+                  <div style={{ fontWeight: "bold" }}>{el.username}</div>
+                  <div style={{ color: "#838080" }}>{el.viewer}명</div>
+                </div>
               </div>
-            </div>
-          </Desc>
-        </Contents>
-      ))}
+            </Desc>
+          </Contents>
+        ))
+      ) : (
+        <NoContents>
+          <h2>현재 스터디밍이 없습니다...</h2>
+          <img src={empty} alt="" style={{ width: "100px" }} />
+        </NoContents>
+      )}
     </StyledMainContents>
   );
 }

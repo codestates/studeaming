@@ -101,8 +101,8 @@ function Signin() {
         })
         .then((res) => {
           // set userinfo state
-          const { username, profileImg, about, studeaming } = res.data.user;
-          const data = { username, profileImg, about, studeaming };
+          const { id, username, profileImg, about, studeaming } = res.data.user;
+          const data = { id, username, profileImg, about, studeaming };
           dispatch(getUserInfo(data));
           return userAPI.getFollows();
         })

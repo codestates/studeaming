@@ -11,11 +11,13 @@ const StyledSlideContainer = styled.div`
     height: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
 
     > .slide-image {
       width: 100%;
-      max-width: 768px;
-      height: 90%;
+      max-width: 600px;
+      height: 80%;
+      background-color: transparent;
       object-fit: cover;
       cursor: pointer;
       :hover {
@@ -36,10 +38,13 @@ const StyledSlideContainer = styled.div`
 
 const SlideContainer = ({ activeIndex, imageSlider }) => {
   useEffect(() => {
-    gsap.from(".active", {
-      opacity: 0,
-      duration: 1,
-    });
+    gsap.fromTo(
+      ".active",
+      {
+        opacity: 0,
+      },
+      { opacity: 0.6, duration: 1 }
+    );
   }, [imageSlider]);
   return (
     <StyledSlideContainer>

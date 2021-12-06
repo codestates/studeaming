@@ -20,6 +20,7 @@ import Header from "./components/Header";
 import NotificationCenter from "./components/NotificationCenter";
 import SideLog from "./components/SideLog";
 import DailyLog from "./components/DailyLog";
+import Loading from "./components/Loading";
 import api from "./api/index";
 import axios from "axios";
 
@@ -37,6 +38,7 @@ function App() {
     isDailyLogOpen,
   } = useSelector(({ modalReducer }) => modalReducer);
   const { isSideLogOpen } = useSelector(({ sideLogReducer }) => sideLogReducer);
+  const { isLoading } = useSelector(({ loadingReducer }) => loadingReducer);
   const isModal =
     isSignupOpen ||
     isSigninOpen ||
@@ -78,6 +80,7 @@ function App() {
   }, []);
   return (
     <>
+      {isLoading ? <Loading /> : null}
       <Header />
       {isSideLogOpen && <SideLog />}
       <NotificationCenter />
