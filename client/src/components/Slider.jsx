@@ -3,9 +3,9 @@ import styled from "styled-components";
 import SlideContainer from "./SlideContainer";
 import SlideMoveBtn from "./SlideMoveBtn";
 import Dots from "./Dots";
-import image1 from "../assets/images/intro_img_1.svg";
-import image2 from "../assets/images/intro_img_2.svg";
-import image3 from "../assets/images/intro_img_3.svg";
+import image1 from "../assets/images/fire.gif";
+import image2 from "../assets/images/wave.gif";
+import image3 from "../assets/images/night.gif";
 
 const StyledSlider = styled.section`
   width: 100%;
@@ -13,7 +13,7 @@ const StyledSlider = styled.section`
   overflow: hidden;
   margin: 0 auto;
   position: relative;
-  background-color: lightgrey;
+  background-color: #f8f8f8;
 `;
 
 function Slider() {
