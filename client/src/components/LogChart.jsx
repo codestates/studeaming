@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { sideLogOpen, logout, notify } from "../store/actions/index";
 import styled from "styled-components";
-import Loading from "./Loading";
 import logAPI from "../api/studyLog";
 
 const LogChartSection = styled.section`
@@ -70,30 +70,9 @@ const Log = styled.div`
   }
 `;
 
-const LoadingBox = styled.div`
-  width: 240px;
-  height: 100%;
-`;
-
 function LogChart({ date, offset }) {
-  const { isLogin } = useSelector(({ userReducer }) => userReducer);
   const [log, setLog] = useState([]);
-  const [studylogList, setStudylogList] = useState([
-    // { name: "영어", color: "#ffaeae", startedAt: 20, finishedAt: 80 },
-    // { name: "휴식", color: "#a5c7e5", startedAt: 80, finishedAt: 100 },
-    // { name: "수학", color: "#fdd4ae", startedAt: 100, finishedAt: 160 },
-    // { name: "휴식", color: "#a5c7e5", startedAt: 160, finishedAt: 190 },
-    // { name: "수학", color: "#fdd4ae", startedAt: 190, finishedAt: 250 },
-    // { name: "휴식", color: "#a5c7e5", startedAt: 250, finishedAt: 280 },
-    // { name: "국어", color: "#b4e29e", startedAt: 280, finishedAt: 350 },
-    // { name: "휴식", color: "#a5c7e5", startedAt: 350, finishedAt: 360 },
-    // { name: "과학", color: "#565781", startedAt: 360, finishedAt: 440 },
-    // { name: "휴식", color: "#a5c7e5", startedAt: 440, finishedAt: 460 },
-    // { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 540 },
-    // { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 590 },
-    // { name: "사회", color: "#b094f2", startedAt: 460, finishedAt: 620 },
-  ]);
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
   const minute = ["", 10, 20, 30, 40, 50, 60];
   const hour = new Array(24).fill(0).map((_, idx) => idx);
 
@@ -144,11 +123,10 @@ function LogChart({ date, offset }) {
   };
 
   const getLogsHandler = () => {
-    setIsLoading(true);
     logAPI
       .getLogs(date, offset)
       .then((res) => {
-        const compileStudylogList = res.data.studylogList.map((list) => {
+        const studylogList = res.data.studylogList.map((list) => {
           const utcStart = list.startedAt * 60000;
           const utcFinish = list.finishedAt * 60000;
           const startedAt =
@@ -160,23 +138,18 @@ function LogChart({ date, offset }) {
           const newList = { ...list, startedAt, finishedAt };
           return newList;
         });
-        setStudylogList(compileStudylogList);
-        setIsLoading(false);
+        fillLog(studylogList);
       })
       .catch(() => {
-        // getLogsHandler()
+        dispatch(logout());
+        dispatch(sideLogOpen(false));
+        dispatch(notify("로그인이 만료되었습니다."));
       });
   };
 
   useEffect(() => {
-    if (isLogin) {
-      getLogsHandler();
-    }
+    getLogsHandler();
   }, []);
-
-  useEffect(() => {
-    fillLog(studylogList);
-  }, [studylogList]);
 
   return (
     <LogChartSection>
@@ -195,30 +168,24 @@ function LogChart({ date, offset }) {
             </div>
           ))}
         </div>
-        {isLoading ? (
-          <LoadingBox>
-            <Loading wsize={30} hsize={30} />
-          </LoadingBox>
-        ) : (
-          <Chart>
-            {log.map((el, idx) => (
-              <Log
-                key={idx}
-                color={log[idx].color}
-                left={log[idx].left}
-                top={log[idx].top}
-                width={log[idx].width}
-                title={
-                  log[idx].hour === 0 && log[idx].minute > 0
-                    ? `${log[idx].name} ${log[idx].minute}분`
-                    : log[idx].hour > 0 && log[idx].minute === 0
-                    ? `${log[idx].name} ${log[idx].hour}시간`
-                    : `${log[idx].name} ${log[idx].hour}시간 ${log[idx].minute}분`
-                }
-              />
-            ))}
-          </Chart>
-        )}
+        <Chart>
+          {log.map((el, idx) => (
+            <Log
+              key={idx}
+              color={el.color}
+              left={el.left}
+              top={el.top}
+              width={el.width}
+              title={
+                el.hour === 0 && el.minute > 0
+                  ? `${el.name} ${el.minute}분`
+                  : el.hour > 0 && el.minute === 0
+                  ? `${el.name} ${el.hour}시간`
+                  : `${el.name} ${el.hour}시간 ${el.minute}분`
+              }
+            />
+          ))}
+        </Chart>
       </HourListAndChartContainer>
     </LogChartSection>
   );
