@@ -198,8 +198,8 @@ function Home() {
         return userAPI.getUserInfo();
       })
       .then((res) => {
-        const { username, profileImg, about, studeaming } = res.data.user;
-        const data = { username, profileImg, about, studeaming };
+        const { id, username, profileImg, about, studeaming } = res.data.user;
+        const data = { id, username, profileImg, about, studeaming };
         dispatch(getUserInfo(data));
         return userAPI.getFollows();
       })
@@ -219,8 +219,8 @@ function Home() {
         return userAPI.getUserInfo();
       })
       .then((res) => {
-        const { username, profileImg, about, studeaming } = res.data.user;
-        const data = { username, profileImg, about, studeaming };
+        const { id, username, profileImg, about, studeaming } = res.data.user;
+        const data = { id, username, profileImg, about, studeaming };
         dispatch(getUserInfo(data));
         return userAPI.getFollows();
       })

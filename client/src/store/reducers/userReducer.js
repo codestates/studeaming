@@ -8,6 +8,7 @@ import {
 const initState = {
   isLogin: false,
   isSocialLogined: false,
+  id: "",
   profileImg: "",
   username: "",
   about: "",
