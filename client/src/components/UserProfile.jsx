@@ -93,17 +93,10 @@ const BadgeContainer = styled.div`
     justify-content: flex-start;
     margin-top: 1rem;
     background-color: transparent;
-    width: 100%;
+    /* width: 100%;
+    height: fit-content; */
     padding: 5px 0;
-    height: fit-content;
-    overflow: scroll;
-
-    /* hide scroll bar */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-    ::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Opera*/
-    }
+    display: none;
   }
 `;
 
@@ -168,7 +161,7 @@ function UserProfile({ username }) {
         </span>
       </StudyInfo>
       <BadgeContainer>
-        <Badge badges={badges} />
+        <Badge badges={badges} isOthersProfile="true" />
       </BadgeContainer>
     </Container>
   );
