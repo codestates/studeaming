@@ -13,8 +13,9 @@ const studyRoom = require("./controller/studyRoom");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const studyToggleRouter = require("./routes/studyToggle");
-const studyLogRouter = require("./routes/studyLog");
+const studylogRouter = require("./routes/studylog");
 const verifyRouter = require("./routes/verify");
+const studyroomRouter = require("./routes/studyroom");
 const cronJob = require("./controller/functions/cronJob");
 const options = require("./swagger.js");
 
@@ -51,8 +52,9 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
-app.use("/studylog", studyLogRouter);
+app.use("/studylog", studylogRouter);
 app.use("/studytoggle", studyToggleRouter);
+app.use("/studyroom", studyroomRouter);
 app.use("/verification", verifyRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(apiSpec));
 //경로 설정
