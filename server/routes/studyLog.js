@@ -1,8 +1,7 @@
 const express = require("express");
-const router = express.Router();
 const checkAuth = require("../middleware/checkAuth");
-
 const { updateStudylog, getStudylog, comment } = require("../controller");
+const router = express.Router();
 
 router.post("/", checkAuth, updateStudylog.post);
 router.patch("/", checkAuth, updateStudylog.patch);

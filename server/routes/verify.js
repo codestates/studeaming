@@ -1,6 +1,6 @@
 const express = require("express");
-const router = express.Router();
 const verifyEmail = require("../controller/auth/verifyEmail");
+const router = express.Router();
 
 router.post("/:emailVerifyCode", verifyEmail);
 

@@ -1,7 +1,5 @@
 const express = require("express");
 const checkAuth = require("../middleware/checkAuth");
-const router = express.Router();
-
 const {
   userInfo,
   profile,
@@ -9,6 +7,7 @@ const {
   achievement,
   report,
 } = require("../controller");
+const router = express.Router();
 
 router.get("/", checkAuth, userInfo.getUser);
 router.patch("/", checkAuth, userInfo.editUser);
