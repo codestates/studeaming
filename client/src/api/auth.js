@@ -22,6 +22,10 @@ const authAPI = {
     return api.post(`/auth/signin`, { email, password });
   },
 
+  guestSignin: () => {
+    return api.post(`auth/signin/guest`);
+  },
+
   signout: () => {
     return api.post(`/auth/signout`);
   },
