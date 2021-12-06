@@ -6,6 +6,8 @@ import {
   logout,
   sideLogOpen,
   userInfoEditModalOpen,
+  loginStateChange,
+  getUserInfo,
 } from "../store/actions/index";
 import { gsap } from "gsap";
 import styled from "styled-components";
@@ -241,6 +243,28 @@ const SideLogUpIcon = styled(IoIosArrowUp)`
   }
 `;
 
+const LoginBlur = styled.div`
+  position: absolute;
+  top: 54px;
+  width: 100%;
+  height: 125%;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+
+  > .guestlogin {
+    display: inline-block;
+
+    :hover {
+      cursor: pointer;
+      color: blue;
+    }
+  }
+`;
+
 function SideLog() {
   const { isLogin, profileImg, username, about, isSocialLogined } = useSelector(
     ({ userReducer }) => userReducer
@@ -339,8 +363,17 @@ function SideLog() {
     }, 1000);
   };
 
+  const guestSigninHandler = () => {
+    authAPI.guestSignin((res) => {
+      const data = res.data.user;
+      dispatch(loginStateChange(true));
+      dispatch(getUserInfo(data));
+      dispatch(notify("게스트 로그인에 성공했습니다."));
+    });
+  };
+
   useEffect(() => {
-    if (isLogin || isSocialLogined) {
+    if (isLogin) {
       toggleAPI
         .getToggles()
         .then((res) => {
@@ -364,7 +397,7 @@ function SideLog() {
           </UserImg>
           <UserNameAndLogout>
             <div>
-              <span className="nickname">{username || "김코딩"}</span>
+              <span className="nickname">{username || "김코딩"} 님</span>
               {isLogin ? (
                 <>
                   <span className="user_edit" onClick={userInfoEditHandler}>
@@ -441,6 +474,13 @@ function SideLog() {
             )
           ) : null}
         </ToggleBoxWrapper>
+        {isLogin ? null : (
+          <LoginBlur>
+            <span className="guestlogin" onClick={guestSigninHandler}>
+              게스트 로그인하기
+            </span>
+          </LoginBlur>
+        )}
         <LogChart date={eightDigitDate} offset={offset} />
         <SideLogCloseBackIcon onClick={sideLogCloseBackIconHandler} />
         <SideLogCloseUpIcon>
