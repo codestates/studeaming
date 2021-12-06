@@ -5,6 +5,7 @@ const router = express.Router();
 const {
   signup,
   signin,
+  guest,
   checkAvailability,
   signout,
   withdraw,
@@ -16,6 +17,7 @@ const {
 router.post("/signup", signup);
 router.post("/signup/availability", checkAvailability);
 router.post("/signin", signin);
+router.post("/signin/guest", guest);
 router.post("/signout", signout);
 router.delete("/withdraw", checkAuth, withdraw);
 router.post("/oauth/google", googleSignin);
