@@ -1,6 +1,7 @@
 module.exports = {
   signup: require("./auth/signup"),
   signin: require("./auth/signin"),
+  guest: require("./auth/guest"),
   checkAvailability: require("./auth/checkAvailability"),
   signout: require("./auth/signout"),
   withdraw: require("./auth/withdraw"),
