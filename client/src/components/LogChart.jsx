@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { sideLogOpen, logout, notify } from "../store/actions/index";
 import styled from "styled-components";
 import logAPI from "../api/studyLog";
@@ -71,6 +71,7 @@ const Log = styled.div`
 `;
 
 function LogChart({ date, offset }) {
+  const { isLogin } = useSelector(({ userReducer }) => userReducer);
   const [log, setLog] = useState([]);
   const dispatch = useDispatch();
   const minute = ["", 10, 20, 30, 40, 50, 60];
@@ -148,7 +149,7 @@ function LogChart({ date, offset }) {
   };
 
   useEffect(() => {
-    getLogsHandler();
+    if (isLogin) getLogsHandler();
   }, []);
 
   return (
