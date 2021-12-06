@@ -15,7 +15,6 @@ import logAPI from "../api/studyLog";
 import authAPI from "../api/auth";
 import ToggleBox from "./ToggleBox";
 import LogChart from "./LogChart";
-import Loading from "./Loading";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
 const SideLogSection = styled.section`
@@ -242,19 +241,12 @@ const SideLogUpIcon = styled(IoIosArrowUp)`
   }
 `;
 
-const ToggleLoading = styled.div`
-  width: 80px;
-  height: 80px;
-  margin: 20px 0;
-`;
-
 function SideLog() {
   const { isLogin, profileImg, username, about, isSocialLogined } = useSelector(
     ({ userReducer }) => userReducer
   );
-  const { isLoading } = useSelector(({ loadingReducer }) => loadingReducer);
-  const [toggleBox, setToggleBox] = useState([
-    { name: "휴식", isOn: 0, color: "#a5c7e5" },
+  const [toggles, setToggles] = useState([
+    { name: "휴식", isOn: 0, color: "#a5c7e5", id: null },
   ]);
   const [plusClick, setPlusClick] = useState(false);
   const [pickedColor, setPickedColor] = useState("lightgrey");
@@ -283,47 +275,51 @@ function SideLog() {
       isOn: 0,
       color: pickedColor,
     };
-    toggleAPI.makeToggle(newToggle.name, newToggle.color).then((res) => {
-      const { id } = res.data.newToggle;
-      setToggleBox([...toggleBox, { ...newToggle, id }]);
-      setPlusClick(false);
-      setPickedColor("lightgrey");
-      setInputValue("공부");
-    });
+    toggleAPI
+      .makeToggle(newToggle.name, newToggle.color)
+      .then((res) => {
+        const { id } = res.data.newToggle;
+        setToggles([...toggles, { ...newToggle, id }]);
+        setPlusClick(false);
+        setPickedColor("lightgrey");
+        setInputValue("공부");
+      })
+      .catch(() => {
+        dispatch(logout());
+        dispatch(sideLogOpen(false));
+        dispatch(notify("로그인이 만료되었습니다."));
+      });
   };
 
   const toggleHandler = (idx) => {
-    const numOfIsOn = [...toggleBox].filter((el) => el.isOn === 1);
+    const turnedOn = [...toggles].filter((toggle) => toggle.isOn === 1);
 
-    if (numOfIsOn.length > 0) {
-      const allOff = [...toggleBox].map((el) => ({ ...el, isOn: 0 }));
-      if (numOfIsOn[0].id === toggleBox[idx].id) {
+    if (turnedOn.length > 0) {
+      const turnOffAll = [...toggles].map((toggle) => ({ ...toggle, isOn: 0 }));
+
+      if (turnedOn[0].id === toggles[idx].id) {
         //토글 끄는 조건
-        logAPI.finishLog(numOfIsOn[0].id);
-        setToggleBox(allOff);
+        logAPI.finishLog(turnedOn[0].id);
+        setToggles(turnOffAll);
       } else {
         //토글 하나 켜져있을 때 다른 토글 바로 켜는 조건
-        allOff[idx].isOn = 1;
-        logAPI.finishLog(numOfIsOn[0].id);
-        setToggleBox(allOff);
-        logAPI.initiateLog(allOff[idx].id);
+        const finishedToggle = turnedOn[0];
+        logAPI.finishLog(finishedToggle.id);
+
+        const clickedToggle = turnOffAll[idx];
+        clickedToggle.isOn = 1;
+        setToggles(turnOffAll);
+        logAPI.initiateLog(clickedToggle.id);
       }
     } else {
       //아무것도 안켜져있을 때 켜는 조건
-      const newToggleBox = [...toggleBox];
-      newToggleBox[idx].isOn = 1;
-      setToggleBox(newToggleBox);
-      logAPI.initiateLog(newToggleBox[idx].id);
+      const newToggles = [...toggles];
+      const clicked = newToggles[idx];
+      clicked.isOn = 1;
+      setToggles(newToggles);
+      logAPI.initiateLog(clicked.id);
     }
   };
-
-  //토글 켜지면 로그기록 시작 요청 보내는 함수
-  // const toggleOnRequest = (toggleBox) => {
-  //   const onToggle = [...toggleBox].filter((el) => el.isOn === 1);
-  //   if (onToggle.length) {
-  //     logAPI.initiateLog(onToggle[0].id);
-  //   }
-  // };
 
   const userInfoEditHandler = () => {
     dispatch(userInfoEditModalOpen(true));
@@ -348,8 +344,7 @@ function SideLog() {
       toggleAPI
         .getToggles()
         .then((res) => {
-          console.log(res);
-          setToggleBox(res.data.toggleList);
+          setToggles(res.data.toggleList);
         })
         .catch((e) => {
           dispatch(logout());
@@ -384,75 +379,68 @@ function SideLog() {
             {isLogin ? (
               <div className="about">{about || "본인을 소개해보세요."}</div>
             ) : (
-              <div className="about">안녕하세요.</div>
+              <div className="about">로그인 후 이용가능 합니다.</div>
             )}
           </UserNameAndLogout>
         </UserBox>
-        {isLoading ? (
-          <ToggleLoading>
-            <Loading wsize={20} hsize={20} />
-          </ToggleLoading>
-        ) : (
-          <ToggleBoxWrapper>
-            {toggleBox.map((toggle, idx) => (
-              <ToggleBox
-                key={idx}
-                name={toggle.name}
-                color={toggle.color}
-                isOn={toggle.isOn}
-                idx={idx}
-                id={toggle.id}
-                toggleBox={toggleBox}
-                setToggleBox={setToggleBox}
-                toggleHandler={toggleHandler}
-              />
-            ))}
-            {toggleBox.length < 6 ? (
-              plusClick ? (
-                <ToggleEditBox>
-                  <div className="edit_letter_box">
-                    <EditClose
-                      onClick={() => {
-                        setPlusClick(false);
-                      }}
-                    >
-                      취소
-                    </EditClose>
-                    <EditComplete onClick={editCompleteHandler}>
-                      완료
-                    </EditComplete>
-                  </div>
-                  <ColorSelectedBox
-                    color={pickedColor}
-                    placeholder="과목 입력"
-                    onChange={(e) => {
-                      setInputValue(e.target.value);
-                    }}
-                  />
-                  <ColorPickBox>
-                    {colorPick.map((color, idx) => (
-                      <ColorPick
-                        key={idx}
-                        color={color}
-                        onClick={() => {
-                          setPickedColor(color);
-                        }}
-                      />
-                    ))}
-                  </ColorPickBox>
-                </ToggleEditBox>
-              ) : (
-                <ToggleAddBox>
-                  <PlusIcon
+        <ToggleBoxWrapper>
+          {toggles.map((toggle, idx) => (
+            <ToggleBox
+              key={idx}
+              name={toggle.name}
+              color={toggle.color}
+              isOn={toggle.isOn}
+              idx={idx}
+              toggles={toggles}
+              setToggles={setToggles}
+              toggleHandler={toggleHandler}
+            />
+          ))}
+          {toggles.length < 6 ? (
+            plusClick ? (
+              <ToggleEditBox>
+                <div className="edit_letter_box">
+                  <EditClose
                     onClick={() => {
-                      setPlusClick(true);
+                      setPlusClick(false);
                     }}
-                  />
-                </ToggleAddBox>
-              )
-            ) : null}
-          </ToggleBoxWrapper>
-        )}
+                  >
+                    취소
+                  </EditClose>
+                  <EditComplete onClick={editCompleteHandler}>
+                    완료
+                  </EditComplete>
+                </div>
+                <ColorSelectedBox
+                  color={pickedColor}
+                  placeholder="과목 입력"
+                  onChange={(e) => {
+                    setInputValue(e.target.value);
+                  }}
+                />
+                <ColorPickBox>
+                  {colorPick.map((color, idx) => (
+                    <ColorPick
+                      key={idx}
+                      color={color}
+                      onClick={() => {
+                        setPickedColor(color);
+                      }}
+                    />
+                  ))}
+                </ColorPickBox>
+              </ToggleEditBox>
+            ) : (
+              <ToggleAddBox>
+                <PlusIcon
+                  onClick={() => {
+                    setPlusClick(true);
+                  }}
+                />
+              </ToggleAddBox>
+            )
+          ) : null}
+        </ToggleBoxWrapper>
         <LogChart date={eightDigitDate} offset={offset} />
         <SideLogCloseBackIcon onClick={sideLogCloseBackIconHandler} />
         <SideLogCloseUpIcon>

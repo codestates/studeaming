@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { notify, logout, sideLogOpen } from "../store/actions/index";
 import styled from "styled-components";
 import { gsap } from "gsap";
 import toggleAPI from "../api/studyToggle";
+import logAPI from "../api/studyLog";
 
 const ToggleSection = styled.section`
   width: 80px;
@@ -61,15 +64,23 @@ function ToggleBox({
   color,
   isOn,
   idx,
-  id,
   toggleHandler,
-  toggleBox,
-  setToggleBox,
+  toggles,
+  setToggles,
 }) {
+  const dispatch = useDispatch();
+
   const deleteHandler = () => {
-    const filter = [...toggleBox.slice(0, idx), ...toggleBox.slice(idx + 1)];
-    setToggleBox(filter);
-    toggleAPI.deleteToggle(id);
+    if (toggles[idx].isOn === 1) {
+      logAPI.finishLog(toggles[idx].id);
+    }
+    const filter = [...toggles.slice(0, idx), ...toggles.slice(idx + 1)];
+    setToggles(filter);
+    toggleAPI.deleteToggle(toggles[idx].id).catch(() => {
+      dispatch(logout());
+      dispatch(sideLogOpen(false));
+      dispatch(notify("로그인이 만료되었습니다."));
+    });
   };
 
   useEffect(() => {
