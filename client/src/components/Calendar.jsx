@@ -184,7 +184,7 @@ function Calendar() {
                 <Date
                   isThisMonth={!isThisMonth}
                   isFuture={isFuture}
-                  grape={grape[targetDate]}
+                  grape={grape[targetDate - 1]}
                   key={idx}
                   onClick={() => handleDayClick(current, isFuture)}
                 >
