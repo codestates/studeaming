@@ -80,17 +80,22 @@ function StreamerSetting() {
   const [users, setUsers] = useState([
     { id: "", email: "", stream: MediaStream },
   ]);
-  const newID = function () {
-    return Math.random().toString(36).substr(2, 16);
-  };
+  const { id } = useSelector(({ userReducer }) => userReducer);
   const myAudio = new Audio();
-  myAudio.src = "../../ASMR/Fire.mp3";
 
   socketRef.current = io.connect("http://localhost:4000", {
     //reconnectionDelay: 1000,
     //reconnection: true,
     transports: ["websocket"],
     withCredentials: true,
+  });
+  socketRef.current.on("user_exit", (data) => {
+    const { id } = data;
+    if (pcsRef.current[id]) return;
+    console.log("셋팅유저가 나갈때", pcsRef.current);
+    pcsRef.current[id].close();
+    delete pcsRef.current[id];
+    setUsers((oldUsers) => oldUsers.filter((user) => user.id !== id));
   });
 
   // todo : Media 스트림 설정
@@ -134,13 +139,15 @@ function StreamerSetting() {
   const removeProfileImg = () => {
     setEditInfo({ ...editInfo, profileImg: null });
   };
+  const newID = function () {
+    return Math.random().toString(36).substr(2, 16);
+  };
 
   const navigateLanding = () => {
     setTextInput(textInput);
     socketRef.current.emit("join_room", {
-      uuid: newID(),
-      room: textInput,
-      email: "sample@naver.com",
+      studeamerID: id,
+      roomName: textInput,
       thumbnail: editInfo.profileImg,
     });
     dispatch(modalOff());
@@ -159,7 +166,8 @@ function StreamerSetting() {
       <div className="Cam">
         <LiveVideo
           autoPlay
-          playsInline
+          playsInline아이디
+          undefined
           width="500"
           height="500"
           ref={localVideoRef}
