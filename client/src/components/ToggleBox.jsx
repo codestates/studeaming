@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { notify, logout, sideLogOpen } from "../store/actions/index";
+import { logout, sideLogOpen, signinModalOpen } from "../store/actions/index";
 import styled from "styled-components";
 import { gsap } from "gsap";
 import toggleAPI from "../api/studyToggle";
@@ -79,7 +79,7 @@ function ToggleBox({
     toggleAPI.deleteToggle(toggles[idx].id).catch(() => {
       dispatch(logout());
       dispatch(sideLogOpen(false));
-      dispatch(notify("로그인이 만료되었습니다."));
+      dispatch(signinModalOpen(true));
     });
   };
 

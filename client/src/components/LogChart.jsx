@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sideLogOpen, logout, notify } from "../store/actions/index";
+import { sideLogOpen, logout, signinModalOpen } from "../store/actions/index";
 import styled from "styled-components";
 import logAPI from "../api/studyLog";
 
@@ -144,7 +144,7 @@ function LogChart({ date, offset }) {
       .catch(() => {
         dispatch(logout());
         dispatch(sideLogOpen(false));
-        dispatch(notify("로그인이 만료되었습니다."));
+        dispatch(signinModalOpen(true));
       });
   };
 
