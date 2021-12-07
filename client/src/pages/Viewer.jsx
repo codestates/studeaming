@@ -9,7 +9,7 @@ import FollowBtn from "../components/FollowBtn";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
 const StyledViewer = styled.section`
-  width: 100vw;
+  width: 100%;
   height: calc(100vh - 61.7px);
   display: flex;
   padding: 20px;
@@ -22,14 +22,16 @@ const StyledViewer = styled.section`
 
 const ScreenSection = styled.section`
   width: 80vw;
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   flex-direction: column;
   position: relative;
   margin-right: 20px;
 
   @media screen and (max-width: 480px) {
-    width: 100vw;
+    width: 100%;
+    height: 100%;
+    margin: 0;
   }
 `;
 
@@ -40,6 +42,14 @@ const Screen = styled.div`
   min-height: 300px;
   border: 1px solid;
   position: relative;
+  background-color: black;
+
+  @media screen and (max-width: 480px) {
+    position: sticky;
+    top: 0;
+    z-index: 1010;
+    height: 40%;
+  }
 
   > i {
     visibility: hidden;
@@ -63,15 +73,17 @@ const FullScreen = styled(BiFullscreen)`
   position: absolute;
   bottom: 10px;
   right: 10px;
+  color: grey;
 `;
 
 const StudeamerInfo = styled.div`
   width: 100%;
-  height: 20%;
+  height: 15%;
   min-height: 100px;
   display: flex;
   justify-content: space-between;
   padding: 20px 10px;
+  background-color: #f8f8f8;
 `;
 
 const InfoSection1 = styled.div`
@@ -95,6 +107,16 @@ const InfoSection1 = styled.div`
       vertical-align: middle;
       line-height: normal;
     }
+  }
+`;
+
+const ChatSection = styled.section`
+  width: 25%;
+  height: 100%;
+  min-height: 300px;
+
+  @media screen and (max-width: 480px) {
+    width: 100%;
   }
 `;
 
@@ -152,7 +174,9 @@ function Viewer() {
           </InfoSection2>
         </StudeamerInfo>
       </ScreenSection>
-      <Chat />
+      <ChatSection>
+        <Chat />
+      </ChatSection>
     </StyledViewer>
   );
 }
