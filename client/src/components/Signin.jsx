@@ -7,14 +7,13 @@ import {
   signinModalOpen,
   signupModalOpen,
   modalOff,
-  notify,
   getFollows,
 } from "../store/actions/index";
 import styled from "styled-components";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "./Button";
-import { AuthContainer, Title, Input } from "./reusableStyle";
+import { AuthContainer, Title, Input, FailureMsg } from "./reusableStyle";
 import authAPI from "../api/auth";
 import userAPI from "../api/user";
 import google from "../assets/images/btn_google.svg";
@@ -69,11 +68,16 @@ const SocialBtn = styled.div`
 
 const ButtonContainer = styled.div`
   width: 220px;
-  margin-top: 40px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 function Signin() {
   const [signinInfo, setSigninInfo] = useState({ email: "", password: "" });
+  const [message, setMessage] = useState("");
+  const [isReqFailed, setIsReqFailed] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const regExpEmail =
@@ -85,11 +89,14 @@ function Signin() {
 
   const signinHandler = () => {
     if (!signinInfo.email.length) {
-      dispatch(notify("이메일을 입력해주세요."));
+      setIsReqFailed(true);
+      setMessage("이메일을 입력해주세요.");
     } else if (!signinInfo.password.length) {
-      dispatch(notify("비밀번호를 입력해주세요."));
+      setIsReqFailed(true);
+      setMessage("비밀번호를 입력해주세요.");
     } else if (!regExpEmail.test(signinInfo.email)) {
-      dispatch(notify("올바른 이메일 형식이 아닙니다."));
+      setIsReqFailed(true);
+      setMessage("올바른 이메일 형식이 아닙니다.");
     } else {
       // signin request
       authAPI
@@ -114,12 +121,15 @@ function Signin() {
         .catch((err) => {
           if (err.response.status === 401) {
             if (err.response.data.message === "Verify email address") {
-              dispatch(notify("이메일 인증을 완료해주세요."));
+              setIsReqFailed(true);
+              setMessage("이메일 인증을 완료해주세요.");
             } else {
-              dispatch(notify("아이디와 비밀번호를 다시 확인해주세요."));
+              setIsReqFailed(true);
+              setMessage("아이디와 비밀번호를 다시 확인해주세요.");
             }
           } else {
-            dispatch(notify("새로고침 후 다시 시도해주세요."));
+            setIsReqFailed(true);
+            setMessage("새로고침 후 다시 시도해주세요.");
           }
         });
     }
@@ -167,15 +177,16 @@ function Signin() {
         <Icon icon={faLock} />
       </InputBox>
       <ButtonContainer>
+        {isReqFailed && <FailureMsg>{message}</FailureMsg>}
         <Button message="로그인" clickEvent={signinHandler}></Button>
       </ButtonContainer>
       <SignupBtn onClick={openSignup}>회원가입</SignupBtn>
       <SocialBtnBox>
         <SocialBtn onClick={googleBtnClick}>
-          <img src={google} />
+          <img src={google} alt="google-oauth-login" />
         </SocialBtn>
         <SocialBtn onClick={kakaoBtnClick}>
-          <img src={kakao} />
+          <img src={kakao} alt="kakao-oauth-login" />
         </SocialBtn>
       </SocialBtnBox>
     </AuthContainer>

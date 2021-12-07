@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import userAPI from "../api/user";
-import { notify, modalOff } from "../store/actions";
 import {
   AuthContainer,
   Title,
@@ -10,7 +8,9 @@ import {
   Desc,
   Input,
   ErrorMsg,
+  FailureMsg,
 } from "./reusableStyle";
+import SuccessNotify from "./SuccessNotify";
 import Button from "./Button";
 
 const ButtonContainer = styled.div`
@@ -27,7 +27,8 @@ function PwdEdit() {
   });
   const [errorMessage, setErrorMessage] = useState({ fresh: "", check: "" });
   const [isValid, setIsValid] = useState({ fresh: false, check: false });
-  const dispatch = useDispatch();
+  const [isReqFailed, setIsReqFailed] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const regExpPwd = /^(?=.*?[a-z])(?=.*?[0-9]).{8,16}$/i;
 
   const getPassword = (key) => (e) => {
@@ -66,18 +67,16 @@ function PwdEdit() {
 
   const pwdEditHandler = () => {
     if (!password.current.length) {
-      dispatch(notify("현재 비밀번호를 입력해주세요."));
       currentPwInput.current.focus();
     } else if (isValid.fresh && isValid.check) {
       userAPI
         .modifyUserInfo(password.current, password.fresh)
         .then(() => {
-          dispatch(notify("비밀번호가 변경되었습니다."));
-          dispatch(modalOff());
+          setIsSuccess(true);
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            dispatch(notify("현재 비밀번호가 일치하지 않습니다."));
+            setIsReqFailed(true);
             currentPwInput.current.focus();
           }
         });
@@ -92,39 +91,48 @@ function PwdEdit() {
   return (
     <AuthContainer>
       <Title>비밀번호 변경</Title>
-      <InputContainer>
-        <Desc>현재 비밀번호</Desc>
-        <Input
-          type="password"
-          onChange={getPassword("current")}
-          ref={currentPwInput}
-        ></Input>
-      </InputContainer>
-      <InputContainer>
-        <Desc>새 비밀번호</Desc>
-        <Input
-          type="password"
-          onChange={getPassword("fresh")}
-          onBlur={checkValidation}
-          ref={newPwInput}
-        ></Input>
-        <ErrorMsg>{errorMessage.fresh}</ErrorMsg>
-      </InputContainer>
-      <InputContainer>
-        <Desc>새 비밀번호 확인</Desc>
-        <Input
-          type="password"
-          onChange={getPassword("check")}
-          onBlur={checkMatched}
-          onKeyUp={(e) => {
-            e.key === "Enter" && pwdEditHandler();
-          }}
-        ></Input>
-        <ErrorMsg>{errorMessage.check}</ErrorMsg>
-      </InputContainer>
-      <ButtonContainer>
-        <Button message="변경하기" clickEvent={pwdEditHandler} />
-      </ButtonContainer>
+      {isSuccess ? (
+        <SuccessNotify message="비밀번호가 변경되었습니다." description="" />
+      ) : (
+        <div>
+          <InputContainer>
+            <Desc>현재 비밀번호</Desc>
+            <Input
+              type="password"
+              onChange={getPassword("current")}
+              ref={currentPwInput}
+            ></Input>
+          </InputContainer>
+          <InputContainer>
+            <Desc>새 비밀번호</Desc>
+            <Input
+              type="password"
+              onChange={getPassword("fresh")}
+              onBlur={checkValidation}
+              ref={newPwInput}
+            ></Input>
+            <ErrorMsg>{errorMessage.fresh}</ErrorMsg>
+          </InputContainer>
+          <InputContainer>
+            <Desc>새 비밀번호 확인</Desc>
+            <Input
+              type="password"
+              onChange={getPassword("check")}
+              onBlur={checkMatched}
+              onKeyUp={(e) => {
+                e.key === "Enter" && pwdEditHandler();
+              }}
+            ></Input>
+            <ErrorMsg>{errorMessage.check}</ErrorMsg>
+          </InputContainer>
+          {isReqFailed && (
+            <FailureMsg>현재 비밀번호가 일치하지 않습니다.</FailureMsg>
+          )}
+          <ButtonContainer>
+            <Button message="변경하기" clickEvent={pwdEditHandler} />
+          </ButtonContainer>
+        </div>
+      )}
     </AuthContainer>
   );
 }

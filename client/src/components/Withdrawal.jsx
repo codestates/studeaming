@@ -2,16 +2,22 @@ import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { BsCheckCircle } from "react-icons/bs";
-import { logout, notify } from "../store/actions";
+import { logout } from "../store/actions";
 import authAPI from "../api/auth";
 import Button from "./Button";
+import SuccessNotify from "./SuccessNotify";
 import { Title, Input } from "./reusableStyle";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .withdrawal_body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
   .withdrawal_description {
     color: var(--color-black-50);
@@ -21,16 +27,6 @@ const Container = styled.div`
     margin-bottom: 1rem;
   }
 
-  #withdrawal_success_container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #withdrawal_success {
-    margin: 0.8rem 0;
-  }
-
   #warning_message {
     color: var(--color-destructive);
     font-size: 0.7rem;
@@ -38,15 +34,12 @@ const Container = styled.div`
   }
 `;
 
-const StyledCheck = styled(BsCheckCircle)`
-  color: var(--color-main-100);
-  margin-bottom: 5px;
-`;
-
 function Withdrawal() {
   const { isSocialLogined } = useSelector(({ userReducer }) => userReducer);
   const [password, setPassword] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isReqFailed, setIsReqFailed] = useState(false);
   const input = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,7 +60,8 @@ function Withdrawal() {
           })
           .catch(() => {});
       } else {
-        dispatch(notify("메세지를 바르게 입력해주세요."));
+        setIsReqFailed(true);
+        setMessage("메세지를 바르게 입력해주세요.");
         input.current.focus();
       }
     } else {
@@ -79,7 +73,8 @@ function Withdrawal() {
           navigate("/home");
         })
         .catch(() => {
-          dispatch(notify("비밀번호가 일치하지 않습니다."));
+          setIsReqFailed(true);
+          setMessage("비밀번호가 일치하지 않습니다.");
           input.current.focus();
         });
     }
@@ -89,17 +84,12 @@ function Withdrawal() {
     <Container>
       <Title>탈퇴하기</Title>
       {isSuccess ? (
-        <div id="withdrawal_success_container">
-          <StyledCheck size="30px" />
-          <div id="withdrawal_success">탈퇴가 완료되었습니다.</div>
-          <div className="withdrawal_description">
-            스터디밍은 언제나 당신의 배움을 응원하겠습니다.
-            <br />
-            이용해주셔서 감사합니다.
-          </div>
-        </div>
+        <SuccessNotify
+          message="탈퇴가 완료되었습니다"
+          description="이용해주셔서 감사합니다."
+        />
       ) : (
-        <div>
+        <div className="withdrawal_body">
           <div className="withdrawal_description">
             스터디밍 서비스를 더 이상 사용하지 않으신다면
             <br />
@@ -117,7 +107,9 @@ function Withdrawal() {
             }
           />
           <div id="warning_message">
-            탈퇴 후에는 사용자 정보가 즉시 삭제되며 복구할 수 없습니다.
+            {isReqFailed
+              ? message
+              : "탈퇴 후에는 사용자 정보가 즉시 삭제되며 복구할 수 없습니다."}
           </div>
           <Button message="탈퇴 완료" clickEvent={withdrawalHandler} />{" "}
         </div>

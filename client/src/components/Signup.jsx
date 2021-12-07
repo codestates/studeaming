@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import authAPI from "../api/auth";
-import { modalOff, notify } from "../store/actions";
-import Button from "./Button";
 import {
   AuthContainer,
   Title,
@@ -11,7 +8,16 @@ import {
   Desc,
   Input,
   ErrorMsg,
+  FailureMsg,
 } from "./reusableStyle";
+import SuccessNotify from "./SuccessNotify";
+import Button from "./Button";
+
+const InputSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const ProfileImg = styled.div`
   position: relative;
@@ -90,8 +96,10 @@ function Signup() {
     username: "",
     password: "",
     check: "",
+    failure: "",
   });
-  const dispatch = useDispatch();
+  const [isReqFailed, setIsReqFailed] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const regExpEmail =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
   const regExpPwd = /^(?=.*?[a-z])(?=.*?[0-9]).{8,16}$/i;
@@ -188,16 +196,15 @@ function Signup() {
           signupInfo.password
         )
         .then(() => {
-          dispatch(
-            notify("회원가입이 완료되었습니다. 이메일 인증 후 로그인해주세요.")
-          );
-          dispatch(modalOff());
+          setIsSuccess(true);
         })
         .catch(() => {
-          dispatch(notify("새로고침 후 다시 시도해주세요."));
+          setIsReqFailed(true);
+          setMessage({ ...message, failure: "새로고침 후 다시 시도해주세요." });
         });
     } else {
-      dispatch(notify("입력란을 다시 확인해주세요."));
+      setIsReqFailed(true);
+      setMessage({ ...message, failure: "입력란을 다시 확인해주세요." });
     }
   };
 
@@ -209,68 +216,78 @@ function Signup() {
   return (
     <AuthContainer>
       <Title>회원가입</Title>
-      {signupInfo.image ? (
-        <ProfileImg onClick={removeProfileImg}>
-          <img src={signupInfo.image} />
-          <div id="remove_profile_img">&times;</div>
-        </ProfileImg>
+      {isSuccess ? (
+        <SuccessNotify
+          message={`${signupInfo.username}님 환영합니다!`}
+          description="이메일 인증 후 로그인해주세요."
+        />
       ) : (
-        <div>
-          <ImgLabel htmlFor="profile_img">프로필 업로드</ImgLabel>
-          <input
-            type="file"
-            id="profile_img"
-            accept="image/*"
-            onChange={getProfileImg}
-          ></input>
-        </div>
+        <InputSection>
+          {signupInfo.image ? (
+            <ProfileImg onClick={removeProfileImg}>
+              <img src={signupInfo.image} />
+              <div id="remove_profile_img">&times;</div>
+            </ProfileImg>
+          ) : (
+            <div>
+              <ImgLabel htmlFor="profile_img">프로필 업로드</ImgLabel>
+              <input
+                type="file"
+                id="profile_img"
+                accept="image/*"
+                onChange={getProfileImg}
+              ></input>
+            </div>
+          )}
+          <InputContainer>
+            <Desc htmlFor="email">이메일</Desc>
+            <Input
+              type="email"
+              id="email"
+              onChange={handleInputValue("email")}
+              onBlur={checkEmail}
+            ></Input>
+            <ErrorMsg isNoti={message.email.includes("인증")}>
+              {message.email}
+            </ErrorMsg>
+          </InputContainer>
+          <InputContainer>
+            <Desc htmlFor="username">닉네임</Desc>
+            <Input
+              id="username"
+              onChange={handleInputValue("username")}
+              onBlur={checkUsername}
+            ></Input>
+            <ErrorMsg>{message.username}</ErrorMsg>
+          </InputContainer>
+          <InputContainer>
+            <Desc htmlFor="password">비밀번호</Desc>
+            <Input
+              type="password"
+              id="password"
+              onChange={handleInputValue("password")}
+              onBlur={checkPassword}
+            ></Input>
+            <ErrorMsg>{message.password}</ErrorMsg>
+          </InputContainer>
+          <InputContainer>
+            <Desc htmlFor="check_password">비밀번호 확인</Desc>
+            <Input
+              type="password"
+              id="check_password"
+              onChange={handleInputValue("check")}
+              onKeyUp={(e) => {
+                e.key === "Enter" && signupHandler();
+              }}
+            ></Input>
+            <ErrorMsg>{message.check}</ErrorMsg>
+          </InputContainer>
+          {isReqFailed && <FailureMsg>{message.failure}</FailureMsg>}
+          <ButtonContainer>
+            <Button message="회원가입" clickEvent={signupHandler} />
+          </ButtonContainer>
+        </InputSection>
       )}
-      <InputContainer>
-        <Desc htmlFor="email">이메일</Desc>
-        <Input
-          type="email"
-          id="email"
-          onChange={handleInputValue("email")}
-          onBlur={checkEmail}
-        ></Input>
-        <ErrorMsg isNoti={message.email.includes("인증")}>
-          {message.email}
-        </ErrorMsg>
-      </InputContainer>
-      <InputContainer>
-        <Desc htmlFor="username">닉네임</Desc>
-        <Input
-          id="username"
-          onChange={handleInputValue("username")}
-          onBlur={checkUsername}
-        ></Input>
-        <ErrorMsg>{message.username}</ErrorMsg>
-      </InputContainer>
-      <InputContainer>
-        <Desc htmlFor="password">비밀번호</Desc>
-        <Input
-          type="password"
-          id="password"
-          onChange={handleInputValue("password")}
-          onBlur={checkPassword}
-        ></Input>
-        <ErrorMsg>{message.password}</ErrorMsg>
-      </InputContainer>
-      <InputContainer>
-        <Desc htmlFor="check_password">비밀번호 확인</Desc>
-        <Input
-          type="password"
-          id="check_password"
-          onChange={handleInputValue("check")}
-          onKeyUp={(e) => {
-            e.key === "Enter" && signupHandler();
-          }}
-        ></Input>
-        <ErrorMsg>{message.check}</ErrorMsg>
-      </InputContainer>
-      <ButtonContainer>
-        <Button message="회원가입" clickEvent={signupHandler} />
-      </ButtonContainer>
     </AuthContainer>
   );
 }
