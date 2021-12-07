@@ -17,7 +17,6 @@ import UserInfoEdit from "./components/UserInfoEdit";
 import UserProfile from "./components/UserProfile";
 import StreamerSetting from "./components/StreamerSetting";
 import Header from "./components/Header";
-import NotificationCenter from "./components/NotificationCenter";
 import SideLog from "./components/SideLog";
 import DailyLog from "./components/DailyLog";
 import Loading from "./components/Loading";
@@ -83,7 +82,6 @@ function App() {
       {isLoading ? <Loading /> : null}
       <Header />
       {isSideLogOpen && <SideLog />}
-      <NotificationCenter />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={<Home />} />
