@@ -64,3 +64,7 @@ export const ErrorMsg = styled.span`
   color: ${(props) => (props.isNoti ? "green" : "#f04949")};
   font-size: 10px;
 `;
+
+export const FailureMsg = styled(ErrorMsg)`
+  margin-bottom: 10px;
+`;
