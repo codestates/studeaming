@@ -23,7 +23,6 @@ import { io } from "socket.io-client";
 const ContentsSection = styled.section`
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 
 const SearchSection = styled.section`
@@ -169,12 +168,15 @@ function Home() {
 
   useEffect(() => {
     // get contents 요청 보내기
-    studyroomAPI.getStudyRoom().then((res) => {
-      console.log("데이터 룸리스트", res.data.roomList);
-      setAxiosItems(res.data.roomList);
-      setSearchItems(res.data.roomList);
-      filterHandler(res.data.roomList);
-    });
+    studyroomAPI
+      .getStudyRoom()
+      .then((res) => {
+        console.log("데이터 룸리스트", res.data.roomList);
+        setAxiosItems(res.data.roomList);
+        setSearchItems(res.data.roomList);
+        filterHandler(res.data.roomList);
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
