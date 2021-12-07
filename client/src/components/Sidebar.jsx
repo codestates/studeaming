@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import styled from "styled-components";
 import userAPI from "../api/user";
 import {
+  logout,
   pwdEditModalOpen,
   withdrawalModalOpen,
   profileModalOpen,
@@ -104,7 +105,9 @@ const BadgeContainer = styled.div`
 `;
 
 function Sidebar() {
-  const { isSocialLogined } = useSelector(({ userReducer }) => userReducer);
+  const { isSocialLogined, isGuestLogined } = useSelector(
+    ({ userReducer }) => userReducer
+  );
   const [following, setFollowing] = useState([
     { profileImg: "", username: "김코딩" },
     { profileImg: "", username: "박해커" },
@@ -136,6 +139,11 @@ function Sidebar() {
 
   const openFollowingProfile = (username) => {
     dispatch(profileModalOpen(true, username));
+  };
+
+  const signoutHandler = () => {
+    dispatch(logout());
+    navigate("/home");
   };
 
   const editPwdHandler = () => {
@@ -179,7 +187,10 @@ function Sidebar() {
         </BadgeContainer>
       </section>
       <section id="user_edit" className="sidebar_section">
-        {!isSocialLogined && (
+        <button id="signout" onClick={signoutHandler}>
+          로그아웃
+        </button>
+        {!(isSocialLogined || isGuestLogined) && (
           <button id="edit_email" onClick={editPwdHandler}>
             비밀번호 수정
           </button>
