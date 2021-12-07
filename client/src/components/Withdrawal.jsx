@@ -35,7 +35,9 @@ const Container = styled.div`
 `;
 
 function Withdrawal() {
-  const { isSocialLogined } = useSelector(({ userReducer }) => userReducer);
+  const { isSocialLogined, isGuestLogined } = useSelector(
+    ({ userReducer }) => userReducer
+  );
   const [password, setPassword] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
@@ -49,7 +51,7 @@ function Withdrawal() {
   };
 
   const withdrawalHandler = () => {
-    if (isSocialLogined) {
+    if (isSocialLogined || isGuestLogined) {
       if (password === "잘있어요 스터디밍") {
         authAPI
           .withdraw()
@@ -93,15 +95,15 @@ function Withdrawal() {
           <div className="withdrawal_description">
             스터디밍 서비스를 더 이상 사용하지 않으신다면
             <br />
-            {isSocialLogined ? "아래 메세지" : "비밀번호"}를 입력한 후 탈퇴할 수
-            있습니다.
+            {isSocialLogined || isGuestLogined ? "아래 메세지" : "비밀번호"}를
+            입력한 후 탈퇴할 수 있습니다.
           </div>
           <Input
             type={isSocialLogined ? "text" : "password"}
             onChange={getPassword}
             ref={input}
             placeholder={
-              isSocialLogined
+              isSocialLogined || isGuestLogined
                 ? `'잘있어요 스터디밍'을 입력해주세요`
                 : "비밀번호를 입력해주세요"
             }
