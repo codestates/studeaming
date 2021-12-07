@@ -58,6 +58,7 @@ const Siren = styled(GiSiren)`
   top: 10px;
   right: 10px;
 `;
+
 const FullScreen = styled(BiFullscreen)`
   position: absolute;
   bottom: 10px;

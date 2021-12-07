@@ -1,7 +1,7 @@
 const { socketio_data } = require("../../models");
 
 const users = {};
-const socketToRoom = {};
+const socketToRoom = [];
 
 const newID = function () {
   return Math.random().toString(36).substr(2, 16);
@@ -17,29 +17,47 @@ module.exports = {
     //   })
     // );
     socket.on("join_room", (data) => {
-      console.log("썸네일", data.thumbnail);
-      if (users[data.room]) {
+      if (users[data.roomName]) {
         //todo: 방이 이미 존재할때
-        const length = users[data.room].length;
+        const length = users[data.roomName].length;
         if (length === maximum) {
           socket.to(socket.id).emit("room_full");
           return;
         }
-        users[data.room].push({
-          id: socket.id,
-          email: data.email,
-          studeamer_id: socket.id,
-          thumbnail: data.thumbnail,
+        //todo : 방제목, 썸네일, createdAt, updatadAt, UCT?
+        users[data.roomName].push({
+          uuid: socket.id,
         });
-      } else {
-        //todo: 방이 존재하지 않을때
-        console.log("방제목", data.room);
+        //todo: 만들어진방에 들어오는 유저들
         socketio_data
           .findOrCreate({
-            where: { uuid: data.uuid },
-            defaults: {
-              studeamer_id: socket.id,
+            where: { user_id: data.studeamerID },
+            default: {
+              title: data.roomName,
               thumbnail: data.thumbnail,
+              HeadCount: users[data.roomName].HeadCount++,
+            },
+          })
+          .then(([data, created]) => {
+            if (!created) {
+              return;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        //todo: 방이 존재하지 않을때
+        console.log("방제목", data.roomName);
+        socketio_data
+          .findOrCreate({
+            where: { user_id: data.studeamerID },
+            defaults: {
+              title: data.roomName,
+              uuid: socket.id,
+              user_id: data.studeamerID,
+              thumbnail: data.thumbnail,
+              HeadCount: 1,
             },
           })
           .then(([data, created]) => {
@@ -47,29 +65,31 @@ module.exports = {
             if (!created) return;
           })
           .catch((e) => console.log(e));
-        users[data.room] = [
+        users[data.roomName] = [
           {
-            uuid: newID(),
-            id: socket.id,
-            email: data.email,
-            studeamer_id: socket.id,
-            thumbnail: data.thumbnail,
+            title: data.roomName,
+            uuid: socket.id,
+            user_id: data.studeamerID,
+            HeadCount: 1,
           },
         ];
+        console.log("넌 뭐니", users[data.roomName]);
       }
-      socketToRoom[socket.id] = data.room;
-      socket.join(data.room);
+      socketToRoom.push({ MakeRoom: data.roomName });
+      console.log("넌 뭐니 2", socketToRoom);
+      socket.join(data.roomName);
+
       console.log(
         "유저님이 입장하셨습니다.",
-        `[${socketToRoom[socket.id]}]: ${socket.id} enter`
+        `[${data.roomName}]: ${socket.id} enter`
       );
 
-      const usersInThisRoom = users[data.room].filter(
-        (user) => user.id !== socket.id
+      const usersInThisRoom = users[data.roomName].filter(
+        (user) => user.uuid !== socket.id
       );
 
       console.log("방안에 누가있나요?", usersInThisRoom);
-      io.sockets.to(socket.id).emit("all_users", users[data.room]);
+      io.sockets.to(socket.id).emit("all_users", users[data.roomName]);
     });
 
     socket.on("offer", (data) => {
@@ -89,29 +109,46 @@ module.exports = {
     });
 
     socket.on("canidate", (data) => {
-      socket.to(data.candidateReceiveID).emit("getCandidate", {
-        candidate: data.candidate,
-        candidateSendID: data.candidateSendID,
-      });
+      socket
+        .to(data.candidateReceiveID)
+        .emit("getCandidate roomID = socketToRoom[data.roomName];", {
+          candidate: data.candidate,
+          candidateSendID: data.candidateSendID,
+        });
     });
 
-    socket.on("disconnect", () => {
-      console.log(
-        "여기는 exit",
-        `[${socketToRoom[socket.id]}]: ${socket.id} exit`
-      );
-      const roomID = socketToRoom[socket.id];
+    socket.on("disconnect", (data) => {
+      // console.log("여기는 exit", `[${socketToRoom}]: ${socket.id} exit`);
+      // let roomID = socketToRoom[data.roomName];
+      let roomID = socketToRoom.forEach((room) => {});
+      console.log("룸아이디", roomID);
       let room = users[roomID];
       if (room) {
-        room = room.filter((user) => user.id !== socket.id);
+        room = room.filter((user) => user.uuid !== socket.id);
         users[roomID] = room;
         if (room.length === 0) {
           delete users[roomID];
           return;
+        } else {
+          // todo: 방에서 나갈때 db에서 삭제
+          socketio_data
+            .destory({
+              where: { uuid: room.uuid },
+            })
+            .then((data) => {
+              if (data) {
+                res.send(204).send();
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
         }
       }
+      roomID = socketToRoom[data.roomName];
+
       socket.to(roomID).emit("user_exit", { id: socket.id });
-      console.log(users);
+      console.log("디스 커넥트 유저스", users);
     });
   },
 };

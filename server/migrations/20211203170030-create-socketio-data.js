@@ -23,6 +23,7 @@ module.exports = {
       headCount: {
         allowNull: false,
         type: Sequelize.INTEGER,
+        defaultValue: 1,
       },
       thumbnail: {
         allowNull: false,

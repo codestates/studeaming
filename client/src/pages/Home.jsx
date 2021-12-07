@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -16,7 +16,9 @@ import MainContents from "../components/MainContents";
 import TopBtn from "../components/TopBtn";
 import authAPI from "../api/auth";
 import userAPI from "../api/user";
+import studyroomAPI from "../api/studyroom";
 import contents from "../assets/dummy/contents";
+import { io } from "socket.io-client";
 
 const ContentsSection = styled.section`
   display: flex;
@@ -129,7 +131,7 @@ function Home() {
   };
 
   const searchItem = (query) => {
-    const fuse = new Fuse(contents, {
+    const fuse = new Fuse(axiosItems, {
       keys: ["title", "username"],
     });
 
@@ -167,13 +169,12 @@ function Home() {
 
   useEffect(() => {
     // get contents 요청 보내기
-    dispatch(loadingHandler(true));
-    setTimeout(() => {
-      setAxiosItems(contents);
-      setSearchItems(contents);
-      filterHandler(contents);
-      dispatch(loadingHandler(false));
-    }, 1000);
+    studyroomAPI.getStudyRoom().then((res) => {
+      console.log("데이터 룸리스트", res.data.roomList);
+      setAxiosItems(res.data.roomList);
+      setSearchItems(res.data.roomList);
+      filterHandler(res.data.roomList);
+    });
   }, []);
 
   useEffect(() => {
