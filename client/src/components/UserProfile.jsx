@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import userAPI from "../api/user";
-import { modalOff, notify } from "../store/actions";
+import { modalOff } from "../store/actions";
 import FollowBtn from "./FollowBtn";
 import Badge from "./Badge";
 import defaultImg from "../assets/images/img_profile_default.svg";
@@ -116,23 +115,23 @@ function UserProfile({ username }) {
     studyTime: 1890,
   });
   const [badges, setBadges] = useState(dummyBadges);
-  const dispatch = useDispatch();
 
   const getProfile = async (username) => {
     try {
       const res = await userAPI.getOthersInfo(username);
-      // setProfile(res);
+      setProfile(res.data.profile);
     } catch {
       modalOff();
-      dispatch(notify("회원 정보를 불러오지 못했습니다."));
     }
   };
 
   const getBadges = async (username) => {
     try {
       const res = await userAPI.getOthersAchievement(username);
-      // setBadges(res);
-    } catch {}
+      setBadges(res.data.achievements);
+    } catch {
+      modalOff();
+    }
   };
 
   useEffect(() => {
@@ -152,8 +151,8 @@ function UserProfile({ username }) {
       </UserInfo>
       <StudyInfo>
         <Subheading>최근에 한 공부</Subheading>
-        {profile.studylogList.map((log) => {
-          return <Tag>{log}</Tag>;
+        {profile.studylogList.map((log, idx) => {
+          return <Tag key={idx}>{log}</Tag>;
         })}
         <Subheading>한 달 동안 공부한 시간</Subheading>
         <span id="studytime">
