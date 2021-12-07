@@ -9,8 +9,13 @@ const ChatStyle = styled.section`
   display: flex;
   flex-direction: column;
   width: 25%;
-  height: 80%;
+  min-width: 250px;
+  height: 100%;
   position: relative;
+
+  @media screen and (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const ChatSection = styled.section`
@@ -31,6 +36,10 @@ const ChatInput = styled.div`
   border-radius: 0.5rem;
   background-color: #f8f8f8;
   padding-left: 10px;
+
+  @media screen and (max-width: 480px) {
+    height: 30px;
+  }
 `;
 
 const Comment = styled.span`
