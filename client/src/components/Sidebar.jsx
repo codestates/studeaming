@@ -7,7 +7,7 @@ import {
   pwdEditModalOpen,
   withdrawalModalOpen,
   profileModalOpen,
-  notify,
+  signinModalOpen,
 } from "../store/actions";
 import Badge from "./Badge";
 import defaultImg from "../assets/images/img_profile_default.svg";
@@ -117,20 +117,20 @@ function Sidebar() {
   const getFollowing = async () => {
     try {
       const res = await userAPI.getFollows();
-      setFollowing(res);
+      setFollowing(res.data.studeamerList);
     } catch {
-      // navigate("/home")
-      // dispatch(notify("다시 로그인해주세요."));
+      navigate("/home");
+      dispatch(signinModalOpen(true));
     }
   };
 
   const getBadge = async () => {
     try {
       const res = await userAPI.getAchievement();
-      setBadges(res);
+      setBadges(res.data.achievements);
     } catch {
-      // navigate("/home")
-      // dispatch(notify("다시 로그인해주세요."));
+      navigate("/home");
+      dispatch(signinModalOpen(true));
     }
   };
 
@@ -139,11 +139,7 @@ function Sidebar() {
   };
 
   const editPwdHandler = () => {
-    if (!isSocialLogined) {
-      dispatch(pwdEditModalOpen(true));
-    } else {
-      dispatch(notify("비밀번호를 변경할 수 없습니다."));
-    }
+    dispatch(pwdEditModalOpen(true));
   };
 
   const withdrawalHandler = () => {
@@ -183,9 +179,11 @@ function Sidebar() {
         </BadgeContainer>
       </section>
       <section id="user_edit" className="sidebar_section">
-        <button id="edit_email" onClick={editPwdHandler}>
-          비밀번호 수정
-        </button>
+        {!isSocialLogined && (
+          <button id="edit_email" onClick={editPwdHandler}>
+            비밀번호 수정
+          </button>
+        )}
         <button id="withdrawl" onClick={withdrawalHandler}>
           회원 탈퇴
         </button>
