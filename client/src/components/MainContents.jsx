@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import Viewer from "../pages/Viewer";
 import styled from "styled-components";
+import studyroomAPI from "../api/";
 import defaultImg from "../assets/images/img_profile_default.svg";
 import empty from "../assets/images/empty.png";
 
@@ -160,15 +161,16 @@ function MainContents({ contents }) {
 
       pc.ontrack = (e) => {
         console.log("ontrack success");
-        setUsers((oldUsers) =>
+        setUsers((oldUsers) => {
+          console.log("올드유저", oldUsers);
           oldUsers
             .filter((user) => user.id !== socketID)
             .concat({
               id: socketID,
               email: email,
               stream: e.streams[0],
-            })
-        );
+            });
+        });
       };
       // if (localStreamRef.current) {
       //   console.log("localstream add", localStreamRef.current.getTracks());
@@ -205,15 +207,14 @@ function MainContents({ contents }) {
       forceNew: true,
       withCredentials: true,
     });
-    //todo: 일단은 getLocalStream() 실행중지
 
     socketRef.current.on("all_users", (allUsers) => {
       console.log("올 유저", allUsers);
       allUsers.forEach(async (user) => {
+        console.log("유저스", user);
         const { id, email } = user;
-        console.log("로컬스트림 커렌트", localStreamRef.current);
         if (!localStreamRef.current) return;
-        const pc = createPeerConnection(user.id, user.email);
+        const pc = createPeerConnection(id, email);
         console.log("피씨", pc);
         console.log("피씨 Ref", pcsRef.current);
         if (!(pc && socketRef.current)) return;

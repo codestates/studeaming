@@ -13,6 +13,7 @@ const LiveVideo = styled.video`
 `;
 
 // todo: stun 서버 여러개
+
 const StunServer = {
   iceServers: [
     {
@@ -73,8 +74,6 @@ function Screen() {
   const createPeerConnection = useCallback((socketID, email) => {
     try {
       const pc = new RTCPeerConnection(StunServer);
-      console.log("피씨", pc);
-      console.log("소켓아이디", socketID);
 
       pc.onicecandidate = (e) => {
         if (!(socketRef.current && e.candidate)) return;
@@ -102,15 +101,6 @@ function Screen() {
             })
         );
       };
-      if (localStreamRef.current) {
-        console.log("localstream add");
-        localStreamRef.current.getTracks().forEach((track) => {
-          if (!localStreamRef.current) return;
-          pc.addTrack(track, localStreamRef.current);
-        });
-      } else {
-        console.log("no local stream");
-      }
       return pc;
     } catch (e) {
       console.log(e);

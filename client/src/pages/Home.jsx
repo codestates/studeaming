@@ -17,8 +17,6 @@ import TopBtn from "../components/TopBtn";
 import authAPI from "../api/auth";
 import userAPI from "../api/user";
 import studyroomAPI from "../api/studyroom";
-import contents from "../assets/dummy/contents";
-import { io } from "socket.io-client";
 
 const ContentsSection = styled.section`
   display: flex;
@@ -168,15 +166,11 @@ function Home() {
 
   useEffect(() => {
     // get contents 요청 보내기
-    studyroomAPI
-      .getStudyRoom()
-      .then((res) => {
-        console.log("데이터 룸리스트", res.data.roomList);
-        setAxiosItems(res.data.roomList);
-        setSearchItems(res.data.roomList);
-        filterHandler(res.data.roomList);
-      })
-      .catch(() => {});
+    studyroomAPI.getStudyRoom().then((res) => {
+      setAxiosItems(res.data.roomList);
+      setSearchItems(res.data.roomList);
+      filterHandler(res.data.roomList);
+    });
   }, []);
 
   useEffect(() => {
