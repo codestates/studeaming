@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
+  verifyGuestLogined,
   getUserInfo,
   loginStateChange,
   signinModalOpen,
@@ -34,8 +35,9 @@ const Icon = styled(FontAwesomeIcon)`
   top: calc(50% - 9px);
 `;
 
-const SignupBtn = styled.div`
-  margin: 15px 0px 25px 0px;
+const AssistBtn = styled.div`
+  display: inline-block;
+  margin: 15px 10px;
   font-size: 14px;
   cursor: pointer;
   :hover {
@@ -134,7 +136,21 @@ function Signin() {
         });
     }
   };
-  const openSignup = () => {
+
+  const guestSigninHandler = () => {
+    authAPI
+      .guestSignin()
+      .then((res) => {
+        const data = res.data.user;
+        dispatch(loginStateChange(true));
+        dispatch(verifyGuestLogined(true));
+        dispatch(getUserInfo(data));
+        dispatch(modalOff());
+      })
+      .catch(() => {});
+  };
+
+  const openSignupHandler = () => {
     dispatch(signinModalOpen(false));
     dispatch(signupModalOpen(true));
   };
@@ -180,7 +196,10 @@ function Signin() {
         {isReqFailed && <FailureMsg>{message}</FailureMsg>}
         <Button message="로그인" clickEvent={signinHandler}></Button>
       </ButtonContainer>
-      <SignupBtn onClick={openSignup}>회원가입</SignupBtn>
+      <div>
+        <AssistBtn onClick={guestSigninHandler}>게스트 로그인</AssistBtn>
+        <AssistBtn onClick={openSignupHandler}>회원가입</AssistBtn>
+      </div>
       <SocialBtnBox>
         <SocialBtn onClick={googleBtnClick}>
           <img src={google} alt="google-oauth-login" />
