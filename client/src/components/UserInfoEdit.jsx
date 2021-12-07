@@ -1,11 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
-import {
-  getUserInfo,
-  userInfoEditModalOpen,
-  notify,
-} from "../store/actions/index";
+import { getUserInfo, userInfoEditModalOpen } from "../store/actions/index";
 import Button from "./Button";
 import userAPI from "../api/user";
 import { InputContainer, Input, Desc } from "./reusableStyle";
@@ -93,10 +89,8 @@ function UserInfoEdit() {
     userAPI.modifyUserInfo(editInfo).then(() => {
       dispatch(getUserInfo());
       dispatch(userInfoEditModalOpen(false));
-      dispatch(notify("변경되었습니다."));
     });
     dispatch(userInfoEditModalOpen(false)); //api잘 되면 지우기
-    dispatch(notify("변경되었습니다.")); //api잘 되면 지우기
   };
 
   return (

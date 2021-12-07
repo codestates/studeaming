@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { signinModalOpen, notify } from "../store/actions";
+import { signinModalOpen } from "../store/actions";
 import authAPI from "../api/auth";
 
 function Verification() {
@@ -16,18 +16,16 @@ function Verification() {
     authAPI
       .verification(authorizationCode)
       .then(() => {
-        dispatch(
-          notify("이메일 인증이 완료되었습니다. 로그인 후 사용해주세요 :)")
-        );
+        // notify("이메일 인증이 완료되었습니다. 로그인 후 사용해주세요") 추가
+        dispatch(signinModalOpen(true));
       })
       .catch(() => {
-        dispatch(notify("이메일 인증에 실패했습니다."));
+        // notify("이메일 인증에 실패했습니다.") 추가
       });
   };
 
   useEffect(() => {
     getVerificationCode();
-    dispatch(signinModalOpen(true));
     if (!isSigninOpen) {
       navigate("/home");
     }
