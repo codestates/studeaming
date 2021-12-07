@@ -1,5 +1,6 @@
 export const CHANGE_LOGIN_STATE = "CHANGE_LOGIN_STATE";
 export const VERIFY_SOCIAL_LOGINED = "VERIFY_SOCIAL_LOGINED";
+export const VERIFY_GUEST_LOGINED = "VERIFY_GUEST_LOGINED";
 export const GET_USERINFO = "GET_USERINFO";
 export const LOGOUT = "LOGOUT";
 export const GET_FOLLOWS = "GET_FOLLOWS";
@@ -30,6 +31,13 @@ export const loginStateChange = (boolean) => {
 export const verifySocialLogined = (boolean) => {
   return {
     type: VERIFY_SOCIAL_LOGINED,
+    payload: boolean,
+  };
+};
+
+export const verifyGuestLogined = (boolean) => {
+  return {
+    type: VERIFY_GUEST_LOGINED,
     payload: boolean,
   };
 };

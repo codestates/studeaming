@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  notify,
+  signinModalOpen,
   logout,
   sideLogOpen,
   userInfoEditModalOpen,
   loginStateChange,
   getUserInfo,
+  verifyGuestLogined,
 } from "../store/actions/index";
 import { gsap } from "gsap";
 import styled from "styled-components";
@@ -289,7 +290,6 @@ function SideLog() {
       dispatch(logout());
       dispatch(sideLogOpen(false));
       navigate("/home");
-      dispatch(notify("로그아웃 되었습니다."));
     });
   };
 
@@ -311,7 +311,7 @@ function SideLog() {
       .catch(() => {
         dispatch(logout());
         dispatch(sideLogOpen(false));
-        dispatch(notify("로그인이 만료되었습니다."));
+        dispatch(signinModalOpen(true));
       });
   };
 
@@ -364,12 +364,15 @@ function SideLog() {
   };
 
   const guestSigninHandler = () => {
-    authAPI.guestSignin((res) => {
-      const data = res.data.user;
-      dispatch(loginStateChange(true));
-      dispatch(getUserInfo(data));
-      dispatch(notify("게스트 로그인에 성공했습니다."));
-    });
+    authAPI
+      .guestSignin()
+      .then((res) => {
+        const data = res.data.user;
+        dispatch(loginStateChange(true));
+        dispatch(verifyGuestLogined(true));
+        dispatch(getUserInfo(data));
+      })
+      .catch(() => {});
   };
 
   useEffect(() => {
@@ -382,7 +385,7 @@ function SideLog() {
         .catch((e) => {
           dispatch(logout());
           dispatch(sideLogOpen(false));
-          dispatch(notify("로그인이 만료되었습니다."));
+          dispatch(signinModalOpen(true));
         });
     }
   }, []);

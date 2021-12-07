@@ -13,7 +13,7 @@ const StyledViewer = styled.section`
   height: calc(100vh - 61.7px);
   display: flex;
   padding: 20px;
-  
+
   @media screen and (max-width: 480px) {
     flex-direction: column;
     padding: 0;
@@ -27,7 +27,7 @@ const ScreenSection = styled.section`
   flex-direction: column;
   position: relative;
   margin-right: 20px;
-  
+
   @media screen and (max-width: 480px) {
     width: 100vw;
   }
@@ -40,12 +40,12 @@ const Screen = styled.div`
   min-height: 300px;
   border: 1px solid;
   position: relative;
-  
+
   > i {
     visibility: hidden;
     cursor: pointer;
   }
-  
+
   :hover {
     > i {
       visibility: visible;
@@ -58,6 +58,7 @@ const Siren = styled(GiSiren)`
   top: 10px;
   right: 10px;
 `;
+
 const FullScreen = styled(BiFullscreen)`
   position: absolute;
   bottom: 10px;
@@ -76,11 +77,11 @@ const StudeamerInfo = styled.div`
 const InfoSection1 = styled.div`
   display: flex;
   flex-direction: column;
-  
+
   > .studeamer_info {
     display: flex;
     align-items: center;
-    
+
     > img {
       height: 45px;
       width: 45px;
@@ -88,7 +89,7 @@ const InfoSection1 = styled.div`
       object-fit: cover;
       margin-right: 10px;
     }
-    
+
     > span {
       display: inline-block;
       vertical-align: middle;
@@ -103,7 +104,7 @@ const InfoSection2 = styled.div`
   align-items: end;
   justify-content: space-between;
   color: #838080;
-  
+
   > span {
     display: inline-block;
     font-size: 12px;
