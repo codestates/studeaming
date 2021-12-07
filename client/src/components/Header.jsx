@@ -156,7 +156,7 @@ function Header() {
   };
 
   const streamHandler = () => {
-    navigate("/streamer");
+    navigate("/");
     dispatch(streamSettingModalOpen(true));
   };
 

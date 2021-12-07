@@ -13,7 +13,6 @@ const StyledViewer = styled.section`
   height: calc(100vh - 61.7px);
   display: flex;
   padding: 20px;
-
   @media screen and (max-width: 480px) {
     flex-direction: column;
     padding: 0;
@@ -27,7 +26,6 @@ const ScreenSection = styled.section`
   flex-direction: column;
   position: relative;
   margin-right: 20px;
-
   @media screen and (max-width: 480px) {
     width: 100%;
     height: 100%;
@@ -55,7 +53,6 @@ const Screen = styled.div`
     visibility: hidden;
     cursor: pointer;
   }
-
   :hover {
     > i {
       visibility: visible;
@@ -68,7 +65,6 @@ const Siren = styled(GiSiren)`
   top: 10px;
   right: 10px;
 `;
-
 const FullScreen = styled(BiFullscreen)`
   position: absolute;
   bottom: 10px;
@@ -101,7 +97,6 @@ const InfoSection1 = styled.div`
       object-fit: cover;
       margin-right: 10px;
     }
-
     > span {
       display: inline-block;
       vertical-align: middle;
@@ -126,7 +121,6 @@ const InfoSection2 = styled.div`
   align-items: end;
   justify-content: space-between;
   color: #838080;
-
   > span {
     display: inline-block;
     font-size: 12px;
