@@ -1,6 +1,7 @@
 import {
   CHANGE_LOGIN_STATE,
   VERIFY_SOCIAL_LOGINED,
+  VERIFY_GUEST_LOGINED,
   GET_USERINFO,
   LOGOUT,
 } from "../actions/index";
@@ -8,6 +9,7 @@ import {
 const initState = {
   isLogin: false,
   isSocialLogined: false,
+  isGuestLogined: false,
   id: "",
   profileImg: "",
   username: "",
@@ -21,6 +23,8 @@ const userReducer = (state = initState, action) => {
       return { ...state, isLogin: action.payload };
     case VERIFY_SOCIAL_LOGINED:
       return { ...state, isSocialLogined: action.payload };
+    case VERIFY_GUEST_LOGINED:
+      return { ...state, isGuestLogined: action.payload };
     case GET_USERINFO:
       return { ...state, ...action.payload.data };
     case LOGOUT:
