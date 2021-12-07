@@ -5,7 +5,17 @@ import { faHeart as solid_heart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as regular_heart } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import userAPI from "../api/user";
-import { follow, unfollow, notify } from "../store/actions";
+import {
+  follow,
+  unfollow,
+  signinModalOpen,
+  profileModalOpen,
+} from "../store/actions";
+
+const Container = styled.div`
+  display: inline-flexbox;
+  align-items: center;
+`;
 
 const FollowIcon = styled(FontAwesomeIcon)`
   color: var(--color-main-100);
@@ -13,9 +23,23 @@ const FollowIcon = styled(FontAwesomeIcon)`
   margin: 0 0.4rem;
 `;
 
+const SigninNoti = styled.div`
+  color: var(--color-black-50);
+  font-size: 0.9rem;
+
+  span {
+    font-size: 0.9rem;
+    color: var(--color-main-100);
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
+
 function FollowBtn({ username }) {
   const { follows } = useSelector(({ followReducer }) => followReducer);
   const [isFollowed, setIsFollowed] = useState(true);
+  const [isBtnClicked, setIsBtnClicked] = useState(false);
   const dispatch = useDispatch();
 
   const checkFollowing = (username) => {
@@ -32,7 +56,7 @@ function FollowBtn({ username }) {
           dispatch(unfollow(username));
         })
         .catch(() => {
-          dispatch(notify("로그인 후 이용해주세요."));
+          setIsBtnClicked(true);
         });
     } else {
       userAPI
@@ -42,20 +66,38 @@ function FollowBtn({ username }) {
           dispatch(follow(res.data.newFollow));
         })
         .catch(() => {
-          dispatch(notify("로그인 후 이용해주세요."));
+          setIsBtnClicked(true);
         });
     }
+  };
+
+  const gotoSignin = () => {
+    dispatch(profileModalOpen(false));
+    dispatch(signinModalOpen(true));
   };
 
   useEffect(() => {
     checkFollowing();
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsBtnClicked(false);
+    }, 3000);
+  }, [isBtnClicked]);
+
   return (
-    <FollowIcon
-      icon={isFollowed ? solid_heart : regular_heart}
-      onClick={() => changeFollowing(username)}
-    />
+    <Container>
+      <FollowIcon
+        icon={isFollowed ? solid_heart : regular_heart}
+        onClick={() => changeFollowing(username)}
+      ></FollowIcon>
+      {isBtnClicked && (
+        <SigninNoti>
+          팔로우하려면 <span onClick={gotoSignin}>로그인</span>하세요.
+        </SigninNoti>
+      )}
+    </Container>
   );
 }
 
