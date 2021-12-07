@@ -5,7 +5,6 @@ import userReducer from "./userReducer";
 import modalReducer from "./modalReducer";
 import sideLogReducer from "./sideLogReducer";
 import followReducer from "./followReducer";
-import notificationReducer from "./notificationReducer";
 import loadingReducer from "./loadingReducer";
 
 const persistConfig = {
@@ -19,7 +18,6 @@ const rootReducer = combineReducers({
   modalReducer,
   sideLogReducer,
   followReducer,
-  notificationReducer,
   loadingReducer,
 });
 
