@@ -8,14 +8,10 @@ import logAPI from "../api/studyLog";
 const ChatStyle = styled.section`
   display: flex;
   flex-direction: column;
-  width: 25%;
+  width: 100%;
   min-width: 250px;
   height: 100%;
   position: relative;
-
-  @media screen and (max-width: 480px) {
-    width: 100%;
-  }
 `;
 
 const ChatSection = styled.section`
