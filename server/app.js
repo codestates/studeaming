@@ -9,7 +9,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const { Server } = require("socket.io");
 
-const studyRoom = require("./controller/studyRoom");
+const studyRoom = require("./controller/studyRoom/index");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const studyToggleRouter = require("./routes/studyToggle");
@@ -36,7 +36,7 @@ app.use(
   })
 );
 
-cron.schedule("* * * * 2", () => {
+cron.schedule("0 0 * * 1", () => {
   cronJob();
 });
 
