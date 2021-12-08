@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { FaTelegramPlane } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
@@ -89,6 +90,7 @@ const Imoticon = styled.div`
 `;
 
 function Chat() {
+  const { isLogin } = useSelector(({ userReducer }) => userReducer);
   const [inputClick, setInputClick] = useState(false);
   const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
   const [letter, setLetter] = useState("");
@@ -130,11 +132,13 @@ function Chat() {
   };
 
   useEffect(() => {
-    logAPI.getLogs(eightDigitDate, offset).then((res) => {
-      const hour = Math.floor(res.data.studyTime / 60);
-      const minute = res.data.studyTime % 60;
-      setStudyTime({ hour, minute });
-    });
+    if (isLogin) {
+      logAPI.getLogs(eightDigitDate, offset).then((res) => {
+        const hour = Math.floor(res.data.studyTime / 60);
+        const minute = res.data.studyTime % 60;
+        setStudyTime({ hour, minute });
+      });
+    }
   }, []);
 
   return (
