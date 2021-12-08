@@ -86,11 +86,11 @@ function UserInfoEdit() {
   };
 
   const editRequest = () => {
-    userAPI.modifyUserInfo(editInfo).then(() => {
-      dispatch(getUserInfo());
+    userAPI.modifyUserInfo(editInfo).then((res) => {
+      const data = res.data.user;
+      dispatch(getUserInfo(data));
       dispatch(userInfoEditModalOpen(false));
     });
-    dispatch(userInfoEditModalOpen(false)); //api잘 되면 지우기
   };
 
   return (
