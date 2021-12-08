@@ -20,6 +20,7 @@ import Header from "./components/Header";
 import SideLog from "./components/SideLog";
 import DailyLog from "./components/DailyLog";
 import Loading from "./components/Loading";
+import Report from "./components/Report";
 import api from "./api/index";
 import axios from "axios";
 
@@ -35,6 +36,7 @@ function App() {
     isProfileModalOpen,
     isStreamSettingOpen,
     isDailyLogOpen,
+    isReportOpen,
   } = useSelector(({ modalReducer }) => modalReducer);
   const { isSideLogOpen } = useSelector(({ sideLogReducer }) => sideLogReducer);
   const { isLoading } = useSelector(({ loadingReducer }) => loadingReducer);
@@ -46,7 +48,8 @@ function App() {
     isUserInfoEditOpen ||
     isProfileModalOpen.boolean ||
     isStreamSettingOpen ||
-    isDailyLogOpen.boolean;
+    isDailyLogOpen.boolean ||
+    isReportOpen;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -104,6 +107,7 @@ function App() {
           {isDailyLogOpen.boolean && (
             <DailyLog moment={isDailyLogOpen.moment} />
           )}
+          {isReportOpen && <Report />}
         </Modal>
       )}
     </>
