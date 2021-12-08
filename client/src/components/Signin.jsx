@@ -11,6 +11,8 @@ import {
   getFollows,
 } from "../store/actions/index";
 import styled from "styled-components";
+import { notification } from "antd";
+import "antd/dist/antd.css";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "./Button";
@@ -146,6 +148,16 @@ function Signin() {
         dispatch(verifyGuestLogined(true));
         dispatch(getUserInfo(data));
         dispatch(modalOff());
+        notification.open({
+          message: (
+            <div style={{ fontSize: "1rem" }}>게스트로 로그인되었습니다.</div>
+          ),
+          description: (
+            <div style={{ fontSize: "0.8rem" }}>
+              1시간 뒤 만료되니 이어서 이용하시려면 회원가입해주세요.
+            </div>
+          ),
+        });
       })
       .catch(() => {});
   };
