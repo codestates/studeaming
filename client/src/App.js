@@ -49,7 +49,7 @@ function App() {
     isProfileModalOpen.boolean ||
     isStreamSettingOpen ||
     isDailyLogOpen.boolean ||
-    isReportOpen;
+    isReportOpen.boolean;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -107,7 +107,7 @@ function App() {
           {isDailyLogOpen.boolean && (
             <DailyLog moment={isDailyLogOpen.moment} />
           )}
-          {isReportOpen && <Report />}
+          {isReportOpen.boolean && <Report />}
         </Modal>
       )}
     </>
