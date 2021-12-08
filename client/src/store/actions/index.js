@@ -126,10 +126,10 @@ export const streamSettingModalOpen = (boolean) => {
   };
 };
 
-export const reportModalOpen = (boolean) => {
+export const reportModalOpen = (boolean, username) => {
   return {
     type: REPORT_MODAL_OPEN,
-    payload: boolean,
+    payload: { boolean, username },
   };
 };
 

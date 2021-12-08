@@ -20,7 +20,7 @@ const initState = {
   isProfileModalOpen: { boolean: false, username: "" },
   isStreamSettingOpen: false,
   isDailyLogOpen: { boolean: false, date: "" },
-  isReportOpen: false,
+  isReportOpen: { boolean: false, username: "" },
 };
 
 const modalReducer = (state = initState, action) => {
@@ -42,7 +42,7 @@ const modalReducer = (state = initState, action) => {
     case DAILY_LOG_OPEN:
       return { ...state, isDailyLogOpen: { ...action.payload } };
     case REPORT_MODAL_OPEN:
-      return { ...state, isReportOpen: action.payload };
+      return { ...state, isReportOpen: { ...action.payload } };
     case MODAL_OFF:
       return { ...initState };
     default:
