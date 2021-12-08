@@ -86,6 +86,7 @@ function Signin() {
   const navigate = useNavigate();
   const regExpEmail =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+  const redirect = window.location.href.split("/").slice(-1)[0];
 
   const handleInputValue = (key) => (e) => {
     setSigninInfo({ ...signinInfo, [key]: e.target.value });
@@ -120,7 +121,8 @@ function Signin() {
         .then((res) => {
           // set follows state
           dispatch(getFollows(res.data.studeamerList));
-          navigate("/home");
+          if (redirect === "viewer") dispatch(signinModalOpen(false));
+          else navigate("/home");
         })
         .catch((err) => {
           if (err.response.status === 401) {
