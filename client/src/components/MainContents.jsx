@@ -189,13 +189,13 @@ function MainContents({ contents }) {
   // todo: -------------------------------------------------------
 
   // todo: 함수
-  const navigateLanding = () => {
+  const navigateLanding = (el) => {
     socketRef.current.emit("join_room", {
       // TODO: USER ID
       user_ID: "",
     });
     createPeerConnection();
-    navigate("../viewer");
+    navigate("/viewer", { state: el });
   };
   //todo: ----------------------
 
@@ -306,7 +306,7 @@ function MainContents({ contents }) {
           <Contents
             key={idx}
             onClick={() => {
-              navigateLanding();
+              navigateLanding(el);
             }}
           >
             <Thumbnail img={el.thumbnail} />
@@ -316,7 +316,7 @@ function MainContents({ contents }) {
                 <img src={el.profileImg || defaultImg} alt="" />
                 <div className="thumbnail_info_name">
                   <div style={{ fontWeight: "bold" }}>{el.username}</div>
-                  <div style={{ color: "#838080" }}>1명</div>
+                  <div style={{ color: "#838080" }}>{el.headCount}명</div>
                 </div>
               </div>
             </Desc>
