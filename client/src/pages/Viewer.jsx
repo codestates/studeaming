@@ -172,7 +172,7 @@ function Viewer() {
           <InfoSection1>
             <h3>{state.title}</h3>
             <div className="studeamer_info">
-              <img src={state.progileImg || defaultImg} alt="" />
+              <img src={state.profileImg || defaultImg} alt="" />
               <span>{state.username}</span>
               <FollowBtn username={state.username} />
             </div>
