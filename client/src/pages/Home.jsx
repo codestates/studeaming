@@ -146,7 +146,7 @@ function Home() {
 
   const filterHandler = (items) => {
     if (selectedFilterOpt === "시청자 순") {
-      const sort = [...items].sort((a, b) => b.viewer - a.viewer);
+      const sort = [...items].sort((a, b) => b.headCount - a.headCount);
       setSearchItems(sort);
     } else if (selectedFilterOpt === "최신 순") {
       const sort = [...items].sort((a, b) => b.openedAt - a.openedAt);
