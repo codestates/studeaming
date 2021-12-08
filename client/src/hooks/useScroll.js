@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useScroll = () => {
+const useScroll = () => {
   const [isDown100, setisDown100] = useState(false);
 
   const updateScroll = () => {
@@ -17,3 +17,5 @@ export const useScroll = () => {
 
   return isDown100;
 };
+
+export default useScroll;
