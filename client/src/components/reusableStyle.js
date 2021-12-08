@@ -39,7 +39,7 @@ export const Input = styled.input`
   font-family: "NotoSans" !important;
   font-size: 0.9rem;
   margin-bottom: 5px;
-  border: none;
+  border: 1.5px solid #f7f7ff;
   border-radius: 8px;
   outline: none;
   width: 100%;
