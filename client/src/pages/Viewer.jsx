@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { reportModalOpen } from "../store/actions/index";
 import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
 import { GiSiren } from "react-icons/gi";
@@ -10,7 +13,7 @@ import defaultImg from "../assets/images/img_profile_default.svg";
 
 const StyledViewer = styled.section`
   width: 100%;
-  height: calc(100vh - 61.7px);
+  height: calc(100vh - 69.28px);
   display: flex;
   padding: 20px;
   @media screen and (max-width: 480px) {
@@ -57,6 +60,20 @@ const Screen = styled.div`
     > i {
       visibility: visible;
     }
+  }
+`;
+
+const Cam = styled.video`
+  width: 100%;
+  min-width: 360px;
+  height: 80%;
+  min-height: 300px;
+
+  @media screen and (max-width: 480px) {
+    position: sticky;
+    top: 0;
+    z-index: 1010;
+    height: 40%;
   }
 `;
 
@@ -128,33 +145,36 @@ const InfoSection2 = styled.div`
 `;
 
 function Viewer() {
-  const studeamerInfo = {
-    username: "김코딩",
-    title: "새내기 기말고사 밤샘공부",
-    profileImg: "",
-    openedAt: 1234567,
-    headCount: 1,
-  };
-  const [viewers, setViewers] = useState({});
+  const dispatch = useDispatch();
+  const { state } = useLocation();
 
   return (
     <StyledViewer>
       <ScreenSection>
         <Screen>
-          <i>
+          {/* <Cam ref={localVideoRef} /> 여기에 송출 화면 속성 넣으면 됨*/}
+          <i
+            onClick={() => {
+              dispatch(reportModalOpen(true, state.username));
+            }}
+          >
             <Siren color="red" />
           </i>
-          <i>
+          <i
+          // onClick={() => {
+          //   localVideoRef.current.requestFullscreen();
+          // }}
+          >
             <FullScreen />
           </i>
         </Screen>
         <StudeamerInfo>
           <InfoSection1>
-            <h3>{studeamerInfo.title}</h3>
+            <h3>{state.title}</h3>
             <div className="studeamer_info">
-              <img src={studeamerInfo.progileImg || defaultImg} alt="" />
-              <span>{studeamerInfo.username}</span>
-              <FollowBtn username={studeamerInfo.username} />
+              <img src={state.progileImg || defaultImg} alt="" />
+              <span>{state.username}</span>
+              <FollowBtn username={state.username} />
             </div>
           </InfoSection1>
           <InfoSection2>
@@ -162,7 +182,7 @@ function Viewer() {
             <div>
               <IoPeople size="12" />
               <span style={{ fontSize: "12px", marginLeft: "3px" }}>
-                공부중
+                {state.headCount}명 공부중
               </span>
             </div>
           </InfoSection2>
