@@ -1,60 +1,56 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState, useRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getStreamingInfo, modalOff } from "../store/actions";
 import styled from "styled-components";
-import { io } from "socket.io-client";
-import MultiPlayer from "./MultiPlayer";
-import defaultImg from "../assets/images/img_profile_default.svg";
+import { getStreamingInfo, modalOff } from "../store/actions";
+import useAudio from "../hooks/useAudio";
+import { Input, Desc } from "./reusableStyle";
+import sound from "../assets/sound";
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  position: relative;
+
+  #studeaming-setting-title {
+    color: var(--color-main-100);
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  #studeaming-warning-message {
+    color: var(--color-destructive);
+    font-size: 0.8rem;
+    margin-left: 0.8rem;
+  }
+
+  #info-setting {
+    display: flex;
+    gap: 2rem;
+  }
+
+  #sound-picker {
+  }
+
+  #sound-cards {
+    display: flex;
+    gap: 1rem;
+  }
+`;
 
 const LiveVideo = styled.video`
   transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg); /*여기는 사파리*/
-  -moz-transform: rotateY(180deg); /*이거는 파이어폭스*/
+  -webkit-transform: rotateY(180deg); /* safari */
+  -moz-transform: rotateY(180deg); /* firefox */
 `;
 
-const ProfileImg = styled.div`
-  position: relative;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin-bottom: 16px;
-  :hover {
-    color: #f5f5f5;
-  }
-  img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin-bottom: 16px;
-    object-fit: cover;
-  }
-  #remove_profile_img {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* top: 50%; */
-    top: 0;
-    left: 0;
-    color: transparent;
-    border-radius: 50%;
-    font-size: 24px;
-    :hover {
-      transition: 0.3s;
-      background-color: rgba(0, 0, 0, 0.3);
-      color: #f5f5f5;
-    }
-  }
-`;
-
-const ImgLabel = styled.label`
-  width: 100px;
-  height: 100px;
-  border: 1px dashed grey;
-  border-radius: 50%;
+const ThumbnailLabel = styled.label`
+  width: 360px;
+  height: 240px;
+  border: 1px dashed var(--color-black-50);
   font-size: 12px;
   color: #8d8d8d;
   display: flex;
@@ -67,35 +63,106 @@ const ImgLabel = styled.label`
   }
 `;
 
-const StunServer = {
-  iceServers: [
-    {
-      urls: "stun:stun.l.google.com:19302",
-    },
-  ],
-};
+const Thumbnail = styled.div`
+  width: 360px;
+  height: 240px;
+  position: relative;
 
-function StreamerSetting() {
-  // //todo: 그냥 여기서부터 천천히 장치 호출이랑 다 해보자
-  // //todo: 여기는 상태 호출 및 uuid 호출
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #remove-thumbnail-btn {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    color: transparent;
+    font-size: 24px;
+    :hover {
+      transition: 0.3s;
+      background-color: rgba(0, 0, 0, 0.3);
+      color: #f5f5f5;
+    }
+  }
+`;
+
+const SoundCard = styled.div`
+  width: 150px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  color: white;
+  font-weight: 600;
+  box-shadow: ${(props) =>
+    props.isSelected && "0px 0px 10px var(--color-black-25)"};
+  border-radius: 10px;
+  cursor: pointer;
+
+  :after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-image: url(${(props) => props.img});
+    background-size: cover;
+    border-radius: 10px;
+    opacity: 0.7;
+    z-index: -1;
+  }
+
+  :hover {
+    opacity: 0.8;
+  }
+`;
+
+const StartBtn = styled.button`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 120px;
+  height: 50px;
+  border-radius: 10px;
+  background-color: #7a7ef4;
+  text-align: center;
+  font-size: 0.9rem;
+  color: white;
+
+  :hover {
+    background-color: #656bff;
+  }
+`;
+
+function StreamerSettingMockup() {
+  const [streamingInfo, setStreamingInfo] = useState({
+    title: "",
+    thumbnail: null,
+    sound: "",
+  });
   const localVideoRef = useRef(HTMLVideoElement);
+  const [players, toggle] = useAudio(sound);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  console.log(players);
 
-  // const openMediaDevices = async (constraints) => {
-  //   return await navigator.mediaDevices.getUserMedia(constraints);
-  // };
-  // try {
-  //   const stream = openMediaDevices({ audio: false, video: true });
-  // } catch (err) {
-  //   console.log(err);
-  // }
-
-  const playVideoFromCamera = async () => {
+  const checkCameraHandler = async () => {
     try {
       const constraints = {
         audio: false,
         video: {
-          width: 400,
-          height: 400,
+          width: 500,
+          height: 330,
         },
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -105,232 +172,98 @@ function StreamerSetting() {
     }
   };
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [textInput, setTextInput] = useState("");
-  // const pcsRef = useRef(new RTCPeerConnection({ socketId: "" }));
-  // const localVideoRef = useRef(HTMLVideoElement);
-  // const localStreamRef = useRef(MediaStream);
-  // const socketRef = useRef();
-  // const [users, setUsers] = useState([
-  //   { id: "", email: "", stream: MediaStream },
-  // ]);
-  // const { id } = useSelector(({ userReducer }) => userReducer);
-
-  // const createPeerConnection = useCallback((socketID, email) => {
-  //   try {
-  //     const pc = new RTCPeerConnection(StunServer);
-
-  //     pc.onicecandidate = (e) => {
-  //       if (!(socketRef.current && e.candidate)) return;
-  //       console.log("onicecandidate");
-  //       socketRef.current.emit("candidate", {
-  //         candidate: e.candidate,
-  //         candidateSendID: socketRef.current.id,
-  //         candidateReceiveID: socketID,
-  //       });
-  //     };
-
-  //     pc.oniceconnectionstatechange = (e) => {
-  //       console.log(e);
-  //     };
-
-  //     pc.ontrack = (e) => {
-  //       console.log("ontrack success");
-  //       setUsers((oldUsers) =>
-  //         oldUsers
-  //           .filter((user) => user.id !== socketID)
-  //           .concat({
-  //             id: socketID,
-  //             email: email,
-  //             stream: e.streams[0],
-  //           })
-  //       );
-  //     };
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }, []);
-
-  // const myAudio = new Audio();
-
-  // socketRef.current = io.connect("http://localhost:4000", {
-  //   //reconnectionDelay: 1000,
-  //   //reconnection: true,
-  //   transports: ["websocket"],
-  //   withCredentials: true,
-  // });
-  // socketRef.current.on("user_exit", (data) => {
-  //   const { id } = data;
-  //   if (pcsRef.current[id]) return;
-  //   console.log("셋팅유저가 나갈때", pcsRef.current);
-  //   pcsRef.current[id].close();
-  //   delete pcsRef.current[id];
-  //   setUsers((oldUsers) => oldUsers.filter((user) => user.id !== id));
-  // });
-
-  // // todo : Media 스트림 설정
-  // // todo : 여기서는 장치만 호출하고 사용자들과 커넥션을 할 필요는 없음
-  // // todo : 여기서 호출된 장치들의 데이터만 streamer로 전달하면 될꺼 같은데
-
-  // const getLocalStream = useCallback(async () => {
-  //   try {
-  //     const localStream = await navigator.mediaDevices.getUserMedia({
-  //       audio: false,
-  //       video: {
-  //         width: 800,
-  //         height: 800,
-  //       },
-  //     });
-  //     localStreamRef.current = localStream;
-  //     if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
-  //     if (!socketRef.current) return;
-  //   } catch (e) {
-  //     console.log(`getUserMedia error: ${e}`);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   getLocalStream();
-  // }, []);
-
-  // //todo: 함수모음집
-  const Findinput = (data) => {
-    setTextInput(data.target.value);
+  const getTitle = (event) => {
+    setStreamingInfo({ ...streamingInfo, title: event.target.value });
   };
 
-  const { profileImg } = useSelector(({ userReducer }) => userReducer);
-  const [editInfo, setEditInfo] = useState({
-    profileImg: profileImg || defaultImg,
-  });
-  const getProfileImg = (event) => {
+  const getThumbnail = (event) => {
     const src = event.target.files[0];
-    setEditInfo({ ...editInfo, profileImg: URL.createObjectURL(src) });
+    setStreamingInfo({ ...streamingInfo, thumbnail: URL.createObjectURL(src) });
   };
-  const removeProfileImg = () => {
-    setEditInfo({ ...editInfo, profileImg: null });
+
+  const removeThumbnail = () => {
+    setStreamingInfo({ ...streamingInfo, thumbnail: null });
   };
-  // const newID = function () {
-  //   return Math.random().toString(36).substr(2, 16);
-  // };
 
-  const navigateLanding = () => {
-    // socketRef.current = io.connect("http://localhost:4000", {
-    //   transports: ["websocket"],
-    //   withCredentials: true,
-    // });
+  const getSound = (ASMR, idx) => {
+    setStreamingInfo({ ...streamingInfo, sound: ASMR });
+    toggle(idx);
+  };
 
-    // socketRef.current.on("getOffer", async (data) => {
-    //   const { sdp, offerSendID, offerSendEmail } = data;
-    //   if (!localStreamRef.currnet) return;
-    //   const pc = createPeerConnection(offerSendID, offerSendEmail);
-    //   if (!(pc && socketRef.currnet)) return;
-    //   pcsRef.current = [...pcsRef.current, offerSendID];
-    //   try {
-    //     await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-    //     console.log("snswer set remote description successfully");
-    //     const localSdp = await pc.createAnswer({
-    //       offerToReceiveAudio: true,
-    //       offerToReceiveVideo: true,
-    //     });
-    //     await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-    //     socketRef.current.emit("answer", {
-    //       sdp: localSdp,
-    //       answerSendID: socketRef.current.id,
-    //       answerReceiveID: offerSendID,
-    //     });
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // });
-
-    // socketRef.current.on("user_exit", (data) => {
-    //   const { id } = data;
-    //   if (pcsRef.current[id]) return;
-    //   console.log("셋팅유저가 나갈때", pcsRef.current);
-    //   pcsRef.current[id].close();
-    //   delete pcsRef.current[id];
-    //   setUsers((oldUsers) => oldUsers.filter((user) => user.id !== id));
-    // });
-
-    // socketRef.current.emit("join_room", {
-    //   studeamerID: id,
-    //   roomName: textInput,
-    //   thumbnail: editInfo.profileImg,
-    // });
-    setTextInput(textInput);
+  const startBtnHandler = () => {
     dispatch(
       getStreamingInfo({
-        title: textInput,
-        thumbnail: editInfo,
-        sound: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        title: streamingInfo.title,
+        thumbnail: streamingInfo.thumbnail,
+        sound: streamingInfo.sound,
       })
     );
     dispatch(modalOff());
     navigate("../streamer");
   };
 
-  // const btnPlay = () => {
-  //   myAudio().play();
-  // };
-  // const btnPause = () => {
-  //   myAudio().pause();
-  // };
-
   useEffect(() => {
-    playVideoFromCamera();
-  });
+    checkCameraHandler();
+  }, []);
 
   return (
     <>
-      <div className="Cam">
-        <LiveVideo
-          autoPlay
-          playsInline
-          undefined
-          width="500"
-          height="500"
-          ref={localVideoRef}
-        />
-      </div>
-      <div>ASMR을 선택해주세요</div>
-      <MultiPlayer
-        urls={["https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"]}
-      ></MultiPlayer>
-      <div> 방 제목을 입력해주세요 </div>
-      <input
-        placeholder="roomName"
-        type="text"
-        value={textInput}
-        onChange={Findinput}
-      />
-      {editInfo.profileImg ? (
-        <ProfileImg>
-          <img src={editInfo.profileImg} />
-          <div id="remove_profile_img">
-            <span
-              onClick={removeProfileImg}
-              style={{ cursor: "pointer", fontSize: "24px" }}
-            >
-              &times;
-            </span>
-          </div>
-        </ProfileImg>
-      ) : (
+      <Container>
         <div>
-          <ImgLabel htmlFor="profile_img">프로필 업로드</ImgLabel>
-          <input
-            type="file"
-            id="profile_img"
-            accept="image/*"
-            onChange={getProfileImg}
-          ></input>
+          <span id="studeaming-setting-title">스트리밍 시작하기</span>
+          <span id="studeaming-warning-message">
+            ❗️부적절한 영상 송출시 스트리밍 또는 모든 서비스 이용이 제한될 수
+            있습니다.
+          </span>
         </div>
-      )}
-
-      <div onClick={navigateLanding}>방송 시작</div>
+        <div id="info-setting">
+          <LiveVideo autoPlay ref={localVideoRef} />
+          <div id="info-input">
+            <Desc>제목을 입력하세요</Desc>
+            <Input onBlur={getTitle} />
+            <Desc>썸네일을 선택하세요</Desc>
+            {streamingInfo.thumbnail ? (
+              <Thumbnail onClick={removeThumbnail}>
+                <img src={streamingInfo.thumbnail} />
+                <div id="remove-thumbnail-btn">&times;</div>
+              </Thumbnail>
+            ) : (
+              <div className="upload-thumbnail">
+                <ThumbnailLabel htmlFor="thumbnail-input">
+                  썸네일 업로드하기
+                </ThumbnailLabel>
+                <input
+                  id="thumbnail-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={getThumbnail}
+                ></input>
+              </div>
+            )}
+          </div>
+        </div>
+        <div id="sound-picker">
+          <Desc>ASMR 사운드를 선택하세요</Desc>
+          <div id="sound-cards">
+            {players.map((ASMR, idx) => {
+              console.log(ASMR.img);
+              return (
+                <SoundCard
+                  key={idx}
+                  img={ASMR.img}
+                  isSelected={ASMR.keyword === streamingInfo.sound}
+                  onClick={() => getSound(ASMR.keyword, idx)}
+                >
+                  <div className="ASMR-title">{ASMR.title}</div>
+                </SoundCard>
+              );
+            })}
+          </div>
+        </div>
+        <StartBtn onClick={startBtnHandler}>방송 시작</StartBtn>
+      </Container>
     </>
   );
 }
 
-export default StreamerSetting;
+export default StreamerSettingMockup;
