@@ -3,59 +3,24 @@ import { gsap } from "gsap";
 import styled from "styled-components";
 
 const StyledSlideContainer = styled.div`
-  width: 100%;
+  transform: translateX(-${(props) => props.translate}px);
+  transition: transform ease-out ${(props) => props.transition}s;
+  width: ${(props) => props.width}px;
   height: 400px;
+  display: flex;
+  align-items: center;
   position: relative;
-
-  > .active {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    > .slide-image {
-      width: 100%;
-      max-width: 600px;
-      height: 80%;
-      background-color: transparent;
-      object-fit: cover;
-      cursor: pointer;
-      :hover {
-        box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.5);
-      }
-    }
-
-    > .slide-title {
-      color: white;
-      font-size: 20px;
-      position: absolute;
-      text-align: center;
-      top: 50%;
-      z-index: 10;
-    }
-  }
 `;
 
-const SlideContainer = ({ activeIndex, imageSlider }) => {
-  useEffect(() => {
-    gsap.fromTo(
-      ".active",
-      {
-        opacity: 0,
-      },
-      { opacity: 0.6, duration: 1 }
-    );
-  }, [imageSlider]);
+const SlideContainer = ({ translate, transition, width, children }) => {
   return (
-    <StyledSlideContainer>
-      {imageSlider.map((slide, idx) =>
-        activeIndex === idx ? (
-          <div key={idx} className="active">
-            <img className="slide-image" src={slide.img} alt="" />
-            <h2 className="slide-title">{slide.title}</h2>
-          </div>
-        ) : null
-      )}
+    <StyledSlideContainer
+      id="slider-content"
+      translate={translate}
+      transition={transition}
+      width={width}
+    >
+      {children}
     </StyledSlideContainer>
   );
 };
