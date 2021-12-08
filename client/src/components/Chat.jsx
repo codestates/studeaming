@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { FaTelegramPlane } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
 import "dayjs/locale/ko";
+import { signinModalOpen } from "../store/actions/index";
 import logAPI from "../api/studyLog";
 
 const ChatStyle = styled.section`
@@ -22,6 +23,11 @@ const ChatSection = styled.section`
   background-color: #e4e8f7;
   display: flex;
   flex-direction: column;
+  overflow: scroll;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ChatInput = styled.div`
@@ -36,6 +42,10 @@ const ChatInput = styled.div`
 
   @media screen and (max-width: 480px) {
     height: 30px;
+  }
+
+  > .non_member {
+    color: #838080;
   }
 `;
 
@@ -90,11 +100,14 @@ const Imoticon = styled.div`
 `;
 
 function Chat() {
-  const { isLogin } = useSelector(({ userReducer }) => userReducer);
+  const { isLogin, username, profileImg } = useSelector(
+    ({ userReducer }) => userReducer
+  );
   const [inputClick, setInputClick] = useState(false);
   const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
   const [letter, setLetter] = useState("");
   const [chattingList, setChattingList] = useState([]);
+  const dispatch = useDispatch();
   const date = new Date();
   const eightDigitDate = `${date.getFullYear()}${date.getMonth() + 1}${
     date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
@@ -115,7 +128,8 @@ function Chat() {
   ];
 
   const chatInputHandler = () => {
-    setInputClick(!inputClick);
+    if (isLogin) setInputClick(!inputClick);
+    else dispatch(signinModalOpen(true));
   };
 
   const chattingHandler = (idx) => {
@@ -126,7 +140,26 @@ function Chat() {
 
   const sendHandler = () => {
     const newChattingList = [...chattingList];
-    newChattingList.push(letter);
+    const newLetter = (
+      <div>
+        <img
+          src={profileImg}
+          alt=""
+          style={{
+            width: "30px",
+            height: "30px",
+            borderRadius: "50%",
+            margin: "5px",
+          }}
+        />
+        <span style={{ fontSize: "12px" }}>
+          {username}
+          &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+          {letter}
+        </span>
+      </div>
+    );
+    newChattingList.push(newLetter);
     setLetter("");
     setChattingList(newChattingList);
   };
@@ -158,21 +191,26 @@ function Chat() {
         </ImoticonBox>
       ) : null}
       <ChatInput onClick={chatInputHandler}>
-        <Comment>
-          {letter}
-          {letter ? (
-            <CloseIcon
-              onClick={(e) => {
-                e.stopPropagation();
-                setLetter("");
-              }}
-            />
-          ) : null}
-        </Comment>
+        {isLogin ? (
+          <Comment>
+            {letter}
+            {letter ? (
+              <CloseIcon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLetter("");
+                }}
+              />
+            ) : null}
+          </Comment>
+        ) : (
+          <Comment className="non_member">로그인 후 이용가능 합니다.</Comment>
+        )}
+
         <SendIcon
           onClick={(e) => {
             e.stopPropagation();
-            sendHandler();
+            if (letter.length) sendHandler();
           }}
         />
       </ChatInput>
