@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Button from "./Button";
 
@@ -8,6 +9,17 @@ const StyledReport = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 20px;
+
+  > div {
+    display: flex;
+  }
+
+  > span {
+    font-size: 10px;
+    margin-bottom: 5px;
+    color: red;
+  }
 
   > select {
     margin-bottom: 10px;
@@ -15,12 +27,13 @@ const StyledReport = styled.section`
 
   > textarea {
     border: 1px solid;
-    width: 162.8px;
+    width: 100%;
     margin-bottom: 10px;
   }
 `;
 
 function Report() {
+  const { isReportOpen } = useSelector(({ modalReducer }) => modalReducer);
   const [report, setReport] = useState("");
   const [reportOpt, setReportOpt] = useState("");
   const opt = [
@@ -37,6 +50,7 @@ function Report() {
   return (
     <StyledReport>
       <h2>신고 하시겠습니까?</h2>
+      <span>신고 대상 : {isReportOpen.username}</span>
       <select
         onChange={(e) => {
           setReportOpt(e.target.value);
@@ -53,6 +67,7 @@ function Report() {
         onChange={(e) => setReport(e.target.value)}
         placeholder="신고 사유를 작성해주세요."
       />
+      <span>❗️무분별한 신고는 제재 대상이 될 수 있습니다.</span>
       <Button message="신고하기" />
     </StyledReport>
   );
