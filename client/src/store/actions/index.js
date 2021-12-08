@@ -14,6 +14,7 @@ export const WITHDRAWAL_MODAL_OPEN = "WITHDRAWAL_MODAL_OPEN";
 export const USERINFO_EDIT_MODAL_OPEN = "USERINFO_EDIT_MODAL_OPEN";
 export const PROFILE_MODAL_OPEN = "PROFILE_MODAL_OPEN ";
 export const STREAM_SETTING_MODAL_OPEN = "STREAM_SETTING_MODAL_OPEN";
+export const REPORT_MODAL_OPEN = "REPORT_MODAL_OPEN";
 export const SIDE_LOG_COMPONENT_OPEN = "SIDE_LOG_COMPONENT_OPEN";
 export const DAILY_LOG_OPEN = "DAILY_LOG_OPEN";
 export const MODAL_OFF = "MODAL_OFF";
@@ -121,6 +122,13 @@ export const profileModalOpen = (boolean, username) => {
 export const streamSettingModalOpen = (boolean) => {
   return {
     type: STREAM_SETTING_MODAL_OPEN,
+    payload: boolean,
+  };
+};
+
+export const reportModalOpen = (boolean) => {
+  return {
+    type: REPORT_MODAL_OPEN,
     payload: boolean,
   };
 };
