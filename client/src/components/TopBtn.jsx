@@ -1,6 +1,6 @@
 import { VscFoldUp } from "react-icons/vsc";
 import styled from "styled-components";
-import { useScroll } from "./customHooks";
+import useScroll from "../hooks/useScroll";
 
 const TopBtnStyled = styled.div`
   position: fixed;
