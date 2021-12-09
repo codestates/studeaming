@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { FaTelegramPlane } from "react-icons/fa";
@@ -30,19 +30,23 @@ const ChatSection = styled.section`
   }
 `;
 
-const ChatInput = styled.div`
+const ChatInputBox = styled.div`
+  height: 5%;
+  min-height: 35px;
   position: relative;
   display: flex;
   align-items: center;
-  width: 100%;
-  height: 5%;
-  border-radius: 0.5rem;
-  background-color: #f8f8f8;
-  padding-left: 10px;
+`;
 
-  @media screen and (max-width: 480px) {
-    height: 30px;
-  }
+const ChatInput = styled.input`
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  border-radius: 3rem;
+  background-color: #f8f8f8;
+  font-size: 12px;
+  padding-left: 30px;
 
   > .non_member {
     color: #838080;
@@ -53,10 +57,15 @@ const Comment = styled.span`
   font-size: 12px;
   display: flex;
   align-items: center;
+  position: absolute;
+  top: 25%;
+  left: 10px;
 `;
 
 const CloseIcon = styled(IoIosCloseCircle)`
   opacity: 0.15;
+  position: absolute;
+  left: 10px;
 
   :hover {
     opacity: 1;
@@ -83,6 +92,10 @@ const ImoticonBox = styled.div`
   :hover {
     opacity: 1;
   }
+
+  @media screen and (max-height: 780px) {
+    bottom: 35px;
+  }
 `;
 
 const Imoticon = styled.div`
@@ -105,9 +118,10 @@ function Chat() {
   );
   const [inputClick, setInputClick] = useState(false);
   const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
-  const [letter, setLetter] = useState("");
+  const [letter, setLetter] = useState({ message: "", idx: null });
   const [chattingList, setChattingList] = useState([]);
   const dispatch = useDispatch();
+  const inputRef = useRef(null);
   const date = new Date();
   const eightDigitDate = `${date.getFullYear()}${date.getMonth() + 1}${
     date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
@@ -127,18 +141,25 @@ function Chat() {
     { imoticon: "😭", comment: "슬프네요😭" },
   ];
 
-  const chatInputHandler = () => {
+  const imoticonOpenHandler = () => {
     if (isLogin) setInputClick(!inputClick);
     else dispatch(signinModalOpen(true));
   };
 
-  const chattingHandler = (idx) => {
-    const clicked = chat[idx].comment;
+  const imoticonClickHandler = async (idx) => {
+    if (idx === 0) {
+      const res = await logAPI.getLogs(eightDigitDate, offset);
+      const hour = Math.floor(res.data.studyTime / 60);
+      const minute = res.data.studyTime % 60;
+      setStudyTime({ hour, minute });
+    }
+    const message = chat[idx].comment;
     setInputClick(false);
-    setLetter(clicked);
+    setLetter({ message, idx });
+    inputRef.current.focus();
   };
 
-  const sendHandler = () => {
+  const sendHandler = (idx) => {
     const newChattingList = [...chattingList];
     const newLetter = (
       <div>
@@ -155,24 +176,24 @@ function Chat() {
         <span style={{ fontSize: "12px" }}>
           {username}
           &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-          {letter}
+          {letter.message}
         </span>
       </div>
     );
     newChattingList.push(newLetter);
-    setLetter("");
+    setLetter({ message: "", idx: null });
     setChattingList(newChattingList);
+    inputRef.current.blur();
   };
 
-  useEffect(() => {
-    if (isLogin) {
-      logAPI.getLogs(eightDigitDate, offset).then((res) => {
-        const hour = Math.floor(res.data.studyTime / 60);
-        const minute = res.data.studyTime % 60;
-        setStudyTime({ hour, minute });
-      });
+  const onKeyUpHandler = (e) => {
+    if (e.key === "Enter" && letter) sendHandler();
+    else if (e.key === "Escape" && letter) {
+      setLetter({ message: "", idx: null });
+      setInputClick(false);
+      inputRef.current.blur();
     }
-  }, []);
+  };
 
   return (
     <ChatStyle>
@@ -184,36 +205,39 @@ function Chat() {
       {inputClick ? (
         <ImoticonBox>
           {chat.map((el, idx) => (
-            <Imoticon key={idx} onClick={() => chattingHandler(idx)}>
+            <Imoticon key={idx} onClick={() => imoticonClickHandler(idx)}>
               {el.imoticon}
             </Imoticon>
           ))}
         </ImoticonBox>
       ) : null}
-      <ChatInput onClick={chatInputHandler}>
+      <ChatInputBox>
+        <ChatInput
+          value={letter.message}
+          onClick={imoticonOpenHandler}
+          onKeyUp={(e) => onKeyUpHandler(e)}
+          ref={inputRef}
+          readOnly
+        />
         {isLogin ? (
-          <Comment>
-            {letter}
-            {letter ? (
-              <CloseIcon
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLetter("");
-                }}
-              />
-            ) : null}
-          </Comment>
+          letter.message ? (
+            <CloseIcon
+              onClick={(e) => {
+                e.stopPropagation();
+                setLetter({ message: "", idx: null });
+              }}
+            />
+          ) : null
         ) : (
           <Comment className="non_member">로그인 후 이용가능 합니다.</Comment>
         )}
-
         <SendIcon
           onClick={(e) => {
             e.stopPropagation();
-            if (letter.length) sendHandler();
+            if (letter.message) sendHandler(letter.idx);
           }}
         />
-      </ChatInput>
+      </ChatInputBox>
     </ChatStyle>
   );
 }
