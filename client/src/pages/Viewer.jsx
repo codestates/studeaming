@@ -7,7 +7,6 @@ import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
 import { GiSiren } from "react-icons/gi";
 import { io } from "socket.io-client";
-// import Screen from "../components/Screen";
 import Chat from "../components/Chat";
 import FollowBtn from "../components/FollowBtn";
 import defaultImg from "../assets/images/img_profile_default.svg";
@@ -40,7 +39,7 @@ const ScreenSection = styled.section`
   }
 `;
 
-const Screen = styled.video`
+const Screen = styled.div`
   width: 100%;
   min-width: 360px;
   height: 80%;
@@ -163,7 +162,9 @@ const StunServer = {
 };
 
 function Viewer({ route, navigation }) {
-  const { id, username } = useSelector(({ userReducer }) => userReducer);
+  const { id, username, profileImg } = useSelector(
+    ({ userReducer }) => userReducer
+  );
   const viewers = useRef([]);
   const peerVideoRef = useRef(HTMLVideoElement);
   const dispatch = useDispatch();
@@ -184,7 +185,7 @@ function Viewer({ route, navigation }) {
           "ice",
           data.candidate,
           state.uuid,
-          viewers.current[0].socketId
+          viewers.current[0].socketId //ice 받을 소켓: host socket id
         );
       }
     };
@@ -196,18 +197,23 @@ function Viewer({ route, navigation }) {
         //join_room 이벤트 발생
         id: id,
         username: username,
+        profileImg: profileImg,
         socketId: socket.id,
         uuid: state.uuid,
       });
     });
 
-    socket.on("welcome", (viewer) => {
-      viewers.current.push(viewer);
+    socket.on("welcome", (viewerInfo) => {
+      if (viewerInfo.socketId !== socket.id) {
+        //내가 발생시킨 welcome이벤트가 아니라면(새로운 참가자가 있는 경우) 뷰어 목록에 추가
+        viewers.current.push(viewerInfo);
+      }
     });
 
-    socket.on("offer", async (offer, socketId, hostId) => {
+    socket.on("offer", async (offer, socketId, hostId, hostViewers) => {
       if (socketId === socket.id) {
-        viewers.current.push({ socketId: hostId });
+        viewers.current = hostViewers; // host의 viewer 목록(내가 포함된)을 저장
+        viewers.current[0].socketId = hostId;
         peerConnection.setRemoteDescription(offer);
         const answer = await peerConnection.createAnswer();
         peerConnection.setLocalDescription(answer);
@@ -223,10 +229,23 @@ function Viewer({ route, navigation }) {
       } else return;
     });
 
+    socket.on("leave_room", (viewerId) => {
+      viewers.current = viewers.current.filter(
+        (viewer) => viewer.id !== viewerId
+      );
+    });
+
+    socket.on("close_room", () => {
+      socket.disconnect();
+      //방송 종료 알림창 또는 화면에 종료된 방송이라고 띄우기
+    });
+
+    //client disconnect 제외하고 disconnect된 경우 reconnect 시도
+    //다른 경로로 페이지를 이동한 경우 socket 연결을 자동으로 disconnect하지 않으므로 감지해서 요청을 보내야 함
+
     peerConnection.ontrack = (data) => {
       console.log("received stream", data.streams[0]);
       peerVideoRef.current.srcObject = data.streams[0];
-      //peerVideoRef.current.play();
     };
 
     peerConnection.oniceconnectionstatechange = (e) => {
@@ -238,7 +257,7 @@ function Viewer({ route, navigation }) {
     <StyledViewer>
       <ScreenSection>
         <Screen>
-          <Cam ref={peerVideoRef} />
+          <Cam ref={peerVideoRef} autoPlay playsInline undefined />
           <i
             onClick={() => {
               dispatch(reportModalOpen(true, state.username));
