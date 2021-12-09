@@ -453,6 +453,8 @@ function SideLog() {
                   onChange={(e) => {
                     setInputValue(e.target.value);
                   }}
+                  maxLength="9"
+                  spellCheck="false"
                 />
                 <ColorPickBox>
                   {colorPick.map((color, idx) => (

@@ -125,6 +125,7 @@ function UserInfoEdit() {
           type="text"
           id="username"
           onChange={handleInputValue("username")}
+          spellCheck="false"
         />
       </InputContainer>
       <InputContainer>
@@ -135,6 +136,7 @@ function UserInfoEdit() {
           onChange={handleInputValue("about")}
           maxLength="40"
           placeholder="최대 40자"
+          spellCheck="false"
         />
       </InputContainer>
       <Button message="변경하기" clickEvent={editRequest} />
