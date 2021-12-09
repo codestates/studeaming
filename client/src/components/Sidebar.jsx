@@ -113,7 +113,7 @@ function Sidebar() {
     { profileImg: "", username: "박해커" },
     { profileImg: "", username: "이보안" },
   ]);
-  const [badges, setBadges] = useState(dummyBadges);
+  const [badges, setBadges] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
