@@ -1,25 +1,38 @@
 import styled from "styled-components";
-import LandingSection1 from "../components/LandingSection1";
-import LandingSection2 from "../components/LandingSection2";
-import LandingSection3 from "../components/LandingSection3";
+import LandingSection1 from "../components/Landing/LandingSection1";
+import LandingSection2 from "../components/Landing/LandingSection2";
+import LandingSection3 from "../components/Landing/LandingSection3";
+import LandingSection4 from "../components/Landing/LandingSection4";
 import Footer from "../components/Footer";
 import TopBtn from "../components/TopBtn";
 
 const LandingContainer = styled.section`
-  width: 100%;
-  height: 360vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   scroll-behavior: smooth;
+
+  > #content-box {
+    width: 1000px;
+
+    @media screen and (max-width: 1000px) {
+      width: 100%;
+    }
+  }
 `;
 
 function Landing() {
   return (
     <>
       <LandingContainer>
-        <LandingSection1 />
-        <LandingSection2 />
-        <LandingSection3 />
+        <div id="content-box">
+          <LandingSection1 />
+          <LandingSection2 />
+          <LandingSection3 />
+          <LandingSection4 />
+        </div>
       </LandingContainer>
       <TopBtn />
       <Footer />
