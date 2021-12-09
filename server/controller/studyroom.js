@@ -3,7 +3,14 @@ const { socketio_data, User } = require("../models");
 module.exports = async (req, res) => {
   try {
     const studyrooms = await socketio_data.findAll({
-      attributes: ["uuid", "title", "thumbnail", "user_id", "headCount"],
+      attributes: [
+        "uuid",
+        "title",
+        "thumbnail",
+        "user_id",
+        "headCount",
+        "createdAt",
+      ],
       raw: true,
     });
 
@@ -13,6 +20,8 @@ module.exports = async (req, res) => {
           where: { id: room.user_id },
           raw: true,
         });
+
+        room.createdAt = Date.now(room.createdAt);
 
         return {
           ...room,
