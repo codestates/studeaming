@@ -14,7 +14,8 @@ const Container = styled.div`
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
-  padding: 10px;
+  padding: 10px 20px;
+  margin-top: 5px;
   position: relative;
 
   #studeaming-setting-title {
@@ -209,7 +210,7 @@ function StreamerSettingMockup() {
     if (!streamingInfo.sound.length) {
       setStreamingInfo({ ...streamingInfo, sound: "fire" });
     }
-    
+
     dispatch(modalOff());
     navigate("/streamer", { state: streamingInfo });
   };
