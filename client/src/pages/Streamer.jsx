@@ -35,6 +35,7 @@ function Streamer() {
   ]);
 
   useEffect(() => {
+    let localStream;
     const socket = io("http://localhost:4000", {
       transports: ["websocket"],
       upgrade: false,
@@ -47,10 +48,11 @@ function Streamer() {
         audio: false,
         video: true,
       })
-      .then((localStream) => {
-        localVideoRef.current.srcObject = localStream;
-        localStream.getTracks().forEach((track) => {
-          peerConnection.addTrack(track, localStream);
+      .then((stream) => {
+        localVideoRef.current.srcObject = stream;
+        localStream = stream;
+        stream.getTracks().forEach((track) => {
+          peerConnection.addTrack(track, stream);
         });
       });
 
@@ -108,19 +110,27 @@ function Streamer() {
     peerConnection.oniceconnectionstatechange = (e) => {
       console.log("ice connected ", e);
     };
+
+    return () => {
+      socket.disconnect();
+      localStream.getTracks()[0].stop();
+      peerConnection.close();
+    };
   }, []);
 
   return (
-    <div className="Cam">
-      <LiveVideo
-        autoPlay
-        playsInline
-        undefined
-        width="500"
-        height="500"
-        ref={localVideoRef}
-      />
-    </div>
+    <>
+      <div className="Cam">
+        <LiveVideo
+          autoPlay
+          playsInline
+          undefined
+          width="500"
+          height="500"
+          ref={localVideoRef}
+        />
+      </div>
+    </>
   );
 }
 

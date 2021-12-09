@@ -237,11 +237,8 @@ function Viewer({ route, navigation }) {
 
     socket.on("close_room", () => {
       socket.disconnect();
-      //방송 종료 알림창 또는 화면에 종료된 방송이라고 띄우기
+      peerConnection.close();
     });
-
-    //client disconnect 제외하고 disconnect된 경우 reconnect 시도
-    //다른 경로로 페이지를 이동한 경우 socket 연결을 자동으로 disconnect하지 않으므로 감지해서 요청을 보내야 함
 
     peerConnection.ontrack = (data) => {
       console.log("received stream", data.streams[0]);
@@ -250,6 +247,11 @@ function Viewer({ route, navigation }) {
 
     peerConnection.oniceconnectionstatechange = (e) => {
       console.log("ice connected ", e);
+    };
+
+    return () => {
+      socket.disconnect();
+      peerConnection.close();
     };
   }, []);
 
