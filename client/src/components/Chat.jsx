@@ -112,16 +112,23 @@ const Imoticon = styled.div`
   }
 `;
 
-function Chat() {
+function Chat({ socket, viewers, uuid }) {
+  console.log("뷰저스", viewers);
   const { isLogin, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
   );
   const [inputClick, setInputClick] = useState(false);
   const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
   const [letter, setLetter] = useState({ message: "", idx: null });
+  console.log("레터", letter);
   const [chattingList, setChattingList] = useState([]);
+  console.log("채팅리스트", chattingList);
+  //todo: 추가
+  const [chating, setChating] = useState({ userId: "", usechatIdx: null });
+  console.log("채팅", chating);
   const dispatch = useDispatch();
   const inputRef = useRef(null);
+  const ChatingRef = useRef(HTMLUListElement);
   const date = new Date();
   const eightDigitDate = `${date.getFullYear()}${date.getMonth() + 1}${
     date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
@@ -161,43 +168,112 @@ function Chat() {
 
   const sendHandler = (idx) => {
     const newChattingList = [...chattingList];
-    const newLetter = (
-      <div>
-        <img
-          src={profileImg}
-          alt=""
-          style={{
-            width: "30px",
-            height: "30px",
-            borderRadius: "50%",
-            margin: "5px",
-          }}
-        />
-        <span style={{ fontSize: "12px" }}>
-          {username}
-          &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-          {letter.message}
-        </span>
-      </div>
-    );
-    newChattingList.push(newLetter);
-    setLetter({ message: "", idx: null });
-    setChattingList(newChattingList);
-    inputRef.current.blur();
+    // todo: 서버에 전달해줄 채팅 내용
+    if (idx) {
+      socket.emit("chat", uuid, socket.id, idx);
+
+      socket.on("newChat", (uuid, userId, chatIdx) => {
+        console.log("뉴챗 아이디", userId);
+        console.log("뉴챗 인덱스", chatIdx);
+        setChating({ userId: userId, usechatIdx: chatIdx });
+      });
+      console.log("뷰어스", viewers);
+      const WriteUser = viewers.current.forEach((data) => {
+        if (data.socketId && data.socketId === chating.userId) {
+          return data;
+        }
+      });
+      console.log("작성자", WriteUser);
+      const newLetter = (
+        <div>
+          <img
+            src={profileImg}
+            alt=""
+            style={{
+              width: "30px",
+              height: "30px",
+              borderRadius: "50%",
+              margin: "5px",
+            }}
+          />
+          <span style={{ fontSize: "12px" }}>
+            {username}
+            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+            {letter.message}
+          </span>
+        </div>
+      );
+      if (chat[chating.usechatIdx]) {
+        newChattingList.push(chat[chating.usechatIdx].comment);
+        setChattingList(newChattingList);
+      }
+      newChattingList.push(newLetter);
+      setLetter({ message: "", idx: null });
+      setChattingList(newChattingList);
+      inputRef.current.blur();
+    }
+
+    // const newLetter = (
+    //   <div>
+    //     <img
+    //       src={profileImg}
+    //       alt=""
+    //       style={{
+    //         width: "30px",
+    //         height: "30px",
+    //         borderRadius: "50%",
+    //         margin: "5px",
+    //       }}
+    //     />
+    //     <span style={{ fontSize: "12px" }}>
+    //       {username}
+    //       &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    //       {letter.message}
+    //     </span>
+    //   </div>
+    // );
+
+    // if (chat[chating.usechatIdx]) {
+    //   newChattingList.push(chat[chating.usechatIdx].comment);
+    //   setChattingList(newChattingList);
+    // }
+    // newChattingList.push(newLetter);
+    // setLetter({ message: "", idx: null });
+    // setChattingList(newChattingList);
+    // inputRef.current.blur();
   };
 
-  const onKeyUpHandler = (e) => {
-    if (e.key === "Enter" && letter) sendHandler();
-    else if (e.key === "Escape" && letter) {
+  const onKeyUpHandler = (e, idx) => {
+    if (e.key === "Enter" && letter.message) sendHandler(idx);
+    else if (e.key === "Escape" && letter.message) {
       setLetter({ message: "", idx: null });
       setInputClick(false);
       inputRef.current.blur();
     }
   };
 
+  const scrollToBottom = () => {
+    if (ChatingRef.current) {
+      ChatingRef.current.scrollTop = ChatingRef.current.height;
+    }
+  };
+
+  // useEffect(() => {
+  //   // todo: 여기는 상대방이 보내온 채팅을 보여주는곳
+  //   socket.on("newChat", (userId, chatIdx) => {
+  //     console.log("뉴챗 아이디", userId);
+  //     console.log("뉴챗 인덱스", chatIdx);
+  //     setChating({ userId: userId, usechatIdx: chatIdx });
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [letter.message]);
+
   return (
     <ChatStyle>
-      <ChatSection>
+      <ChatSection ref={ChatingRef}>
         {chattingList.map((el, idx) => (
           <span key={idx}>{el}</span>
         ))}
@@ -215,7 +291,7 @@ function Chat() {
         <ChatInput
           value={letter.message}
           onClick={imoticonOpenHandler}
-          onKeyUp={(e) => onKeyUpHandler(e)}
+          onKeyUp={(e) => onKeyUpHandler(e, letter.idx)}
           ref={inputRef}
           readOnly
         />
