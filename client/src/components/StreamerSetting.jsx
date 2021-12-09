@@ -197,6 +197,18 @@ function StreamerSettingMockup() {
   };
 
   const startBtnHandler = () => {
+    if (!streamingInfo.title.length) {
+      setStreamingInfo({
+        ...streamingInfo,
+        title: `${username}의 스터디밍에 참여하세요!`,
+      });
+    }
+    if (!streamingInfo.thumbnail) {
+      setStreamingInfo({ ...streamingInfo, thumbnail: defaultThumbnail });
+    }
+    if (!streamingInfo.sound.length) {
+      setStreamingInfo({ ...streamingInfo, sound: "fire" });
+    }
     dispatch(modalOff());
     navigate("../streamer", { state: streamingInfo });
   };
