@@ -195,7 +195,7 @@ function DailyLog({ moment }) {
               value={comment}
               rows="18"
               cols="50"
-              spellcheck="false"
+              spellCheck="false"
             ></textarea>
           </CommentBox>
         </section>
