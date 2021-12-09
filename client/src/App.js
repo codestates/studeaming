@@ -8,6 +8,7 @@ import Mypage from "./pages/Mypage";
 import Streamer from "./pages/Streamer";
 import Viewer from "./pages/Viewer";
 import Verification from "./pages/Verification";
+import NotFound from "./pages/NotFound";
 import Modal from "./components/Modal";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
@@ -80,6 +81,7 @@ function App() {
       }
     );
   }, []);
+
   return (
     <>
       {isLoading ? <Loading /> : null}
@@ -92,6 +94,7 @@ function App() {
         <Route path="/streamer" element={<Streamer />} />
         <Route path="/viewer" element={<Viewer />} />
         <Route path="/auth" element={<Verification />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
       {isModal && (
         <Modal>
