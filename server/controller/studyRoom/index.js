@@ -3,16 +3,18 @@ const { socketio_data } = require("../../models");
 module.exports = {
   io: async (socket) => {
     socket.on("open_room", async (roomInfo) => {
-      await socketio_data.create({
-        uuid: roomInfo.uuid,
-        user_id: roomInfo.id,
-        title: roomInfo.title,
-        thumbnail: roomInfo.thumbnail || "",
-        headCount: 1,
-      });
-      socket.join(roomInfo.uuid);
-      socket.data.uuid = roomInfo.uuid;
-      socket.data.userId = roomInfo.id;
+      try {
+        await socketio_data.create({
+          uuid: roomInfo.uuid,
+          user_id: roomInfo.id,
+          title: roomInfo.title,
+          thumbnail: roomInfo.thumbnail || "",
+          headCount: 1,
+        });
+        socket.join(roomInfo.uuid);
+        socket.data.uuid = roomInfo.uuid;
+        socket.data.userId = roomInfo.id;
+      } catch (e) {}
     });
 
     socket.on("join_room", async (viewerInfo) => {
@@ -26,10 +28,12 @@ module.exports = {
         socketId: viewerInfo.socketId,
       });
 
-      await socketio_data.increment(
-        { headCount: 1 },
-        { where: { uuid: viewerInfo.uuid } }
-      );
+      try {
+        await socketio_data.increment(
+          { headCount: 1 },
+          { where: { uuid: viewerInfo.uuid } }
+        );
+      } catch {}
     });
 
     socket.on("offer", (offer, uuid, socketId, hostId, viewers) => {
@@ -51,29 +55,36 @@ module.exports = {
       socket.to(uuid).emit("newChat", userId, chatIdx);
     });
 
+    socket.on("update_viewer", (uuid, viewer) => {
+      console.log(viewer);
+      socket.to(uuid).emit("update_viewer", viewer);
+    });
+
     socket.on("disconnect", async () => {
       const uuid = socket.data.uuid;
 
       if (uuid) {
-        const roomInfo = await socketio_data.findOne({
-          where: { uuid: socket.data.uuid },
-          raw: true,
-        });
+        try {
+          const roomInfo = await socketio_data.findOne({
+            where: { uuid: socket.data.uuid },
+            raw: true,
+          });
 
-        if (roomInfo) {
-          if (roomInfo.user_id === socket.data.userId.toString()) {
-            await socketio_data.destroy({ where: { uuid: uuid } });
+          if (roomInfo) {
+            if (roomInfo.user_id === socket.data.userId.toString()) {
+              await socketio_data.destroy({ where: { uuid: uuid } });
 
-            socket.to(uuid).emit("close_room");
-          } else {
-            await socketio_data.decrement(
-              { headCount: 1 },
-              { where: { uuid: uuid } }
-            );
+              socket.to(uuid).emit("close_room");
+            } else {
+              await socketio_data.decrement(
+                { headCount: 1 },
+                { where: { uuid: uuid } }
+              );
 
-            socket.to(uuid).emit("leave_room", socket.data.userId);
+              socket.to(uuid).emit("leave_room", socket.id);
+            }
           }
-        }
+        } catch (e) {}
       }
     });
   },

@@ -167,16 +167,18 @@ function Viewer({ route, navigation }) {
   );
   const viewers = useRef([]);
   const peerVideoRef = useRef(HTMLVideoElement);
+  const socketRef = useRef(
+    io("http://localhost:4000", {
+      transports: ["websocket"],
+      upgrade: false,
+    })
+  );
   const dispatch = useDispatch();
   const { state } = useLocation();
 
   useEffect(() => {
     const peerConnection = new RTCPeerConnection(StunServer); //rtc 커넥션 객체를 만듦
-
-    const socket = io("http://localhost:4000", {
-      transports: ["websocket"],
-      upgrade: false,
-    });
+    const socket = socketRef.current;
 
     peerConnection.onicecandidate = (data) => {
       //icecandidate 준비가 되었을 때 소켓 이벤트를 발생
@@ -229,9 +231,9 @@ function Viewer({ route, navigation }) {
       } else return;
     });
 
-    socket.on("leave_room", (viewerId) => {
+    socket.on("leave_room", (socketId) => {
       viewers.current = viewers.current.filter(
-        (viewer) => viewer.id !== viewerId
+        (viewer) => viewer.socketId !== socketId
       );
     });
 
@@ -249,11 +251,39 @@ function Viewer({ route, navigation }) {
       console.log("ice connected ", e);
     };
 
+    socket.on("update_viewer", (updatedViewer) => {
+      console.log("update_viewer");
+      viewers.current.forEach((viewer) => {
+        if (viewer.socketId === updatedViewer.socketId) {
+          viewer.id = updatedViewer.id;
+          viewer.username = updatedViewer.username;
+          viewer.profileImg = updatedViewer.profileImg;
+        }
+      });
+    });
+
     return () => {
       socket.disconnect();
       peerConnection.close();
     };
   }, []);
+
+  useEffect(() => {
+    const updatedUser = {
+      id: id,
+      username: username,
+      profileImg: profileImg,
+      socketId: socketRef.current.id,
+    };
+
+    viewers.current.forEach((viewer) => {
+      viewer.id = id;
+      viewer.username = username;
+      viewer.profileImg = profileImg;
+    });
+
+    socketRef.current.emit("update_viewer", state.uuid, updatedUser);
+  }, [id, username, profileImg]);
 
   return (
     <StyledViewer>
@@ -297,7 +327,7 @@ function Viewer({ route, navigation }) {
         </StudeamerInfo>
       </ScreenSection>
       <ChatSection>
-        <Chat />
+        <Chat socket={socketRef.current} ref={viewers} uuid={state.uuid} />
       </ChatSection>
     </StyledViewer>
   );

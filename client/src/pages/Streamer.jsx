@@ -28,18 +28,22 @@ function Streamer() {
     ({ userReducer }) => userReducer
   );
   const { state } = useLocation();
-  const uuid = v4();
+  const uuidRef = useRef(v4());
   const localVideoRef = useRef(HTMLVideoElement);
+  const socketRef = useRef(
+    io("http://localhost:4000", {
+      transports: ["websocket"],
+      upgrade: false,
+    })
+  );
   const viewers = useRef([
     { id: id, username: username, profileImg: profileImg, socketId: "" },
   ]);
 
   useEffect(() => {
+    const uuid = uuidRef.current;
+    const socket = socketRef.current;
     let localStream;
-    const socket = io("http://localhost:4000", {
-      transports: ["websocket"],
-      upgrade: false,
-    });
 
     const peerConnection = new RTCPeerConnection(StunServer);
 
@@ -101,15 +105,25 @@ function Streamer() {
       }
     });
 
-    socket.on("leave_room", (viewerId) => {
+    socket.on("leave_room", (socketId) => {
       viewers.current = viewers.current.filter(
-        (viewer) => viewer.id !== viewerId
+        (viewer) => viewer.socketId !== socketId
       );
     });
 
     peerConnection.oniceconnectionstatechange = (e) => {
       console.log("ice connected ", e);
     };
+
+    socket.on("update_viewer", (updatedViewer) => {
+      viewers.current.forEach((viewer) => {
+        if (viewer.socketId === updatedViewer.socketId) {
+          viewer.id = updatedViewer.id;
+          viewer.username = updatedViewer.username;
+          viewer.profileImg = updatedViewer.profileImg;
+        }
+      });
+    });
 
     return () => {
       socket.disconnect();
@@ -120,6 +134,7 @@ function Streamer() {
 
   return (
     <>
+      {/* <chat uuid={uuidRef.current} socket={socketRef.current}>*/}
       <div className="Cam">
         <LiveVideo
           autoPlay
