@@ -1,11 +1,12 @@
-import { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { reportModalOpen } from "../store/actions/index";
 import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
 import { GiSiren } from "react-icons/gi";
+import { io } from "socket.io-client";
 // import Screen from "../components/Screen";
 import Chat from "../components/Chat";
 import FollowBtn from "../components/FollowBtn";
@@ -29,6 +30,9 @@ const ScreenSection = styled.section`
   flex-direction: column;
   position: relative;
   margin-right: 20px;
+  .wrapper {
+    position: relative;
+  }
   @media screen and (max-width: 480px) {
     width: 100%;
     height: 100%;
@@ -36,14 +40,13 @@ const ScreenSection = styled.section`
   }
 `;
 
-const Screen = styled.div`
+const Screen = styled.video`
   width: 100%;
   min-width: 360px;
   height: 80%;
   min-height: 300px;
   border: 1px solid;
   position: relative;
-  background-color: black;
 
   @media screen and (max-width: 480px) {
     position: sticky;
@@ -81,12 +84,14 @@ const Siren = styled(GiSiren)`
   position: absolute;
   top: 10px;
   right: 10px;
+  z-index: 10;
 `;
 const FullScreen = styled(BiFullscreen)`
   position: absolute;
   bottom: 10px;
   right: 10px;
   color: grey;
+  z-index: 10;
 `;
 
 const StudeamerInfo = styled.div`
@@ -144,15 +149,96 @@ const InfoSection2 = styled.div`
   }
 `;
 
-function Viewer() {
+const StunServer = {
+  iceServers: [
+    {
+      urls: [
+        "stun:stun.l.google.com:19302",
+        "stun:stun1.l.google.com:19302",
+        "stun:stun2.l.google.com:19302",
+        "stun:stun3.l.google.com:19302",
+      ],
+    },
+  ],
+};
+
+function Viewer({ route, navigation }) {
+  const { id, username } = useSelector(({ userReducer }) => userReducer);
+  const viewers = useRef([]);
+  const peerVideoRef = useRef(HTMLVideoElement);
   const dispatch = useDispatch();
   const { state } = useLocation();
+
+  useEffect(() => {
+    const peerConnection = new RTCPeerConnection(StunServer); //rtc 커넥션 객체를 만듦
+
+    const socket = io("http://localhost:4000", {
+      transports: ["websocket"],
+      upgrade: false,
+    });
+
+    peerConnection.onicecandidate = (data) => {
+      //icecandidate 준비가 되었을 때 소켓 이벤트를 발생
+      if (data.candidate) {
+        socket.emit(
+          "ice",
+          data.candidate,
+          state.uuid,
+          viewers.current[0].socketId
+        );
+      }
+    };
+
+    socket.on("connect", () => {
+      //웹소켓으로 연결되면
+      console.log("connect", socket.id);
+      socket.emit("join_room", {
+        //join_room 이벤트 발생
+        id: id,
+        username: username,
+        socketId: socket.id,
+        uuid: state.uuid,
+      });
+    });
+
+    socket.on("welcome", (viewer) => {
+      viewers.current.push(viewer);
+    });
+
+    socket.on("offer", async (offer, socketId, hostId) => {
+      if (socketId === socket.id) {
+        viewers.current.push({ socketId: hostId });
+        peerConnection.setRemoteDescription(offer);
+        const answer = await peerConnection.createAnswer();
+        peerConnection.setLocalDescription(answer);
+        socket.emit("answer", answer, state.uuid, socket.id);
+      } else return;
+    });
+
+    socket.on("ice", (ice, socketId) => {
+      console.log(socket.id, socketId);
+      if (socket.id === socketId) {
+        console.log("received candidate", ice);
+        peerConnection.addIceCandidate(ice);
+      } else return;
+    });
+
+    peerConnection.ontrack = (data) => {
+      console.log("received stream", data.streams[0]);
+      peerVideoRef.current.srcObject = data.streams[0];
+      //peerVideoRef.current.play();
+    };
+
+    peerConnection.oniceconnectionstatechange = (e) => {
+      console.log("ice connected ", e);
+    };
+  }, []);
 
   return (
     <StyledViewer>
       <ScreenSection>
         <Screen>
-          {/* <Cam ref={localVideoRef} /> 여기에 송출 화면 속성 넣으면 됨*/}
+          <Cam ref={peerVideoRef} />
           <i
             onClick={() => {
               dispatch(reportModalOpen(true, state.username));
@@ -161,13 +247,14 @@ function Viewer() {
             <Siren color="red" />
           </i>
           <i
-          // onClick={() => {
-          //   localVideoRef.current.requestFullscreen();
-          // }}
+            onClick={() => {
+              peerVideoRef.current.requestFullscreen();
+            }}
           >
             <FullScreen />
           </i>
         </Screen>
+
         <StudeamerInfo>
           <InfoSection1>
             <h3>{state.title}</h3>

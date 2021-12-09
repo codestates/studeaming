@@ -199,7 +199,9 @@ function StreamerSettingMockup() {
       })
     );
     dispatch(modalOff());
-    navigate("../streamer");
+    navigate("../streamer", {
+      state: { title: streamingInfo.title, thumbnail: streamingInfo.thumbnail },
+    });
   };
 
   useEffect(() => {
