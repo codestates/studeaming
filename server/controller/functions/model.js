@@ -51,25 +51,29 @@ module.exports = {
       return null;
     }
   },
-
+  // todo: refactor
   getStudyTime: async (studyLogList, start, end) => {
     return studyLogList.reduce((acc, cur) => {
-      if (
-        (start === undefined && end === undefined) ||
-        (cur.startedAt > start && cur.finishedAt < end)
-      ) {
-        return acc + cur.finishedAt - cur.startedAt;
-      } else if (
-        (cur.startedAt < start && cur.finishedAt < start) ||
-        (cur.startedAt > end && cur.finishedAt > end)
-      ) {
-        return acc + 0;
-      } else if (cur.startedAt < start && cur.finishedAt > end) {
-        return acc + end - start;
-      } else if (cur.startedAt < start) {
-        return acc + cur.finishedAt - start;
+      if (cur.name !== "휴식") {
+        if (
+          (start === undefined && end === undefined) ||
+          (cur.startedAt > start && cur.finishedAt < end)
+        ) {
+          return acc + cur.finishedAt - cur.startedAt;
+        } else if (
+          (cur.startedAt < start && cur.finishedAt < start) ||
+          (cur.startedAt > end && cur.finishedAt > end)
+        ) {
+          return acc + 0;
+        } else if (cur.startedAt < start && cur.finishedAt > end) {
+          return acc + end - start;
+        } else if (cur.startedAt < start) {
+          return acc + cur.finishedAt - start;
+        } else {
+          return acc + end - cur.startedAt;
+        }
       } else {
-        return acc + end - cur.startedAt;
+        return acc;
       }
     }, 0);
   },

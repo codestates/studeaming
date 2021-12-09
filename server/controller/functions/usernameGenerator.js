@@ -1,19 +1,16 @@
 const { User } = require("../../models");
 const { v4 } = require("uuid");
-const { Op } = require("sequelize");
 
 module.exports = async (name) => {
-  name = (name || "회원") + v4().slice(0, 5);
+  name = name || v4().slice(0, 5);
   //return unique name
   const count = await User.count({
     where: {
-      username: {
-        [Op.like]: `%${name}`,
-      },
+      username: name,
     },
   });
   if (count) {
-    return name + count;
+    return name + count + v4().slice(0, 5);
   } else {
     return name;
   }

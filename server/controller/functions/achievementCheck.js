@@ -47,13 +47,13 @@ module.exports = {
     if (isAchieved) return;
 
     try {
-      const logs = await Studylog.findOne({
+      const logs = await Studylog.findAll({
         where: { user_id: id },
         raw: true,
       });
       const studyTime = await getStudyTime(logs);
 
-      if (studyTime >= 100 * 60 * 60 * 1000) {
+      if (studyTime >= 100 * 60) {
         await user_achievement.findOrCreate({
           where: { user_id: id, achievement_id: 3 },
         });
@@ -70,9 +70,9 @@ module.exports = {
     if (isAchieved) return;
 
     try {
-      const user = await User.findOne({ where: { user_id: id }, raw: true });
+      const user = await User.findOne({ where: { id: id }, raw: true });
 
-      if (user.studeaming > 100 * 60 * 60 * 1000) {
+      if (user.studeaming > 100 * 60) {
         await user_achievement.findOrCreate({
           where: { user_id: id, achievement_id: 4 },
         });
@@ -91,7 +91,7 @@ module.exports = {
     try {
       const user = await User.findOne({ where: { user_id: id }, raw: true });
 
-      if (user.watching > 100 * 60 * 60 * 1000) {
+      if (user.watching > 100 * 60) {
         await user_achievement.findOrCreate({
           where: { user_id: id, achievement_id: 5 },
         });
@@ -113,10 +113,15 @@ module.exports = {
           new Date().getMonth() + 1
         },${new Date().getDate()}`
       );
-      const logs = await getStudyLogs(id, dateStart, new Date());
+      const logs = await getStudyLogs(
+        id,
+        Date.now() / (60 * 1000) - 24 * 60,
+        Date.now() / (60 * 1000)
+      );
+
       const studyTime = await getStudyTime(logs);
 
-      if (studyTime > 12 * 60 * 60 * 1000) {
+      if (studyTime > 24 * 60) {
         await user_achievement.findOrCreate({
           where: { user_id: id, achievement_id: 6 },
         });
@@ -155,7 +160,7 @@ module.exports = {
       const today = Date.now() / (60 * 1000);
       const aWeekAgo = today - 7 * 24 * 60;
 
-      const users = await User.findAll({ raw: true, attributes: ["id"] });
+      const users = await User.findOne({ raw: true, attributes: ["id"] });
 
       users.map(async (user) => {
         const isAchieved = await haveAchievement(user.id, 8);
@@ -189,13 +194,13 @@ module.exports = {
     if (isAchieved) return;
 
     try {
-      const restLogs = await Studylog.findOne({
+      const restLogs = await Studylog.findAll({
         where: { user_id: id, name: "휴식" },
         raw: true,
       });
       const restTime = await getStudyTime(restLogs);
 
-      if (restTime > 10 * 60 * 60 * 1000) {
+      if (restTime > 10 * 60) {
         await user_achievement.findOrCreate({
           where: { user_id: id, achievement_id: 9 },
         });
