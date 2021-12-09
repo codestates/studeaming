@@ -52,24 +52,28 @@ module.exports = {
     });
 
     socket.on("disconnect", async () => {
-      //새로고침 없이 페이지를 이동해도 이벤트가 발생해야 함
-      const roomInfo = await socketio_data.findOne({
-        where: { uuid: socket.data.uuid },
-        raw: true,
-      });
+      const uuid = socket.data.uuid;
 
-      if (roomInfo.user_id === socket.data.userId) {
-        //호스트가 떠난 경우
-        await socketio_data.destroy({ where: { uuid: uuid } });
+      if (uuid) {
+        const roomInfo = await socketio_data.findOne({
+          where: { uuid: socket.data.uuid },
+          raw: true,
+        });
 
-        socket.to(uuid).emit("close_room");
-      } else {
-        //시청자가 떠난 경우
-        await socketio_data.decrement(
-          { headCount: 1 },
-          { where: { uuid: socket.data.uuid } }
-        );
-        socket.to(uuid).emit("leave_room", socket.data.userId);
+        if (roomInfo) {
+          if (roomInfo.user_id === socket.data.userId.toString()) {
+            await socketio_data.destroy({ where: { uuid: uuid } });
+
+            socket.to(uuid).emit("close_room");
+          } else {
+            await socketio_data.decrement(
+              { headCount: 1 },
+              { where: { uuid: uuid } }
+            );
+
+            socket.to(uuid).emit("leave_room", socket.data.userId);
+          }
+        }
       }
     });
   },
