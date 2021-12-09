@@ -97,7 +97,7 @@ if (fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")) {
     transports: ["websocket"],
   });
 
-  io.on("connection", (socket) => studyRoom.io(socket));
+  io.on("connection", (socket) => studyRoom.io(socket, io));
 }
 
 module.exports = server;
