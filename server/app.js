@@ -88,17 +88,16 @@ if (fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")) {
   server = http.Server(app).listen(4000, function () {
     console.log("Express server listening on port ");
   });
-  // todo: http.Server로 새로 하나 만들고 포트 번호 지정하면 되는데 createServer.. 이것때문에 몇일을 소비한건지 참..
-  // console.log(server);
+
   const io = new Server(server, {
     cors: {
       origin: "http://localhost:3000",
       credentials: true,
     },
+    transports: ["websocket"],
   });
-  // server = app.listen(PORT, () => console.log("http server runnning"));
-  // let io = require("socket.io")(http);
-  io.on("connection", (socket) => studyRoom.io(socket, io));
+
+  io.on("connection", (socket) => studyRoom.io(socket));
 }
 
 module.exports = server;

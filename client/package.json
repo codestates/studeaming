@@ -32,6 +32,7 @@
     "socket.io-client": "^4.4.0",
     "styled-components": "^5.3.3",
     "styled-normalize": "^8.0.7",
+    "uuid": "^8.3.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

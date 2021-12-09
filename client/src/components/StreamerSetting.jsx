@@ -209,8 +209,9 @@ function StreamerSettingMockup() {
     if (!streamingInfo.sound.length) {
       setStreamingInfo({ ...streamingInfo, sound: "fire" });
     }
+    
     dispatch(modalOff());
-    navigate("../streamer", { state: streamingInfo });
+    navigate("/streamer", { state: streamingInfo });
   };
 
   useEffect(() => {
