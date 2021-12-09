@@ -7,26 +7,34 @@ module.exports = {
         uuid: roomInfo.uuid,
         user_id: roomInfo.id,
         title: roomInfo.title,
-        thumbnail: roomInfo.thumbnail,
+        thumbnail: roomInfo.thumbnail || "",
         headCount: 1,
       });
       socket.join(roomInfo.uuid);
+      socket.data.uuid = roomInfo.uuid;
+      socket.data.userId = roomInfo.id;
     });
 
-    socket.on("join_room", (viewerInfo) => {
+    socket.on("join_room", async (viewerInfo) => {
       socket.join(viewerInfo.uuid);
+      socket.data.userId = viewerInfo.id;
+      socket.data.uuid = viewerInfo.uuid;
       socket.to(viewerInfo.uuid).emit("welcome", {
         id: viewerInfo.id,
         username: viewerInfo.username,
+        profileImg: viewerInfo.profileImg,
         socketId: viewerInfo.socketId,
       });
-      //webrtc 연결, 방금 들어온 클라이언트한테만
+
+      await socketio_data.increment(
+        { headCount: 1 },
+        { where: { uuid: viewerInfo.uuid } }
+      );
     });
 
-    socket.on("offer", (offer, uuid, socketId, hostId) => {
+    socket.on("offer", (offer, uuid, socketId, hostId, viewers) => {
       console.log("호스트가 offer 보냄", hostId);
-      socket.to(uuid).emit("offer", offer, socketId, hostId);
-      //viewers 배열도 같이 보내주기
+      socket.to(uuid).emit("offer", offer, socketId, hostId, viewers);
     });
 
     socket.on("answer", (answer, uuid, socketId) => {
@@ -43,13 +51,26 @@ module.exports = {
       socket.to(uuid).emit("newChat", userId, chatIdx);
     });
 
-    socket.on("leave_room", (userId) => {
-      //headCount 1내리기
-      //viewers 배열에서 삭제
-    });
+    socket.on("disconnect", async () => {
+      //새로고침 없이 페이지를 이동해도 이벤트가 발생해야 함
+      const roomInfo = await socketio_data.findOne({
+        where: { uuid: socket.data.uuid },
+        raw: true,
+      });
 
-    socket.on("close_room", (userId) => {
-      //데이터베이스에서 레코드 삭제
+      if (roomInfo.user_id === socket.data.userId) {
+        //호스트가 떠난 경우
+        await socketio_data.destroy({ where: { uuid: uuid } });
+
+        socket.to(uuid).emit("close_room");
+      } else {
+        //시청자가 떠난 경우
+        await socketio_data.decrement(
+          { headCount: 1 },
+          { where: { uuid: socket.data.uuid } }
+        );
+        socket.to(uuid).emit("leave_room", socket.data.userId);
+      }
     });
   },
 };
