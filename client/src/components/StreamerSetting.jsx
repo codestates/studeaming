@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getStreamingInfo, modalOff } from "../store/actions";
+import { modalOff } from "../store/actions";
 import useAudio from "../hooks/useAudio";
 import { Input, Desc } from "./reusableStyle";
 import sound from "../assets/sound";
+import defaultThumbnail from "../assets/images/empty.png";
 
 const Container = styled.div`
   display: flex;
@@ -13,6 +14,7 @@ const Container = styled.div`
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
+  padding: 10px;
   position: relative;
 
   #studeaming-setting-title {
@@ -145,6 +147,7 @@ const StartBtn = styled.button`
 `;
 
 function StreamerSettingMockup() {
+  const { username } = useSelector(({ userReducer }) => userReducer);
   const [streamingInfo, setStreamingInfo] = useState({
     title: "",
     thumbnail: null,
@@ -152,9 +155,9 @@ function StreamerSettingMockup() {
   });
   const localVideoRef = useRef(HTMLVideoElement);
   const [players, toggle] = useAudio(sound);
+  const [hover, setHover] = useState({ mounted: false, idx: null });
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log(players);
 
   const checkCameraHandler = async () => {
     try {
@@ -185,26 +188,28 @@ function StreamerSettingMockup() {
     setStreamingInfo({ ...streamingInfo, thumbnail: null });
   };
 
-  const getSound = (ASMR, idx) => {
+  const getSound = (ASMR) => {
     setStreamingInfo({ ...streamingInfo, sound: ASMR });
-    toggle(idx);
+  };
+
+  const hoverHandler = (idx) => {
+    setHover({ mounted: true, idx });
   };
 
   const startBtnHandler = () => {
-    dispatch(
-      getStreamingInfo({
-        title: streamingInfo.title,
-        thumbnail: streamingInfo.thumbnail,
-        sound: streamingInfo.sound,
-      })
-    );
     dispatch(modalOff());
-    navigate("../streamer");
+    navigate("../streamer", { state: streamingInfo });
   };
 
   useEffect(() => {
     checkCameraHandler();
   }, []);
+
+  useEffect(() => {
+    if (hover.mounted) {
+      toggle(hover.idx);
+    }
+  }, [hover]);
 
   return (
     <>
@@ -243,16 +248,19 @@ function StreamerSettingMockup() {
           </div>
         </div>
         <div id="sound-picker">
-          <Desc>ASMR 사운드를 선택하세요</Desc>
+          <Desc>
+            ASMR 사운드를 선택하세요. 마우스를 올리면 사운드가 재생됩니다.
+          </Desc>
           <div id="sound-cards">
             {players.map((ASMR, idx) => {
-              console.log(ASMR.img);
               return (
                 <SoundCard
                   key={idx}
                   img={ASMR.img}
                   isSelected={ASMR.keyword === streamingInfo.sound}
                   onClick={() => getSound(ASMR.keyword, idx)}
+                  onMouseEnter={() => hoverHandler(idx)}
+                  onMouseLeave={() => hoverHandler(idx)}
                 >
                   <div className="ASMR-title">{ASMR.title}</div>
                 </SoundCard>
