@@ -159,6 +159,7 @@ function StreamerSettingMockup() {
   const [hover, setHover] = useState({ mounted: false, idx: null });
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  let localStream;
 
   const checkCameraHandler = async () => {
     try {
@@ -170,6 +171,7 @@ function StreamerSettingMockup() {
         },
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      localStream = stream;
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
     } catch (err) {
       console.log("Error opening video camera", err);
@@ -217,6 +219,9 @@ function StreamerSettingMockup() {
 
   useEffect(() => {
     checkCameraHandler();
+    return () => {
+      localStream.getTracks()[0].stop();
+    };
   }, []);
 
   useEffect(() => {
