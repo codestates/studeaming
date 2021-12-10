@@ -20,7 +20,7 @@ module.exports = {
       color: {
         allowNull: false,
         type: Sequelize.STRING,
-        defaultValue: "#a5c7e5",
+        defaultValue: "yellow",
       },
       isOn: {
         allowNull: false,
