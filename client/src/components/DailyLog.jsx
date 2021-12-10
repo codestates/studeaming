@@ -20,7 +20,7 @@ const Container = styled.div`
   #right {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .comment-header {
@@ -63,7 +63,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     padding: 0 0 0.4rem;
-    margin-bottom: 0.6rem;
+    margin-top: 0.6rem;
 
     @media screen and (max-width: 768px) {
       display: none;
@@ -193,7 +193,7 @@ function DailyLog({ moment }) {
               onBlur={finishEditingHandler}
               onChange={getComment}
               value={comment}
-              rows="18"
+              rows="13"
               cols="50"
               spellCheck="false"
             ></textarea>
