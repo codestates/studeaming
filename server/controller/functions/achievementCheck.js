@@ -28,7 +28,7 @@ module.exports = {
       return;
     }
   },
-  //스터디밍 켤 때 호출 - 호출 미완료
+  //스터디밍 켤 때 호출
   startStudeaming: async (id) => {
     const isAchieved = await haveAchievement(id, 2);
     if (isAchieved) return;
@@ -64,7 +64,7 @@ module.exports = {
       return;
     }
   },
-  //스터디밍 끌 때 호출 - 호출 미완료
+  //스터디밍 끌 때 호출
   studeamHundredhours: async (id) => {
     const isAchieved = await haveAchievement(id, 4);
     if (isAchieved) return;
@@ -83,13 +83,13 @@ module.exports = {
       return;
     }
   },
-  //스터디밍 방에서 나올 때 호출 - 호출 미완료
+  //스터디밍 방에서 나올 때 호출
   watchHundredhours: async (id) => {
     const isAchieved = await haveAchievement(id, 5);
     if (isAchieved) return;
 
     try {
-      const user = await User.findOne({ where: { user_id: id }, raw: true });
+      const user = await User.findOne({ where: { id: id }, raw: true });
 
       if (user.watching > 100 * 60) {
         await user_achievement.findOrCreate({
@@ -108,11 +108,6 @@ module.exports = {
     if (isAchieved) return;
 
     try {
-      const dateStart = new Date(
-        `${new Date().getFullYear()},${
-          new Date().getMonth() + 1
-        },${new Date().getDate()}`
-      );
       const logs = await getStudyLogs(
         id,
         Date.now() / (60 * 1000) - 24 * 60,
