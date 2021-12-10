@@ -1,4 +1,3 @@
-const { updateUnionTypeNode } = require("typescript");
 const { socketio_data } = require("../../models");
 
 module.exports = {
@@ -37,9 +36,9 @@ module.exports = {
       } catch {}
     });
 
-    socket.on("offer", (offer, uuid, socketId, hostId, viewers) => {
+    socket.on("offer", (offer, uuid, socketId, hostId) => {
       console.log("호스트가 offer 보냄", hostId);
-      socket.to(uuid).emit("offer", offer, socketId, hostId, viewers);
+      socket.to(uuid).emit("offer", offer, socketId, hostId);
     });
 
     socket.on("answer", (answer, uuid, socketId) => {
@@ -47,9 +46,9 @@ module.exports = {
       socket.to(uuid).emit("answer", answer, socketId);
     });
 
-    socket.on("ice", (ice, uuid, socketId) => {
-      console.log("icecandidate", ice, "to", socketId);
-      socket.to(uuid).emit("ice", ice, socketId);
+    socket.on("ice", (ice, uuid, recieverId, senderId) => {
+      console.log("icecandidate", ice, "to", recieverId);
+      socket.to(uuid).emit("ice", ice, recieverId, senderId);
     });
 
     socket.on("chat", (uuid, userId, chatIdx, newchat) => {
@@ -63,8 +62,13 @@ module.exports = {
       // });
     });
 
+    socket.on("get_viewer", (uuid, requestId, viewerInfo) => {
+      socket.to(uuid).emit("get_viewer", requestId, viewerInfo);
+    });
+
     socket.on("update_viewer", (uuid, viewer) => {
       console.log(viewer);
+      socket.data.userId = viewer.id;
       socket.to(uuid).emit("update_viewer", viewer);
     });
 

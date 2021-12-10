@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -168,7 +168,6 @@ function Viewer({ route, navigation }) {
   const { id, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
   );
-  const viewers = useRef([]);
   const peerVideoRef = useRef(HTMLVideoElement);
   const socketRef = useRef(
     io("http://localhost:4000", {
@@ -176,31 +175,23 @@ function Viewer({ route, navigation }) {
       upgrade: false,
     })
   );
+  const viewers = useRef([
+    {
+      id: id,
+      username: username,
+      profileImg: profileImg,
+    },
+  ]);
   const dispatch = useDispatch();
   const { state } = useLocation();
-  const [chating, setChating] = useState({ userId: "", usechatIdx: null });
 
   useEffect(() => {
     const peerConnection = new RTCPeerConnection(StunServer); //rtc 커넥션 객체를 만듦
     const socket = socketRef.current;
 
-    peerConnection.onicecandidate = (data) => {
-      //icecandidate 준비가 되었을 때 소켓 이벤트를 발생
-      if (data.candidate) {
-        socket.emit(
-          "ice",
-          data.candidate,
-          state.uuid,
-          viewers.current[0].socketId //ice 받을 소켓: host socket id
-        );
-      }
-    };
-
     socket.on("connect", () => {
-      //웹소켓으로 연결되면
-      console.log("connect", socket.id);
+      viewers.current[0].socketId = socket.id;
       socket.emit("join_room", {
-        //join_room 이벤트 발생
         id: id,
         username: username,
         profileImg: profileImg,
@@ -211,18 +202,42 @@ function Viewer({ route, navigation }) {
 
     socket.on("welcome", (viewerInfo) => {
       if (viewerInfo.socketId !== socket.id) {
-        //내가 발생시킨 welcome이벤트가 아니라면(새로운 참가자가 있는 경우) 뷰어 목록에 추가
+        //새로운 참가자가 있는 경우 뷰어 목록에 추가하고 내 정보 보내줌
+        viewers.current.push(viewerInfo);
+        socket.emit(
+          "get_viewer",
+          state.uuid,
+          viewerInfo.socketId,
+          viewers.current[0]
+        );
+      }
+    });
+
+    socket.on("get_viewer", (requestId, viewerInfo) => {
+      if (requestId === socket.id) {
+        //새로 들어온 유저가 나라면 수신한 다른 유저들의 정보를 저장
         viewers.current.push(viewerInfo);
       }
     });
 
-    socket.on("offer", async (offer, socketId, hostId, hostViewers) => {
+    socket.on("offer", async (offer, socketId, hostId) => {
       if (socketId === socket.id) {
-        viewers.current = hostViewers; // host의 viewer 목록(내가 포함된)을 저장
-        viewers.current[0].socketId = hostId;
+        peerConnection.onicecandidate = (data) => {
+          if (data.candidate) {
+            socket.emit(
+              "ice",
+              data.candidate,
+              state.uuid,
+              hostId, //ice 받을 소켓
+              socket.id
+            );
+          }
+        };
+
         peerConnection.setRemoteDescription(offer);
         const answer = await peerConnection.createAnswer();
         peerConnection.setLocalDescription(answer);
+
         socket.emit("answer", answer, state.uuid, socket.id);
       } else return;
     });
@@ -252,7 +267,7 @@ function Viewer({ route, navigation }) {
     };
 
     peerConnection.oniceconnectionstatechange = (e) => {
-      console.log("ice connected ", e);
+      console.log("ice connected ", e, peerConnection.connectionState);
     };
 
     socket.on("update_viewer", (updatedViewer) => {
