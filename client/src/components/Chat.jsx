@@ -168,79 +168,48 @@ function Chat({ socket, viewers, uuid }) {
 
   const sendHandler = (idx) => {
     const newChattingList = [...chattingList];
-    // todo: 서버에 전달해줄 채팅 내용
     if (idx) {
-      socket.emit("chat", uuid, socket.id, idx);
+      socket.emit("chat", uuid, socket.id, idx, newChattingList);
 
-      socket.on("newChat", (uuid, userId, chatIdx) => {
+      socket.on("newChat", (uuid, userId, chatIdx, newChat) => {
+        console.log("뉴챗 유유", uuid);
         console.log("뉴챗 아이디", userId);
         console.log("뉴챗 인덱스", chatIdx);
-        setChating({ userId: userId, usechatIdx: chatIdx });
-      });
-      console.log("뷰어스", viewers);
-      const WriteUser = viewers.current.forEach((data) => {
-        if (data.socketId && data.socketId === chating.userId) {
-          return data;
-        }
-      });
-      console.log("작성자", WriteUser);
-      const newLetter = (
-        <div>
-          <img
-            src={profileImg}
-            alt=""
-            style={{
-              width: "30px",
-              height: "30px",
-              borderRadius: "50%",
-              margin: "5px",
-            }}
-          />
-          <span style={{ fontSize: "12px" }}>
-            {username}
-            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-            {letter.message}
-          </span>
-        </div>
-      );
-      if (chat[chating.usechatIdx]) {
-        newChattingList.push(chat[chating.usechatIdx].comment);
+        console.log("뉴챗 ", newChat);
+        console.log("뷰어스", viewers);
+        const WriteUser = viewers.current.filter((data) => {
+          if (data.socketId && data.socketId === userId) {
+            return data;
+          }
+        });
+        console.log("라이트유저", WriteUser);
+        setLetter({ message: chat[chatIdx], idx: chatIdx });
+        console.log("래터", letter);
+        const newLetter = (
+          <div>
+            <img
+              src={WriteUser[0].profileImg}
+              alt=""
+              style={{
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                margin: "5px",
+              }}
+            />
+            <span style={{ fontSize: "12px" }}>
+              {WriteUser[0].username}
+              &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+              {chat[chatIdx].comment}
+            </span>
+          </div>
+        );
+        newChattingList.push(newLetter);
+        setLetter({ message: "", idx: null });
         setChattingList(newChattingList);
-      }
-      newChattingList.push(newLetter);
-      setLetter({ message: "", idx: null });
-      setChattingList(newChattingList);
-      inputRef.current.blur();
+        inputRef.current.blur();
+      });
     }
-
-    // const newLetter = (
-    //   <div>
-    //     <img
-    //       src={profileImg}
-    //       alt=""
-    //       style={{
-    //         width: "30px",
-    //         height: "30px",
-    //         borderRadius: "50%",
-    //         margin: "5px",
-    //       }}
-    //     />
-    //     <span style={{ fontSize: "12px" }}>
-    //       {username}
-    //       &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-    //       {letter.message}
-    //     </span>
-    //   </div>
-    // );
-
-    // if (chat[chating.usechatIdx]) {
-    //   newChattingList.push(chat[chating.usechatIdx].comment);
-    //   setChattingList(newChattingList);
-    // }
-    // newChattingList.push(newLetter);
-    // setLetter({ message: "", idx: null });
-    // setChattingList(newChattingList);
-    // inputRef.current.blur();
   };
 
   const onKeyUpHandler = (e, idx) => {
@@ -257,15 +226,6 @@ function Chat({ socket, viewers, uuid }) {
       ChatingRef.current.scrollTop = ChatingRef.current.height;
     }
   };
-
-  // useEffect(() => {
-  //   // todo: 여기는 상대방이 보내온 채팅을 보여주는곳
-  //   socket.on("newChat", (userId, chatIdx) => {
-  //     console.log("뉴챗 아이디", userId);
-  //     console.log("뉴챗 인덱스", chatIdx);
-  //     setChating({ userId: userId, usechatIdx: chatIdx });
-  //   });
-  // }, []);
 
   useEffect(() => {
     scrollToBottom();

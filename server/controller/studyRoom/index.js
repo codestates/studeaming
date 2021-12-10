@@ -1,7 +1,8 @@
+const { updateUnionTypeNode } = require("typescript");
 const { socketio_data } = require("../../models");
 
 module.exports = {
-  io: async (socket) => {
+  io: async (socket, io) => {
     socket.on("open_room", async (roomInfo) => {
       try {
         await socketio_data.create({
@@ -51,8 +52,15 @@ module.exports = {
       socket.to(uuid).emit("ice", ice, socketId);
     });
 
-    socket.on("chat", (uuid, userId, chatIdx) => {
-      socket.to(uuid).emit("newChat", userId, chatIdx);
+    socket.on("chat", (uuid, userId, chatIdx, newchat) => {
+      io.to(uuid).emit("newChat", uuid, userId, chatIdx, newchat);
+      // uuid.forEach((data) => {
+      //   const { socketId } = data;
+      //   if (socketId) {
+      //     console.log("소켓아이디", socketId);
+      //     socket.to(socketId).emit("newChat", userId, chatIdx);
+      //   }
+      // });
     });
 
     socket.on("update_viewer", (uuid, viewer) => {

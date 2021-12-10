@@ -1,15 +1,27 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { io } from "socket.io-client";
 import { v4 } from "uuid";
+import Chat from "../components/Chat";
 
 const LiveVideo = styled.video`
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg); /*여기는 사파리*/
   -moz-transform: rotateY(180deg); /*이거는 파이어폭스*/
 `;
+
+const ChatSection = styled.section`
+  width: 25%;
+  height: 100%;
+  min-height: 300px;
+
+  @media screen and (max-width: 480px) {
+    width: 100%;
+  }
+`;
+
 const StunServer = {
   iceServers: [
     {
@@ -133,8 +145,7 @@ function Streamer() {
   }, []);
 
   return (
-    <>
-      {/* <chat uuid={uuidRef.current} socket={socketRef.current}>*/}
+    <div className="wrapper" style={{ display: "flex", height: "90vh" }}>
       <div className="Cam">
         <LiveVideo
           autoPlay
@@ -145,7 +156,14 @@ function Streamer() {
           ref={localVideoRef}
         />
       </div>
-    </>
+      <ChatSection>
+        <Chat
+          socket={socketRef.current}
+          viewers={viewers}
+          uuid={uuidRef.current}
+        />
+      </ChatSection>
+    </div>
   );
 }
 
