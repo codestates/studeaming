@@ -1,4 +1,7 @@
+import { useEffect } from "react";
 import styled from "styled-components";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ImCheckmark } from "react-icons/im";
 
 const Container = styled.div`
@@ -83,26 +86,81 @@ const StyledCheck = styled(ImCheckmark)`
 `;
 
 function LandingSection2() {
+  gsap.registerPlugin(ScrollTrigger);
+  useEffect(() => {
+    gsap.from("#stream-header", {
+      scrollTrigger: {
+        trigger: "#stream-header",
+        toggleActions: "restart none none none",
+      },
+      duration: 0.4,
+      y: 50,
+      opacity: 0,
+    });
+    gsap.from("#stream-header-desc", {
+      scrollTrigger: {
+        trigger: "#stream-header",
+        toggleActions: "restart none none none",
+      },
+      duration: 0.4,
+      y: 50,
+      opacity: 0,
+      delay: 0.2,
+    });
+    gsap.from("#stream-description-1", {
+      scrollTrigger: {
+        trigger: "#stream-header",
+        toggleActions: "restart none none none",
+      },
+      duration: 0.4,
+      y: 50,
+      opacity: 0,
+      delay: 0.4,
+    });
+    gsap.from("#stream-description-2", {
+      scrollTrigger: {
+        trigger: "#stream-header",
+        toggleActions: "restart none none none",
+      },
+      duration: 0.4,
+      y: 50,
+      opacity: 0,
+      delay: 0.6,
+    });
+    gsap.from("#stream-description-3", {
+      scrollTrigger: {
+        trigger: "#stream-header",
+        toggleActions: "restart none none none",
+      },
+      duration: 0.4,
+      y: 50,
+      opacity: 0,
+      delay: 0.8,
+    });
+  }, []);
+
   return (
     <Container>
       <div id="section2-content">
-        <ImgContainer />
+        <ImgContainer className="section2-image" />
         <TextContainer>
-          <h2>실시간 스터디윗미</h2>
-          <h3>공부하는 모습을 실시간으로 송출해보세요</h3>
+          <h2 id="stream-header">실시간 스터디윗미</h2>
+          <h3 id="stream-header-desc">
+            공부하는 모습을 실시간으로 송출해보세요
+          </h3>
           <div id="stream-description-container">
-            <div id="stream-description">
+            <div id="stream-description-1">
               <StyledCheck />
               <span>누구든 스터디머가 될 수 있습니다!</span>
             </div>
-            <div id="stream-description">
+            <div id="stream-description-2">
               <StyledCheck />
               <span>
                 <div>ASMR 찾아다니지 마세요</div>
                 <div>제공되는 백색소음을 선택해서 재생할 수 있습니다</div>
               </span>
             </div>
-            <div id="stream-description">
+            <div id="stream-description-3">
               <StyledCheck />
               <span>
                 <div>서로에게 응원을 보낼 수 있는</div>
