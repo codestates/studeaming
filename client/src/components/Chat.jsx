@@ -168,11 +168,11 @@ function Chat({ socket, viewers, uuid }) {
 
   const sendHandler = (idx) => {
     const newChattingList = [...chattingList];
-    socket.on("USER in", (User) => {
+    socket.on("welcome", (User) => {
       const Usernotification = (
         <div>
           <span style={{ fontSize: "12px" }}>
-            {User.name || "구경꾼"}님이 입장하셨습니다.
+            {User.username || "구경꾼"}님이 입장하셨습니다.
           </span>
         </div>
       );
