@@ -115,7 +115,13 @@ const NoContents = styled.div`
 function MainContents({ contents }) {
   const navigate = useNavigate();
   const navigateLanding = (el) => {
-    navigate("/viewer", { state: el });
+    if (el.user_id === "0") {
+      navigate("/asmrsound", { state: el });
+    } else if (el.headCount < 5) {
+      navigate("/viewer", { state: el });
+    } else {
+      //알림창
+    }
   };
 
   return (
@@ -136,6 +142,18 @@ function MainContents({ contents }) {
                 <div className="thumbnail_info_name">
                   <div style={{ fontWeight: "bold" }}>{el.username}</div>
                   <div style={{ color: "#838080" }}>{el.headCount}명</div>
+                  <div style={{ color: "#9b0101be" }}>
+                    {el.user_id === "0"
+                      ? "asmr"
+                      : Math.floor(
+                          (Date.now() - el.createdAt) / (60 * 60 * 1000)
+                        ) +
+                        "시간 " +
+                        Math.ceil(
+                          ((Date.now() - el.createdAt) / (60 * 1000)) % 60
+                        ) +
+                        "분 전"}
+                  </div>
                 </div>
               </div>
             </Desc>
