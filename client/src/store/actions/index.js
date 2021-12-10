@@ -18,7 +18,6 @@ export const REPORT_MODAL_OPEN = "REPORT_MODAL_OPEN";
 export const SIDE_LOG_COMPONENT_OPEN = "SIDE_LOG_COMPONENT_OPEN";
 export const DAILY_LOG_OPEN = "DAILY_LOG_OPEN";
 export const MODAL_OFF = "MODAL_OFF";
-export const LOADING_ACTION = "LOADING_ACTION";
 
 export const loginStateChange = (boolean) => {
   return {
@@ -149,12 +148,5 @@ export const dailyLogOpen = (boolean, moment) => {
 export const modalOff = () => {
   return {
     type: MODAL_OFF,
-  };
-};
-
-export const loadingHandler = (boolean) => {
-  return {
-    type: LOADING_ACTION,
-    payload: boolean,
   };
 };
