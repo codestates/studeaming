@@ -93,8 +93,8 @@ function LandingSection2() {
         trigger: "#stream-header",
         toggleActions: "restart none none none",
       },
-      duration: 0.4,
       y: 50,
+      duration: 0.4,
       opacity: 0,
     });
     gsap.from("#stream-header-desc", {
@@ -102,8 +102,8 @@ function LandingSection2() {
         trigger: "#stream-header",
         toggleActions: "restart none none none",
       },
-      duration: 0.4,
       y: 50,
+      duration: 0.4,
       opacity: 0,
       delay: 0.2,
     });
@@ -112,8 +112,8 @@ function LandingSection2() {
         trigger: "#stream-header",
         toggleActions: "restart none none none",
       },
-      duration: 0.4,
       y: 50,
+      duration: 0.4,
       opacity: 0,
       delay: 0.4,
     });
@@ -122,8 +122,8 @@ function LandingSection2() {
         trigger: "#stream-header",
         toggleActions: "restart none none none",
       },
-      duration: 0.4,
       y: 50,
+      duration: 0.4,
       opacity: 0,
       delay: 0.6,
     });
@@ -132,8 +132,8 @@ function LandingSection2() {
         trigger: "#stream-header",
         toggleActions: "restart none none none",
       },
-      duration: 0.4,
       y: 50,
+      duration: 0.4,
       opacity: 0,
       delay: 0.8,
     });
@@ -141,7 +141,7 @@ function LandingSection2() {
 
   return (
     <Container>
-      <div id="section2-content">
+      <div id="section2-container">
         <ImgContainer className="section2-image" />
         <TextContainer>
           <h2 id="stream-header">실시간 스터디윗미</h2>
