@@ -14,7 +14,7 @@ const Container = styled.div`
   align-items: center;
   position: relative;
 
-  #section2-content {
+  #section2-container {
     display: flex;
     align-items: flex-start;
     gap: 40px;
