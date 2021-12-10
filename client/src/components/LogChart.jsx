@@ -9,7 +9,7 @@ const LogChartSection = styled.section`
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #f8f8f8;
+  background-color: var(--color-gray-50);
   padding: 5px;
   border-radius: 1rem;
 
@@ -23,6 +23,7 @@ const LogChartSection = styled.section`
       justify-content: center;
       align-items: center;
       width: calc(100% / 7);
+      color: var(--color-black-25);
     }
   }
 `;
@@ -43,6 +44,7 @@ const HourListAndChartContainer = styled.div`
       width: 100%;
       height: calc(100% / 24);
       border-right: 1px solid;
+      color: var(--color-black-25);
     }
   }
 `;
@@ -59,13 +61,13 @@ const Chart = styled.section`
 `;
 
 const Log = styled.div`
-  margin-top: 2%;
+  margin-top: 1%;
   position: absolute;
-  height: 2%;
+  height: 3%;
   top: ${(props) => props.top}%;
   width: ${(props) => props.width}%;
   left: ${(props) => props.left}%;
-  background-color: ${(props) => props.color};
+  background-color: ${(props) => `var(--color-${props.color})`};
 
   :hover {
     transform: scaleY(1.1);
