@@ -162,7 +162,7 @@ const EditComplete = styled.div`
 const ColorSelectedBox = styled.input`
   width: 60px;
   height: 20px;
-  background-color: ${(props) => props.color};
+  background-color: ${(props) => `var(--color-${props.color})`};
   margin-top: 5px;
   border: none;
   outline: none;
@@ -186,7 +186,7 @@ const ColorPick = styled.div`
   width: 8px;
   height: 8px;
   border-radius: 100%;
-  background-color: ${(props) => props.color};
+  background-color: ${(props) => `var(--color-${props.color})`};
   margin: 0 2px;
 `;
 
@@ -274,11 +274,11 @@ function SideLog() {
     { name: "휴식", isOn: 0, color: "#a5c7e5", id: null },
   ]);
   const [plusClick, setPlusClick] = useState(false);
-  const [pickedColor, setPickedColor] = useState("lightgrey");
+  const [pickedColor, setPickedColor] = useState("gray-bg-100");
   const [inputValue, setInputValue] = useState("공부");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const colorPick = ["#ffaeae", "#fdd4ae", "#b4e29e", "#565781", "#b094f2"];
+  const colorPick = ["red", "orange", "green", "blue", "purple"];
   const date = new Date();
   const eightDigitDate = `${date.getFullYear()}${date.getMonth() + 1}${
     date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
@@ -305,7 +305,7 @@ function SideLog() {
         const { id } = res.data.newToggle;
         setToggles([...toggles, { ...newToggle, id }]);
         setPlusClick(false);
-        setPickedColor("lightgrey");
+        setPickedColor("gray-bg-100");
         setInputValue("공부");
       })
       .catch(() => {
