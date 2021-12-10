@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { loadingHandler } from "./store/actions/index";
+import { useSelector } from "react-redux";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import Mypage from "./pages/Mypage";
@@ -20,7 +19,6 @@ import StreamerSetting from "./components/StreamerSetting";
 import Header from "./components/Header";
 import SideLog from "./components/SideLog";
 import DailyLog from "./components/DailyLog";
-import Loading from "./components/Loading";
 import Report from "./components/Report";
 import api from "./api/index";
 import axios from "axios";
@@ -40,7 +38,6 @@ function App() {
     isReportOpen,
   } = useSelector(({ modalReducer }) => modalReducer);
   const { isSideLogOpen } = useSelector(({ sideLogReducer }) => sideLogReducer);
-  const { isLoading } = useSelector(({ loadingReducer }) => loadingReducer);
   const isModal =
     isSignupOpen ||
     isSigninOpen ||
@@ -51,20 +48,13 @@ function App() {
     isStreamSettingOpen ||
     isDailyLogOpen.boolean ||
     isReportOpen.boolean;
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    api.interceptors.request.use((config) => {
-      dispatch(loadingHandler(true));
-      return config;
-    }, null);
     api.interceptors.response.use(
       (config) => {
-        dispatch(loadingHandler(false));
         return config;
       },
       async (err) => {
-        dispatch(loadingHandler(false));
         const originalRequest = err.config;
         if (err.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
@@ -84,7 +74,6 @@ function App() {
 
   return (
     <>
-      {isLoading ? <Loading /> : null}
       <Header />
       {isSideLogOpen && <SideLog />}
       <Routes>
