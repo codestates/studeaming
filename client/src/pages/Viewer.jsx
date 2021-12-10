@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -168,6 +168,11 @@ function Viewer({ route, navigation }) {
   const { id, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
   );
+
+  const dispatch = useDispatch();
+
+  const { state } = useLocation();
+
   const peerVideoRef = useRef(HTMLVideoElement);
   const socketRef = useRef(
     io("http://localhost:4000", {
@@ -182,8 +187,8 @@ function Viewer({ route, navigation }) {
       profileImg: profileImg,
     },
   ]);
-  const dispatch = useDispatch();
-  const { state } = useLocation();
+
+  const [count, setCount] = useState(viewers.current.length);
 
   useEffect(() => {
     const peerConnection = new RTCPeerConnection(StunServer); //rtc 커넥션 객체를 만듦
@@ -204,6 +209,8 @@ function Viewer({ route, navigation }) {
       if (viewerInfo.socketId !== socket.id) {
         //새로운 참가자가 있는 경우 뷰어 목록에 추가하고 내 정보 보내줌
         viewers.current.push(viewerInfo);
+        setCount(viewers.current.length);
+
         socket.emit(
           "get_viewer",
           state.uuid,
@@ -217,6 +224,7 @@ function Viewer({ route, navigation }) {
       if (requestId === socket.id) {
         //새로 들어온 유저가 나라면 수신한 다른 유저들의 정보를 저장
         viewers.current.push(viewerInfo);
+        setCount(viewers.current.length);
       }
     });
 
@@ -254,6 +262,7 @@ function Viewer({ route, navigation }) {
       viewers.current = viewers.current.filter(
         (viewer) => viewer.socketId !== socketId
       );
+      setCount(viewers.current.length);
     });
 
     socket.on("close_room", () => {
@@ -283,7 +292,9 @@ function Viewer({ route, navigation }) {
 
     return () => {
       socket.disconnect();
-      peerConnection.close();
+      if (peerConnection) {
+        peerConnection.close();
+      }
     };
   }, []);
 
@@ -341,7 +352,7 @@ function Viewer({ route, navigation }) {
             <div>
               <IoPeople size="12" />
               <span style={{ fontSize: "12px", marginLeft: "3px" }}>
-                {state.headCount}명 공부중
+                {count}명 공부중
               </span>
             </div>
           </InfoSection2>

@@ -1,15 +1,124 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { IoPeople } from "react-icons/io5";
+import { BiFullscreen } from "react-icons/bi";
 import { io } from "socket.io-client";
 import { v4 } from "uuid";
 import Chat from "../components/Chat";
+import defaultImg from "../assets/images/img_profile_default.svg";
 
-const LiveVideo = styled.video`
+const StyledViewer = styled.section`
+  width: 100%;
+  height: calc(100vh - 69.28px);
+  display: flex;
+  padding: 20px;
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+    padding: 0;
+  }
+`;
+
+const ScreenSection = styled.section`
+  width: 80vw;
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-right: 20px;
+  .wrapper {
+    position: relative;
+  }
+  @media screen and (max-width: 480px) {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+`;
+
+const Screen = styled.div`
+  width: 100%;
+  min-width: 360px;
+  height: 80%;
+  min-height: 300px;
+  border: 1px solid;
+  position: relative;
+
+  @media screen and (max-width: 480px) {
+    position: sticky;
+    top: 0;
+    z-index: 1010;
+    height: 40%;
+  }
+
+  > i {
+    visibility: hidden;
+    cursor: pointer;
+  }
+  :hover {
+    > i {
+      visibility: visible;
+    }
+  }
+`;
+
+const Cam = styled.video`
+  width: 100%;
+  min-width: 360px;
+  height: 100%;
+  min-height: 300px;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg); /*여기는 사파리*/
   -moz-transform: rotateY(180deg); /*이거는 파이어폭스*/
+
+  @media screen and (max-width: 480px) {
+    position: sticky;
+    top: 0;
+    z-index: 1010;
+    height: 40%;
+  }
+`;
+
+const FullScreen = styled(BiFullscreen)`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: grey;
+  z-index: 10;
+`;
+
+const StudeamerInfo = styled.div`
+  width: 100%;
+  height: 15%;
+  min-height: 100px;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 10px;
+  background-color: #f8f8f8;
+`;
+
+const InfoSection1 = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  > .studeamer_info {
+    display: flex;
+    align-items: center;
+
+    > img {
+      height: 45px;
+      width: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+    }
+    > span {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: normal;
+    }
+  }
 `;
 
 const ChatSection = styled.section`
@@ -19,6 +128,18 @@ const ChatSection = styled.section`
 
   @media screen and (max-width: 480px) {
     width: 100%;
+  }
+`;
+
+const InfoSection2 = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: space-between;
+  color: #838080;
+  > span {
+    display: inline-block;
+    font-size: 12px;
   }
 `;
 
@@ -39,7 +160,9 @@ function Streamer() {
   const { id, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
   );
+
   const { state } = useLocation();
+
   const uuidRef = useRef(v4());
   const localVideoRef = useRef(HTMLVideoElement);
   const localStreamRef = useRef();
@@ -58,8 +181,9 @@ function Streamer() {
     },
   ]);
 
+  const [count, setCount] = useState(viewers.current.length);
+
   const connectToPeer = useCallback((socketId) => {
-    //새 연결을 요청받으면 호출됨, 인자는 요청 보낸 소켓 id
     const peerConnection = new RTCPeerConnection(StunServer);
 
     peerConnection.onicecandidate = (data) => {
@@ -113,6 +237,7 @@ function Streamer() {
     socket.on("welcome", async (viewerInfo) => {
       const socketId = viewerInfo.socketId;
       viewers.current.push(viewerInfo);
+      setCount(viewers.current.length);
 
       const pc = connectToPeer(socketId);
       pcRef.current = { ...pcRef.current, [socketId]: pc };
@@ -140,6 +265,7 @@ function Streamer() {
       viewers.current = viewers.current.filter(
         (viewer) => viewer.socketId !== socketId
       );
+      setCount(viewers.current.length);
 
       pcRef.current[socketId].close();
       delete pcRef.current[socketId];
@@ -165,17 +291,38 @@ function Streamer() {
   }, []);
 
   return (
-    <div className="wrapper" style={{ display: "flex", height: "90vh" }}>
-      <div className="Cam">
-        <LiveVideo
-          autoPlay
-          playsInline
-          undefined
-          width="500"
-          height="500"
-          ref={localVideoRef}
-        />
-      </div>
+    <StyledViewer>
+      <ScreenSection>
+        <Screen>
+          <Cam ref={localVideoRef} autoPlay playsInline undefined />
+          <i
+            onClick={() => {
+              localVideoRef.current.requestFullscreen();
+            }}
+          >
+            <FullScreen />
+          </i>
+        </Screen>
+
+        <StudeamerInfo>
+          <InfoSection1>
+            <h3>{state.title}</h3>
+            <div className="studeamer_info">
+              <img src={state.profileImg || defaultImg} alt="" />
+              <span>{state.username}</span>
+            </div>
+          </InfoSection1>
+          <InfoSection2>
+            <span>오늘 공부 시작 시간</span>
+            <div>
+              <IoPeople size="12" />
+              <span style={{ fontSize: "12px", marginLeft: "3px" }}>
+                {count}명 공부중
+              </span>
+            </div>
+          </InfoSection2>
+        </StudeamerInfo>
+      </ScreenSection>
       <ChatSection>
         <Chat
           socket={socketRef.current}
@@ -183,7 +330,7 @@ function Streamer() {
           uuid={uuidRef.current}
         />
       </ChatSection>
-    </div>
+    </StyledViewer>
   );
 }
 
