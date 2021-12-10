@@ -1,7 +1,10 @@
 const { socketio_data } = require("../../models");
+const { User } = require("../../models");
 
 module.exports = {
   io: async (socket, io) => {
+    socket.emit("greetings", { data: "Welcome Studeaming" });
+
     socket.on("open_room", async (roomInfo) => {
       try {
         await socketio_data.create({
@@ -18,6 +21,7 @@ module.exports = {
     });
 
     socket.on("join_room", async (viewerInfo) => {
+      socket.to(viewerInfo.uuid).emit("USER in", { name: viewerInfo.username });
       socket.join(viewerInfo.uuid);
       socket.data.userId = viewerInfo.id;
       socket.data.uuid = viewerInfo.uuid;
@@ -53,13 +57,6 @@ module.exports = {
 
     socket.on("chat", (uuid, userId, chatIdx, newchat) => {
       io.to(uuid).emit("newChat", uuid, userId, chatIdx, newchat);
-      // uuid.forEach((data) => {
-      //   const { socketId } = data;
-      //   if (socketId) {
-      //     console.log("소켓아이디", socketId);
-      //     socket.to(socketId).emit("newChat", userId, chatIdx);
-      //   }
-      // });
     });
 
     socket.on("get_viewer", (uuid, requestId, viewerInfo) => {
@@ -67,13 +64,18 @@ module.exports = {
     });
 
     socket.on("update_viewer", (uuid, viewer) => {
-      console.log(viewer);
+      console.log("뷰어스", viewer);
       socket.data.userId = viewer.id;
       socket.to(uuid).emit("update_viewer", viewer);
     });
 
     socket.on("disconnect", async () => {
+      console.log("소켓데이터", socket.data);
       const uuid = socket.data.uuid;
+
+      // socket
+      //   .to(viewerInfo.uuid)
+      //   .emit("USER out", { name: viewerInfo.username });
 
       if (uuid) {
         try {
@@ -92,7 +94,11 @@ module.exports = {
                 { headCount: 1 },
                 { where: { uuid: uuid } }
               );
-
+              const userName = await User.findOne({
+                where: { id: socket.data.userId },
+                raw: true,
+              });
+              io.emit("USER out", userName.username);
               socket.to(uuid).emit("leave_room", socket.id);
             }
           }
