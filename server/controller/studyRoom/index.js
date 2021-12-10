@@ -1,13 +1,18 @@
-const { socketio_data } = require("../../models");
-const { User } = require("../../models");
+const { User, Studyroom } = require("../../models");
+const { getUTC } = require("../functions/utils");
+const {
+  startStudeaming,
+  studeamHundredhours,
+  watchHundredhours,
+} = require("../functions/achievementCheck");
 
 module.exports = {
   io: async (socket, io) => {
-    socket.emit("greetings", { data: "Welcome Studeaming" });
-
     socket.on("open_room", async (roomInfo) => {
       try {
-        await socketio_data.create({
+        await startStudeaming(roomInfo.id);
+
+        await Studyroom.create({
           uuid: roomInfo.uuid,
           user_id: roomInfo.id,
           title: roomInfo.title,
@@ -21,10 +26,11 @@ module.exports = {
     });
 
     socket.on("join_room", async (viewerInfo) => {
-      socket.to(viewerInfo.uuid).emit("USER in", { name: viewerInfo.username });
       socket.join(viewerInfo.uuid);
       socket.data.userId = viewerInfo.id;
       socket.data.uuid = viewerInfo.uuid;
+      socket.data.joinedAt = Date.now();
+
       socket.to(viewerInfo.uuid).emit("welcome", {
         id: viewerInfo.id,
         username: viewerInfo.username,
@@ -33,7 +39,7 @@ module.exports = {
       });
 
       try {
-        await socketio_data.increment(
+        await Studyroom.increment(
           { headCount: 1 },
           { where: { uuid: viewerInfo.uuid } }
         );
@@ -56,7 +62,7 @@ module.exports = {
     });
 
     socket.on("chat", (uuid, userId, chatIdx, newchat) => {
-      io.to(uuid).emit("newChat", uuid, userId, chatIdx, newchat);
+      socket.to(uuid).emit("newChat", uuid, userId, chatIdx, newchat);
     });
 
     socket.on("get_viewer", (uuid, requestId, viewerInfo) => {
@@ -64,33 +70,49 @@ module.exports = {
     });
 
     socket.on("update_viewer", (uuid, viewer) => {
-      console.log("뷰어스", viewer);
       socket.data.userId = viewer.id;
       socket.to(uuid).emit("update_viewer", viewer);
     });
 
     socket.on("disconnect", async () => {
-      console.log("소켓데이터", socket.data);
       const uuid = socket.data.uuid;
-
-      // socket
-      //   .to(viewerInfo.uuid)
-      //   .emit("USER out", { name: viewerInfo.username });
 
       if (uuid) {
         try {
-          const roomInfo = await socketio_data.findOne({
+          const roomInfo = await Studyroom.findOne({
             where: { uuid: socket.data.uuid },
             raw: true,
           });
 
           if (roomInfo) {
             if (roomInfo.user_id === socket.data.userId.toString()) {
-              await socketio_data.destroy({ where: { uuid: uuid } });
+              const studeaming = Math.round(
+                (Date.now() - getUTC(roomInfo.createdAt)) / (1000 * 60)
+              );
+
+              await User.increment(
+                { studeaming: studeaming },
+                { where: { id: roomInfo.user_id } }
+              );
+
+              await studeamHundredhours(roomInfo.user_id);
+
+              await Studyroom.destroy({ where: { uuid: uuid } });
 
               socket.to(uuid).emit("close_room");
             } else {
-              await socketio_data.decrement(
+              const watching = Math.round(
+                (Date.now() - socket.data.joinedAt) / (1000 * 60)
+              );
+
+              await User.increment(
+                { watching: watching },
+                { where: { id: socket.data.userId } }
+              );
+
+              await watchHundredhours(socket.data.userId);
+
+              await Studyroom.decrement(
                 { headCount: 1 },
                 { where: { uuid: uuid } }
               );
@@ -99,10 +121,10 @@ module.exports = {
                 raw: true,
               });
               io.emit("USER out", userName.username);
-              socket.to(uuid).emit("leave_room", socket.id);
+              socket.to(uuid).emit("leave_room", socket.id, socket.data.userId);
             }
           }
-        } catch (e) {}
+        } catch {}
       }
     });
   },
