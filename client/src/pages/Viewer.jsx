@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -68,8 +68,11 @@ const Screen = styled.div`
 const Cam = styled.video`
   width: 100%;
   min-width: 360px;
-  height: 80%;
+  height: 100%;
   min-height: 300px;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); /*여기는 사파리*/
+  -moz-transform: rotateY(180deg); /*이거는 파이어폭스*/
 
   @media screen and (max-width: 480px) {
     position: sticky;
@@ -175,6 +178,7 @@ function Viewer({ route, navigation }) {
   );
   const dispatch = useDispatch();
   const { state } = useLocation();
+  const [chating, setChating] = useState({ userId: "", usechatIdx: null });
 
   useEffect(() => {
     const peerConnection = new RTCPeerConnection(StunServer); //rtc 커넥션 객체를 만듦
@@ -329,7 +333,7 @@ function Viewer({ route, navigation }) {
         </StudeamerInfo>
       </ScreenSection>
       <ChatSection>
-        <Chat socket={socketRef.current} ref={viewers} uuid={state.uuid} />
+        <Chat socket={socketRef.current} viewers={viewers} uuid={state.uuid} />
       </ChatSection>
     </StyledViewer>
   );
