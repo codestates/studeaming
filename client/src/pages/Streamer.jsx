@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -42,6 +42,8 @@ function Streamer() {
   const { state } = useLocation();
   const uuidRef = useRef(v4());
   const localVideoRef = useRef(HTMLVideoElement);
+  const localStreamRef = useRef();
+  const pcRef = useRef({});
   const socketRef = useRef(
     io("http://localhost:4000", {
       transports: ["websocket"],
@@ -49,15 +51,43 @@ function Streamer() {
     })
   );
   const viewers = useRef([
-    { id: id, username: username, profileImg: profileImg, socketId: "" },
+    {
+      id: id,
+      username: username,
+      profileImg: profileImg,
+    },
   ]);
+
+  const connectToPeer = useCallback((socketId) => {
+    //새 연결을 요청받으면 호출됨, 인자는 요청 보낸 소켓 id
+    const peerConnection = new RTCPeerConnection(StunServer);
+
+    peerConnection.onicecandidate = (data) => {
+      if (!socketRef.current || !data.candidate) return;
+      socketRef.current.emit(
+        "ice",
+        data.candidate,
+        uuidRef.current,
+        socketId,
+        socketRef.current.id
+      );
+    };
+
+    localStreamRef.current.getTracks().forEach((track) => {
+      peerConnection.addTrack(track, localStreamRef.current);
+    });
+
+    peerConnection.oniceconnectionstatechange = (e) => {
+      console.log("ice connected ", e);
+    };
+
+    return peerConnection;
+  }, []);
 
   useEffect(() => {
     const uuid = uuidRef.current;
     const socket = socketRef.current;
-    let localStream;
-
-    const peerConnection = new RTCPeerConnection(StunServer);
+    const pcs = pcRef.current;
 
     navigator.mediaDevices
       .getUserMedia({
@@ -66,23 +96,12 @@ function Streamer() {
       })
       .then((stream) => {
         localVideoRef.current.srcObject = stream;
-        localStream = stream;
-        stream.getTracks().forEach((track) => {
-          peerConnection.addTrack(track, stream);
-        });
+        localStreamRef.current = stream;
       });
 
-    peerConnection.onicecandidate = (data) => {
-      console.log(viewers.current);
-      if (data.candidate) {
-        socket.emit(
-          "ice",
-          data.candidate,
-          uuid,
-          viewers.current[viewers.current.length - 1].socketId
-        );
-      }
-    };
+    socket.on("connect", () => {
+      viewers.current[0].socketId = socket.id;
+    });
 
     socket.emit("open_room", {
       uuid: uuid,
@@ -92,28 +111,28 @@ function Streamer() {
     });
 
     socket.on("welcome", async (viewerInfo) => {
-      viewers.current[0].socketId = socket.id;
+      const socketId = viewerInfo.socketId;
       viewers.current.push(viewerInfo);
-      const offer = await peerConnection.createOffer();
-      peerConnection.setLocalDescription(offer);
-      socket.emit(
-        "offer",
-        offer,
-        uuid,
-        viewerInfo.socketId,
-        socket.id,
-        viewers.current
-      );
+
+      const pc = connectToPeer(socketId);
+      pcRef.current = { ...pcRef.current, [socketId]: pc };
+
+      const offer = await pc.createOffer();
+      pc.setLocalDescription(offer);
+
+      socket.emit("offer", offer, uuid, viewerInfo.socketId, socket.id);
+
+      socket.emit("get_viewer", uuid, viewerInfo.socketId, viewers.current[0]);
     });
 
     socket.on("answer", (answer, socketId) => {
-      peerConnection.setRemoteDescription(answer);
+      pcRef.current[socketId].setRemoteDescription(answer);
     });
 
-    socket.on("ice", (ice, hostId) => {
+    socket.on("ice", (ice, hostId, socketId) => {
       if (hostId === socket.id) {
         console.log("received candidate", ice);
-        peerConnection.addIceCandidate(ice);
+        pcRef.current[socketId].addIceCandidate(ice);
       }
     });
 
@@ -122,10 +141,6 @@ function Streamer() {
         (viewer) => viewer.socketId !== socketId
       );
     });
-
-    peerConnection.oniceconnectionstatechange = (e) => {
-      console.log("ice connected ", e);
-    };
 
     socket.on("update_viewer", (updatedViewer) => {
       viewers.current.forEach((viewer) => {
@@ -139,8 +154,10 @@ function Streamer() {
 
     return () => {
       socket.disconnect();
-      localStream.getTracks()[0].stop();
-      peerConnection.close();
+      localStreamRef.current.getTracks()[0].stop();
+      Object.values(pcs).forEach((pc) => {
+        pc.close();
+      });
     };
   }, []);
 
