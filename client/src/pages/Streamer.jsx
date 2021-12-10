@@ -140,6 +140,9 @@ function Streamer() {
       viewers.current = viewers.current.filter(
         (viewer) => viewer.socketId !== socketId
       );
+
+      pcRef.current[socketId].close();
+      delete pcRef.current[socketId];
     });
 
     socket.on("update_viewer", (updatedViewer) => {
