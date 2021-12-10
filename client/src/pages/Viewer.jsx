@@ -277,9 +277,11 @@ function Viewer({ route, navigation }) {
     };
 
     viewers.current.forEach((viewer) => {
-      viewer.id = id;
-      viewer.username = username;
-      viewer.profileImg = profileImg;
+      if (viewer.socketId === socketRef.current.id) {
+        viewer.id = id;
+        viewer.username = username;
+        viewer.profileImg = profileImg;
+      }
     });
 
     socketRef.current.emit("update_viewer", state.uuid, updatedUser);
