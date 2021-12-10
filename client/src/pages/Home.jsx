@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -9,11 +9,11 @@ import {
   verifySocialLogined,
   getUserInfo,
   getFollows,
-  loadingHandler,
 } from "../store/actions";
 import Slider from "../components/Slider";
 import MainContents from "../components/MainContents";
 import TopBtn from "../components/TopBtn";
+import Loading from "../components/Loading";
 import authAPI from "../api/auth";
 import userAPI from "../api/user";
 import studyroomAPI from "../api/studyroom";
@@ -75,6 +75,7 @@ const Filter = styled.select`
 `;
 
 function Home() {
+  const [isLoading, setIsLoading] = useState(false);
   const [searchItems, setSearchItems] = useState([]);
   const [axiosItems, setAxiosItems] = useState([]);
   const [selectedFilterOpt, setSelectedFilterOpt] = useState("시청자 순");
@@ -166,7 +167,9 @@ function Home() {
 
   useEffect(() => {
     // get contents 요청 보내기
+    setIsLoading(true);
     studyroomAPI.getStudyRoom().then((res) => {
+      setIsLoading(false);
       setAxiosItems(res.data.roomList);
       setSearchItems(res.data.roomList);
       filterHandler(res.data.roomList);
@@ -202,7 +205,7 @@ function Home() {
             ))}
           </Filter>
         </SearchSection>
-        <MainContents contents={searchItems} />
+        {isLoading ? <Loading /> : <MainContents contents={searchItems} />}
       </ContentsSection>
       <TopBtn />
     </>
