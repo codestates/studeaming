@@ -220,7 +220,9 @@ function StreamerSettingMockup() {
   useEffect(() => {
     checkCameraHandler();
     return () => {
-      localStream.getTracks()[0].stop();
+      if (localStream) {
+        localStream.getTracks()[0].stop();
+      }
     };
   }, []);
 
