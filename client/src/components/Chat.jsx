@@ -25,7 +25,7 @@ const ChatSection = styled.section`
   flex-direction: column;
   overflow: scroll;
 
-  ::-webkit-scrollbar {
+  ::-scrollbar {
     display: none;
   }
 `;
@@ -168,15 +168,33 @@ function Chat({ socket, viewers, uuid }) {
 
   const sendHandler = (idx) => {
     const newChattingList = [...chattingList];
+    socket.on("USER in", (User) => {
+      const Usernotification = (
+        <div>
+          <span style={{ fontSize: "12px" }}>
+            {User.name || "구경꾼"}님이 입장하셨습니다.
+          </span>
+        </div>
+      );
+      newChattingList.push(Usernotification);
+      setChattingList(newChattingList);
+    });
+
+    socket.on("USER out", (User) => {
+      const Usernotification = (
+        <div>
+          <span style={{ fontSize: "12px" }}>
+            {User || "구경꾼"}님이 나가셨습니다.
+          </span>
+        </div>
+      );
+      newChattingList.push(Usernotification);
+      setChattingList(newChattingList);
+    });
+
     if (idx) {
       socket.emit("chat", uuid, socket.id, idx, newChattingList);
-
       socket.on("newChat", (uuid, userId, chatIdx, newChat) => {
-        console.log("뉴챗 유유", uuid);
-        console.log("뉴챗 아이디", userId);
-        console.log("뉴챗 인덱스", chatIdx);
-        console.log("뉴챗 ", newChat);
-        console.log("뷰어스", viewers);
         const WriteUser = viewers.current.filter((data) => {
           if (data.socketId && data.socketId === userId) {
             return data;
@@ -228,8 +246,9 @@ function Chat({ socket, viewers, uuid }) {
   };
 
   useEffect(() => {
+    sendHandler();
     scrollToBottom();
-  }, [letter.message]);
+  }, [letter.message, chattingList]);
 
   return (
     <ChatStyle>
