@@ -10,7 +10,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 1px solid;
 `;
 
 const Wrapper = styled.div`
@@ -103,7 +102,7 @@ function LandingSection3() {
         pin: true,
         scrub: true,
         start: "top 69.28px",
-        end: "+=3000",
+        end: "+=2000",
       },
     });
     tl.from("#section3-image", {
