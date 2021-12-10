@@ -10,6 +10,8 @@ const LogChartSection = styled.section`
   display: flex;
   flex-direction: column;
   background-color: #f8f8f8;
+  padding: 5px;
+  border-radius: 1rem;
 
   > .ten_minute {
     display: flex;
@@ -27,7 +29,7 @@ const LogChartSection = styled.section`
 
 const HourListAndChartContainer = styled.div`
   display: flex;
-  height: 100%;
+  height: 96%;
   > .hour_block_wrapper {
     display: flex;
     flex-direction: column;
@@ -39,7 +41,7 @@ const HourListAndChartContainer = styled.div`
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: 100%;
+      height: calc(100% / 24);
       border-right: 1px solid;
     }
   }

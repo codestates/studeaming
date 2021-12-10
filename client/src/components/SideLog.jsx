@@ -486,7 +486,9 @@ function SideLog() {
             </span>
           </LoginBlur>
         )}
-        <LogChart date={eightDigitDate} offset={offset} />
+        <div style={{ height: "100%" }}>
+          <LogChart date={eightDigitDate} offset={offset} />
+        </div>
         <SideLogCloseBackIcon onClick={sideLogCloseBackIconHandler} />
         <SideLogCloseUpIcon>
           <IoIosArrowUp size="24" onClick={sideLogCloseUpIconHandler} />
