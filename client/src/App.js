@@ -5,6 +5,7 @@ import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import Mypage from "./pages/Mypage";
 import Streamer from "./pages/Streamer";
+import AsmrSound from "./pages/AsmrSound";
 import Viewer from "./pages/Viewer";
 import Verification from "./pages/Verification";
 import NotFound from "./pages/NotFound";
@@ -81,6 +82,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/mypage" element={<Mypage />} />
         <Route path="/streamer" element={<Streamer />} />
+        <Route path="/asmrsound" element={<AsmrSound />} />
         <Route path="/viewer" element={<Viewer />} />
         <Route path="/auth" element={<Verification />} />
         <Route path="/*" element={<NotFound />} />
