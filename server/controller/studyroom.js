@@ -1,8 +1,9 @@
-const { socketio_data, User } = require("../models");
+const { Studyroom, User } = require("../models");
+const { getUTC } = require("./functions/utils");
 
 module.exports = async (req, res) => {
   try {
-    const studyrooms = await socketio_data.findAll({
+    const studyrooms = await Studyroom.findAll({
       attributes: [
         "uuid",
         "title",
@@ -16,18 +17,26 @@ module.exports = async (req, res) => {
 
     const roomList = await Promise.all(
       studyrooms.map(async (room) => {
-        const user = await User.findOne({
-          where: { id: room.user_id },
-          raw: true,
-        });
+        room.createdAt = getUTC(room.createdA);
 
-        room.createdAt = Date.now(room.createdAt);
+        if (room.user_id !== "0") {
+          const user = await User.findOne({
+            where: { id: room.user_id },
+            raw: true,
+          });
 
-        return {
-          ...room,
-          username: user.username,
-          profileImg: user.profileImg,
-        };
+          return {
+            ...room,
+            username: user.username,
+            profileImg: user.profileImg,
+          };
+        } else {
+          return {
+            ...room,
+            username: "Studeaming",
+            profileImg: "",
+          };
+        }
       })
     );
 
