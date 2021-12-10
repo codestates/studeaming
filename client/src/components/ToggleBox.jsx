@@ -6,10 +6,10 @@ import { gsap } from "gsap";
 import toggleAPI from "../api/studyToggle";
 import logAPI from "../api/studyLog";
 
-const ToggleSection = styled.section`
+export const ToggleSection = styled.section`
   width: 80px;
   height: 80px;
-  background-color: #f8f8f8;
+  background-color: var(--color-gray-bg);
   border-radius: 1rem;
   display: flex;
   flex-direction: column;
@@ -26,12 +26,12 @@ const ToggleSection = styled.section`
   }
 `;
 
-const Name = styled.div`
+export const Name = styled.div`
   font-size: 10px;
   color: #6e6e6e;
 `;
 
-const ToggleBackground = styled.div`
+export const ToggleBackground = styled.div`
   width: 40px;
   height: 20px;
   border-radius: 1rem;
@@ -42,13 +42,13 @@ const ToggleBackground = styled.div`
   background-position: ${(props) => (props.isOn ? "left" : "right")};
   background: ${(props) =>
     props.isOn
-      ? `linear-gradient(to right, ${props.color} 50%, lightgrey 50%) left`
-      : `linear-gradient(to left, lightgrey 50%, ${props.color} 50%) right`};
+      ? `linear-gradient(to right, var(--color-${props.color}) 50%, lightgrey 50%) left`
+      : `linear-gradient(to left, lightgrey 50%, var(--color-${props.color}) 50%) right`};
   background-size: 200%;
   transition: 0.5s;
 `;
 
-const Circle = styled.div`
+export const Circle = styled.div`
   width: 16px;
   height: 16px;
   border-radius: 1rem;
