@@ -29,6 +29,7 @@ module.exports = {
       socket.join(viewerInfo.uuid);
       socket.data.userId = viewerInfo.id;
       socket.data.uuid = viewerInfo.uuid;
+      socket.data.username = viewerInfo.username;
       socket.data.joinedAt = Date.now();
 
       socket.to(viewerInfo.uuid).emit("welcome", {
@@ -61,8 +62,8 @@ module.exports = {
       socket.to(uuid).emit("ice", ice, recieverId, senderId);
     });
 
-    socket.on("chat", (uuid, userId, chatIdx, newchat) => {
-      io.to(uuid).emit("newChat", uuid, userId, chatIdx, newchat);
+    socket.on("chat", (uuid, userId, chatIdx) => {
+      io.to(uuid).emit("newChat", uuid, userId, chatIdx);
     });
 
     socket.on("get_viewer", (uuid, requestId, viewerInfo) => {
@@ -116,12 +117,10 @@ module.exports = {
                 { headCount: 1 },
                 { where: { uuid: uuid } }
               );
-              const userName = await User.findOne({
-                where: { id: socket.data.userId },
-                raw: true,
-              });
-              io.emit("USER out", userName.username);
-              socket.to(uuid).emit("leave_room", socket.id, socket.data.userId);
+
+              socket
+                .to(uuid)
+                .emit("leave_room", socket.id, socket.data.username);
             }
           }
         } catch {}
