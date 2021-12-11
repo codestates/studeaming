@@ -85,13 +85,13 @@ if (fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")) {
   // const WebSocket = require("ws").Server;
   const http = require("http");
   // todo: http를 따로 설정하고
-  server = http.Server(app).listen(4000, function () {
+  server = http.Server(app).listen(PORT, function () {
     console.log("Express server listening on port ");
   });
 
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: process.env.CLIENT_URL || "http://localhost:3000",
       credentials: true,
     },
     transports: ["websocket"],
