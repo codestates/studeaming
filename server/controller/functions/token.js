@@ -2,9 +2,9 @@ const { sign, verify } = require("jsonwebtoken");
 require("dotenv").config();
 const cookieOpt = {
   httpOnly: true,
-  //sameSite: "none",
-  //secure: true, https 사용 시 활성화
-  domain: process.env.CLIENT_DOMAIN,
+  samesite: "none",
+  secure: true,
+  domain: process.env.COOKIE_DOMAIN,
 };
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
     console.log("refresh token", refreshToken);
     res.cookie("refresh", refreshToken, {
       ...cookieOpt,
-      Path: "/auth/token",
+      path: "/auth/token",
     });
   },
   isAccessAuthorized: (req) => {
@@ -47,7 +47,7 @@ module.exports = {
     }
   },
   clearToken: (res) => {
-    res.clearCookie("authorization", { domain: process.env.CLIENT_DOMAIN });
+    res.clearCookie("authorization", { domain: process.env.COOKIE_DOMAIN });
     res.clearCookie("refresh", {
       domain: process.env.CLIENT_DOMAIN,
       path: "/auth/refresh",
