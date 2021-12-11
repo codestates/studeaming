@@ -6,11 +6,13 @@ require("dotenv").config();
 module.exports = {
   // 인증 코드 생성
   generateVerification: async (id) => {
-    const head = crypto.randomBytes(256).toString("hex").substr(100, 5);
-    const tail = crypto.randomBytes(256).toString("base64").substr(50, 5);
-    const emailVerifyCode = head + tail + id.toString();
+    const head = crypto.randomBytes(256).toString("hex").substr(100, 6);
+    const tail = crypto.randomBytes(256).toString("base64").substr(50, 6);
+    const code = head + tail + id.toString();
+    const verifyCode = code.split("/").reduce((acc, cur) => acc + cur);
+
     try {
-      await User.update({ emailVerifyCode }, { where: { id } });
+      await User.update({ verifyCode }, { where: { id } });
 
       setTimeout(async () => {
         const user = await User.findOne({ where: { id }, raw: true });
@@ -19,7 +21,7 @@ module.exports = {
         }
       }, 60 * 60 * 1000);
 
-      return emailVerifyCode;
+      return verifyCode;
     } catch {}
   },
 
