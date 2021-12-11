@@ -1,5 +1,6 @@
 const { User } = require("../../models");
 const { sendAccessToken, sendRefreshToken } = require("../functions/token");
+const { setDefault } = require("../functions/model");
 const generateName = require("../functions/usernameGenerator");
 const { getKakaoToken, getKakaoSubId } = require("../functions/OAuth");
 
@@ -31,12 +32,7 @@ module.exports = async (req, res) => {
           raw: true,
         });
 
-        if (created) {
-          await Currentlog.create({
-            user_id: user.id,
-            name: "휴식",
-          });
-        }
+        await setDefault(user.id);
 
         sendAccessToken(res, { id: user.id });
         sendRefreshToken(res, { id: user.id });
