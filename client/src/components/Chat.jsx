@@ -113,19 +113,12 @@ const Imoticon = styled.div`
 `;
 
 function Chat({ socket, viewers, uuid }) {
-  console.log("뷰저스", viewers);
-  const { isLogin, username, profileImg } = useSelector(
-    ({ userReducer }) => userReducer
-  );
+  const { isLogin } = useSelector(({ userReducer }) => userReducer);
   const [inputClick, setInputClick] = useState(false);
   const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
   const [letter, setLetter] = useState({ message: "", idx: null });
-  console.log("레터", letter);
   const [chattingList, setChattingList] = useState([]);
-  console.log("채팅리스트", chattingList);
-  //todo: 추가
-  const [chating, setChating] = useState({ userId: "", usechatIdx: null });
-  console.log("채팅", chating);
+
   const dispatch = useDispatch();
   const inputRef = useRef(null);
   const ChatingRef = useRef(HTMLUListElement);
@@ -168,11 +161,11 @@ function Chat({ socket, viewers, uuid }) {
 
   const sendHandler = (idx) => {
     const newChattingList = [...chattingList];
-    socket.on("welcome", (User) => {
+    socket.on("welcome", (user) => {
       const Usernotification = (
         <div>
           <span style={{ fontSize: "12px" }}>
-            {User.username || "구경꾼"}님이 입장하셨습니다.
+            {user.username || "구경꾼"}님이 입장하셨습니다.
           </span>
         </div>
       );
@@ -180,11 +173,11 @@ function Chat({ socket, viewers, uuid }) {
       setChattingList(newChattingList);
     });
 
-    socket.on("USER out", (User) => {
+    socket.on("leave_room", (_, username) => {
       const Usernotification = (
         <div>
           <span style={{ fontSize: "12px" }}>
-            {User || "구경꾼"}님이 나가셨습니다.
+            {username || "구경꾼"}님이 나가셨습니다.
           </span>
         </div>
       );
@@ -192,41 +185,8 @@ function Chat({ socket, viewers, uuid }) {
       setChattingList(newChattingList);
     });
 
-    if (idx) {
-      socket.emit("chat", uuid, socket.id, idx, newChattingList);
-      socket.on("newChat", (uuid, userId, chatIdx, newChat) => {
-        const WriteUser = viewers.current.filter((data) => {
-          if (data.socketId && data.socketId === userId) {
-            return data;
-          }
-        });
-        console.log("라이트유저", WriteUser);
-        setLetter({ message: chat[chatIdx], idx: chatIdx });
-        console.log("래터", letter);
-        const newLetter = (
-          <div>
-            <img
-              src={WriteUser[0].profileImg}
-              alt=""
-              style={{
-                width: "30px",
-                height: "30px",
-                borderRadius: "50%",
-                margin: "5px",
-              }}
-            />
-            <span style={{ fontSize: "12px" }}>
-              {WriteUser[0].username}
-              &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-              {chat[chatIdx].comment}
-            </span>
-          </div>
-        );
-        newChattingList.push(newLetter);
-        setLetter({ message: "", idx: null });
-        setChattingList(newChattingList);
-        inputRef.current.blur();
-      });
+    if (idx || idx === 0) {
+      socket.emit("chat", uuid, socket.id, idx);
     }
   };
 
@@ -244,6 +204,42 @@ function Chat({ socket, viewers, uuid }) {
       ChatingRef.current.scrollTop = ChatingRef.current.height;
     }
   };
+
+  useEffect(() => {
+    const newChattingList = [...chattingList];
+
+    socket.on("newChat", (uuid, userId, chatIdx) => {
+      const writeUser = viewers.current.filter(
+        (viewer) => viewer.socketId && viewer.socketId === userId
+      );
+
+      setLetter({ message: chat[chatIdx], idx: chatIdx });
+
+      const newLetter = (
+        <div>
+          <img
+            src={writeUser[0].profileImg}
+            alt=""
+            style={{
+              width: "30px",
+              height: "30px",
+              borderRadius: "50%",
+              margin: "5px",
+            }}
+          />
+          <span style={{ fontSize: "12px" }}>
+            {writeUser[0].username}
+            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+            {chat[chatIdx].comment}
+          </span>
+        </div>
+      );
+      newChattingList.push(newLetter);
+      setLetter({ message: "", idx: null });
+      setChattingList(newChattingList);
+      inputRef.current.blur();
+    });
+  });
 
   useEffect(() => {
     sendHandler();
