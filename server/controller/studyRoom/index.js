@@ -62,7 +62,7 @@ module.exports = {
     });
 
     socket.on("chat", (uuid, userId, chatIdx, newchat) => {
-      socket.to(uuid).emit("newChat", uuid, userId, chatIdx, newchat);
+      io.to(uuid).emit("newChat", uuid, userId, chatIdx, newchat);
     });
 
     socket.on("get_viewer", (uuid, requestId, viewerInfo) => {
