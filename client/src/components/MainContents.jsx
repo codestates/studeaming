@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import defaultImg from "../assets/images/img_profile_default.svg";
 import empty from "../assets/images/empty.png";
+import studyroomAPI from "../api/studyroom";
 
 const StyledMainContents = styled.section`
   display: grid;
@@ -113,14 +114,24 @@ const NoContents = styled.div`
 `;
 
 function MainContents({ contents }) {
+  const now = Date.now() / (60 * 1000);
   const navigate = useNavigate();
   const navigateLanding = (el) => {
     if (el.user_id === "0") {
       navigate("/asmrsound", { state: el });
-    } else if (el.headCount < 5) {
-      navigate("/viewer", { state: el });
     } else {
-      //알림창
+      studyroomAPI
+        .getStudyRoom()
+        .then((res) => {
+          const roomInfo = res.data.roomList.filter(
+            (room) => room.uuid === el.uuid
+          );
+          if (roomInfo[0].headCount < 5) {
+            navigate("/viewer", { state: el });
+          } else {
+          }
+        })
+        .catch(() => {});
     }
   };
 
@@ -142,21 +153,16 @@ function MainContents({ contents }) {
                 <div className="thumbnail_info_name">
                   <div style={{ fontWeight: "bold" }}>{el.username}</div>
                   <div style={{ color: "#838080" }}>{el.headCount}명</div>
-                  <div style={{ color: "#9b0101be" }}>
-                    {el.user_id === "0"
-                      ? "asmr"
-                      : Math.floor(
-                          (Date.now() - el.createdAt) / (60 * 60 * 1000)
-                        ) +
-                        "시간 " +
-                        Math.ceil(
-                          ((Date.now() - el.createdAt) / (60 * 1000)) % 60
-                        ) +
-                        "분 전"}
-                  </div>
                 </div>
               </div>
             </Desc>
+            <div style={{ color: "#9b0101be" }}>
+              {el.user_id === "0"
+                ? "asmr"
+                : (now > el.createdAt + 60
+                    ? `${Math.floor((now - el.createdAt) / 60)}시간`
+                    : "") + `${Math.ceil((now - el.createdAt) % 60)}분 전`}
+            </div>
           </Contents>
         ))
       ) : (
