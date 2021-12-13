@@ -40,6 +40,7 @@ const Nav = styled.nav`
 const Menu = styled.div`
   padding: 1rem 2rem;
   color: var(--color-black);
+  font-family: "Poppins-Medium";
   font-weight: 500;
   font-size: 1.4rem;
   @media screen and (max-width: 768px) {
