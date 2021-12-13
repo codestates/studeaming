@@ -269,19 +269,16 @@ function Chat({ socket, viewers, uuid }) {
           onKeyUp={(e) => onKeyUpHandler(e, letter.idx)}
           ref={inputRef}
           readOnly
+          placeholder={isLogin ? "" : "로그인 후 이용가능 합니다."}
         />
-        {isLogin ? (
-          letter.message ? (
-            <CloseIcon
-              onClick={(e) => {
-                e.stopPropagation();
-                setLetter({ message: "", idx: null });
-              }}
-            />
-          ) : null
-        ) : (
-          <Comment className="non_member">로그인 후 이용가능 합니다.</Comment>
-        )}
+        {letter.message ? (
+          <CloseIcon
+            onClick={(e) => {
+              e.stopPropagation();
+              setLetter({ message: "", idx: null });
+            }}
+          />
+        ) : null}
         <SendIcon
           onClick={(e) => {
             e.stopPropagation();
