@@ -102,7 +102,6 @@ function LandingSection3() {
         pin: true,
         scrub: true,
         start: "top 69.28px",
-        end: "+=2000",
       },
     });
     tl.from("#section3-image", {
@@ -137,7 +136,7 @@ function LandingSection3() {
           <span id="section3-description-2">
             월별 공부시간을 한 눈에 확인해보세요
             <br />
-            공부 시간이 많아질수록 포도 농장이 풍성해집니다
+            공부 시간이 많아질수록 🍇포도 농장이 풍성해집니다
           </span>
           <span id="section3-description-3">
             매일의 공부 기록을 확인할 수 있습니다
