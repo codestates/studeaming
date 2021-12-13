@@ -153,6 +153,7 @@ function StreamerSettingMockup() {
     title: "",
     thumbnail: null,
     sound: "",
+    url: "",
   });
   const localVideoRef = useRef(HTMLVideoElement);
   const [players, toggle] = useAudio(sound);
@@ -191,8 +192,8 @@ function StreamerSettingMockup() {
     setStreamingInfo({ ...streamingInfo, thumbnail: null });
   };
 
-  const getSound = (ASMR) => {
-    setStreamingInfo({ ...streamingInfo, sound: ASMR });
+  const getSound = (ASMR, url, idx) => {
+    setStreamingInfo({ ...streamingInfo, sound: ASMR, url: url });
   };
 
   const hoverHandler = (idx) => {
@@ -279,7 +280,7 @@ function StreamerSettingMockup() {
                   key={idx}
                   img={ASMR.img}
                   isSelected={ASMR.keyword === streamingInfo.sound}
-                  onClick={() => getSound(ASMR.keyword, idx)}
+                  onClick={() => getSound(ASMR.keyword, ASMR.url, idx)}
                   onMouseEnter={() => hoverHandler(idx)}
                   onMouseLeave={() => hoverHandler(idx)}
                 >
