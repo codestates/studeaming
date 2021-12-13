@@ -16,6 +16,7 @@ module.exports = {
 
       setTimeout(async () => {
         const user = await User.findOne({ where: { id }, raw: true });
+
         if (!user.isEmailVerified) {
           await User.destroy({ where: { id } });
         }
@@ -43,7 +44,10 @@ module.exports = {
         from: `${process.env.NODEMAILER_EMAIL}`,
         to: email,
         subject: "Studeamer 인증 메일",
-        html: "<div>이메일을 인증하려면 URL을 클릭해주세요.</div><br>" + url, //todo: html design
+        html:
+          "<h3>Studeaming 이메일 인증</h3><br /><p>안녕하세요 Studeaming입니다. 아래 링크를 눌러 이메일 인증을 완료해주세요.</p><a target=_blank href=" +
+          url +
+          ">이메일 인증</a><p>링크는 발송 후 1시간 동안 유효합니다.</p>",
       });
     } catch {
       //todo: handle error
