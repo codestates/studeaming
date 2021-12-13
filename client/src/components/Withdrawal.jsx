@@ -6,7 +6,7 @@ import { logout } from "../store/actions";
 import authAPI from "../api/auth";
 import Button from "./Button";
 import SuccessNotify from "./SuccessNotify";
-import { Title, Input } from "./reusableStyle";
+import { Title, Input } from "../styles/reusableStyle";
 
 const Container = styled.div`
   display: flex;

@@ -16,7 +16,12 @@ import "antd/dist/antd.css";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "./Button";
-import { AuthContainer, Title, Input, FailureMsg } from "./reusableStyle";
+import {
+  AuthContainer,
+  Title,
+  Input,
+  FailureMsg,
+} from "../styles/reusableStyle";
 import authAPI from "../api/auth";
 import userAPI from "../api/user";
 import google from "../assets/images/btn_google.svg";
