@@ -153,7 +153,6 @@ function AsmrSound() {
   );
 
   const { state } = useLocation();
-  console.log("state", state);
 
   //todo: 오디오 부분
   const audio = new Audio();

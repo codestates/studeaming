@@ -164,6 +164,11 @@ function Streamer() {
 
   const { state } = useLocation();
 
+  //todo: 오디오 부분
+  const audio = new Audio();
+  audio.src = state.url;
+  audio.volume = 0.1;
+
   const uuidRef = useRef(v4());
   const localVideoRef = useRef(HTMLVideoElement);
   const localStreamRef = useRef();
@@ -282,7 +287,10 @@ function Streamer() {
       });
     });
 
+    audio.play();
+
     return () => {
+      audio.pause();
       socket.disconnect();
       localStreamRef.current.getTracks()[0].stop();
       Object.values(pcs).forEach((pc) => {

@@ -16,7 +16,7 @@ const ChatStyle = styled.section`
   position: relative;
 `;
 
-const ChatSection = styled.section`
+const ChatSection = styled.ul`
   width: 100%;
   height: 95%;
   border-radius: 0.5rem;
@@ -201,14 +201,15 @@ function Chat({ socket, viewers, uuid }) {
 
   const scrollToBottom = () => {
     if (ChatingRef.current) {
-      ChatingRef.current.scrollTop = ChatingRef.current.height;
+      ChatingRef.current.scrollTop = ChatingRef.current.scrollHeight;
     }
   };
 
   useEffect(() => {
     const newChattingList = [...chattingList];
-
+    console.log("넌 뭐니", newChattingList);
     socket.on("newChat", (uuid, userId, chatIdx) => {
+      console.log("이건 뭘까?", uuid);
       const writeUser = viewers.current.filter(
         (viewer) => viewer.socketId && viewer.socketId === userId
       );
@@ -239,7 +240,7 @@ function Chat({ socket, viewers, uuid }) {
       setChattingList(newChattingList);
       inputRef.current.blur();
     });
-  });
+  }, []);
 
   useEffect(() => {
     sendHandler();
