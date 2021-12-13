@@ -1,18 +1,7 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import userAPI from "../api/user";
-import {
-  logout,
-  pwdEditModalOpen,
-  withdrawalModalOpen,
-  profileModalOpen,
-  signinModalOpen,
-} from "../store/actions";
 import Badge from "./Badge";
 import defaultImg from "../assets/images/img_profile_default.svg";
-import dummyBadges from "../assets/dummy/bages";
 
 const Container = styled.div`
   width: 300px;
@@ -104,60 +93,17 @@ const BadgeContainer = styled.div`
   }
 `;
 
-function Sidebar() {
+function Sidebar({
+  following,
+  badges,
+  openFollowingProfile,
+  signoutHandler,
+  editPwdHandler,
+  withdrawalHandler,
+}) {
   const { isSocialLogined, isGuestLogined } = useSelector(
     ({ userReducer }) => userReducer
   );
-  const [following, setFollowing] = useState([
-    { profileImg: "", username: "김코딩" },
-    { profileImg: "", username: "박해커" },
-    { profileImg: "", username: "이보안" },
-  ]);
-  const [badges, setBadges] = useState([]);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const getFollowing = async () => {
-    try {
-      const res = await userAPI.getFollows();
-      setFollowing(res.data.studeamerList);
-    } catch {
-      navigate("/home");
-      dispatch(signinModalOpen(true));
-    }
-  };
-
-  const getBadge = async () => {
-    try {
-      const res = await userAPI.getAchievement();
-      setBadges(res.data.achievements);
-    } catch {
-      navigate("/home");
-      dispatch(signinModalOpen(true));
-    }
-  };
-
-  const openFollowingProfile = (username) => {
-    dispatch(profileModalOpen(true, username));
-  };
-
-  const signoutHandler = () => {
-    dispatch(logout());
-    navigate("/home");
-  };
-
-  const editPwdHandler = () => {
-    dispatch(pwdEditModalOpen(true));
-  };
-
-  const withdrawalHandler = () => {
-    dispatch(withdrawalModalOpen(true));
-  };
-
-  useEffect(() => {
-    getFollowing();
-    getBadge();
-  }, []);
 
   return (
     <Container>
