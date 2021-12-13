@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { IoPeople } from "react-icons/io5";
 import defaultImg from "../assets/images/img_profile_default.svg";
 import empty from "../assets/images/empty.png";
 import studyroomAPI from "../api/studyroom";
@@ -40,6 +41,11 @@ const Contents = styled.div`
   height: 100%;
   min-height: 320px;
 
+  :hover {
+    cursor: pointer;
+    transform: scale(1.01);
+  }
+
   @media screen and (max-width: 530px) {
     max-width: 100%;
     height: 360px;
@@ -50,10 +56,9 @@ const Thumbnail = styled.div`
   width: 100%;
   height: 70%;
   background-image: url(${(props) => props.img});
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  border: 1px solid;
 
   @media screen and (max-width: 530px) {
     height: 75%;
@@ -89,6 +94,7 @@ const Desc = styled.div`
     display: flex;
     align-items: center;
     height: 100%;
+    position: relative;
 
     > img {
       height: 45px;
@@ -104,6 +110,13 @@ const Desc = styled.div`
         padding: 3px;
         font-size: 14px;
       }
+    }
+
+    > .time_info {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      color: var(--color-black-25);
     }
   }
 `;
@@ -152,17 +165,28 @@ function MainContents({ contents }) {
                 <img src={el.profileImg || defaultImg} alt="" />
                 <div className="thumbnail_info_name">
                   <div style={{ fontWeight: "bold" }}>{el.username}</div>
-                  <div style={{ color: "#838080" }}>{el.headCount}명</div>
+                  <div style={{ color: "#838080" }}>
+                    <IoPeople />
+                    {el.user_id === "0"
+                      ? ` ${el.headCount}`
+                      : ` ${el.headCount} / 4`}
+                  </div>
+                </div>
+                <div className="time_info">
+                  {el.user_id === "0" ? (
+                    <span style={{ color: "#9b0101be" }}>asmr</span>
+                  ) : now - el.createdAt > 60 ? (
+                    `${Math.floor((now - el.createdAt) / 60)}시간 ${Math.floor(
+                      (now - el.createdAt) % 60
+                    )}분 전`
+                  ) : Math.floor(now - el.createdAt) >= 1 ? (
+                    `${Math.floor(now - el.createdAt)}분 전`
+                  ) : (
+                    "방금 전"
+                  )}
                 </div>
               </div>
             </Desc>
-            <div style={{ color: "#9b0101be" }}>
-              {el.user_id === "0"
-                ? "asmr"
-                : (now > el.createdAt + 60
-                    ? `${Math.floor((now - el.createdAt) / 60)}시간`
-                    : "") + `${Math.ceil((now - el.createdAt) % 60)}분 전`}
-            </div>
           </Contents>
         ))
       ) : (
