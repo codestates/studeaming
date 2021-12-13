@@ -1,5 +1,5 @@
-const { Studyroom, User } = require("../models");
-const { getUTC } = require("./functions/utils");
+const { Studyroom, User } = require("../../models");
+const { getUTC } = require("../functions/utils");
 
 module.exports = async (req, res) => {
   try {
