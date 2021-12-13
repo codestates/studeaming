@@ -53,7 +53,7 @@ const Element = styled.a`
   display: inline-block;
   letter-spacing: 0.1em;
   padding: 1rem 2rem;
-  color: var(--color-charcoal);
+  color: var(--color-black);
 
   .emoticon {
     visibility: hidden;
@@ -61,6 +61,7 @@ const Element = styled.a`
 
   :hover {
     font-weight: 600;
+    color: var(--color-main-100);
 
     .emoticon {
       visibility: visible;
