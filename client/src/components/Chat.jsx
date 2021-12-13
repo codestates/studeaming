@@ -24,10 +24,6 @@ const ChatSection = styled.ul`
   display: flex;
   flex-direction: column;
   overflow: scroll;
-
-  ::-scrollbar {
-    display: none;
-  }
 `;
 
 const ChatInputBox = styled.div`
@@ -207,9 +203,7 @@ function Chat({ socket, viewers, uuid }) {
 
   useEffect(() => {
     const newChattingList = [...chattingList];
-    console.log("넌 뭐니", newChattingList);
     socket.on("newChat", (uuid, userId, chatIdx) => {
-      console.log("이건 뭘까?", uuid);
       const writeUser = viewers.current.filter(
         (viewer) => viewer.socketId && viewer.socketId === userId
       );
@@ -228,11 +222,16 @@ function Chat({ socket, viewers, uuid }) {
               margin: "5px",
             }}
           />
-          <span style={{ fontSize: "12px" }}>
+          <span
+            style={{
+              fontSize: "12px",
+              color: "var(--color-black-50)",
+              marginRight: "0.8rem",
+            }}
+          >
             {writeUser[0].username}
-            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-            {chat[chatIdx].comment}
           </span>
+          <span style={{ fontSize: "12px" }}>{chat[chatIdx].comment}</span>
         </div>
       );
       newChattingList.push(newLetter);
