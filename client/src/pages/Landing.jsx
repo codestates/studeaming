@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import BackgroundCircle from "../components/Landing/BackgroundCircle";
+import Welcome from "../components/Landing/Welcome";
 import LandingSection1 from "../components/Landing/LandingSection1";
 import LandingSection2 from "../components/Landing/LandingSection2";
 import LandingSection3 from "../components/Landing/LandingSection3";
@@ -17,6 +19,10 @@ const LandingContainer = styled.section`
   > #content-box {
     width: 1000px;
 
+    .pin-spacer {
+      inset: none;
+    }
+
     @media screen and (max-width: 1000px) {
       width: 100%;
     }
@@ -24,14 +30,18 @@ const LandingContainer = styled.section`
 `;
 
 function Landing() {
+  const newWindow = window.history.state.idx;
+
   return (
     <>
       <LandingContainer>
         <div id="content-box">
-          <LandingSection1 />
-          <LandingSection2 />
-          <LandingSection3 />
-          <LandingSection4 />
+          <BackgroundCircle />
+          {newWindow === 0 ? <Welcome /> : null}
+          <LandingSection1 className="landing-section" />
+          <LandingSection2 className="landing-section" />
+          <LandingSection3 className="landing-section" />
+          <LandingSection4 className="landing-section" />
         </div>
       </LandingContainer>
       <TopBtn />
