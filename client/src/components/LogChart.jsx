@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sideLogOpen, logout, signinModalOpen } from "../store/actions/index";
+import {
+  loginStateChange,
+  sideLogOpen,
+  signinModalOpen,
+} from "../store/actions/index";
 import styled from "styled-components";
 import logAPI from "../api/studyLog";
 
@@ -146,7 +150,7 @@ function LogChart({ date, offset }) {
         fillLog(studylogList);
       })
       .catch(() => {
-        dispatch(logout());
+        dispatch(loginStateChange(false));
         dispatch(sideLogOpen(false));
         dispatch(signinModalOpen(true));
       });

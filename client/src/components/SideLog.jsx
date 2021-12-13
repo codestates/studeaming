@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   signinModalOpen,
-  logout,
   sideLogOpen,
   userInfoEditModalOpen,
   loginStateChange,
@@ -287,7 +286,7 @@ function SideLog() {
 
   const logoutHandler = () => {
     authAPI.signout().then(() => {
-      dispatch(logout());
+      dispatch(loginStateChange(false));
       dispatch(sideLogOpen(false));
       navigate("/home");
     });
@@ -309,7 +308,7 @@ function SideLog() {
         setInputValue("공부");
       })
       .catch(() => {
-        dispatch(logout());
+        dispatch(loginStateChange(false));
         dispatch(sideLogOpen(false));
         dispatch(signinModalOpen(true));
       });
@@ -383,7 +382,7 @@ function SideLog() {
           setToggles(res.data.toggleList);
         })
         .catch((e) => {
-          dispatch(logout());
+          dispatch(loginStateChange(false));
           dispatch(sideLogOpen(false));
           dispatch(signinModalOpen(true));
         });

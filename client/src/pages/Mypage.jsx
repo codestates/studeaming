@@ -6,7 +6,7 @@ import statisticsAPI from "../api/statistics";
 import userAPI from "../api/user";
 import authAPI from "../api/auth";
 import {
-  logout,
+  loginStateChange,
   pwdEditModalOpen,
   withdrawalModalOpen,
   profileModalOpen,
@@ -150,7 +150,7 @@ function Mypage() {
     authAPI
       .signout()
       .then(() => {
-        dispatch(logout());
+        dispatch(loginStateChange(false));
         navigate("/home");
       })
       .catch(() => {});
@@ -168,6 +168,7 @@ function Mypage() {
     getTotalTime();
     getFollowing();
     getBadge();
+    // eslint-disable-next-line
   }, []);
 
   return (
