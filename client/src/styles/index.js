@@ -35,7 +35,7 @@ const GlobalStyle = createGlobalStyle`
   *,
   :after,
   :before {
-    font-family: "NotoSans", "Poppins-Medium", "Poppins-Extra_Light", "Poppins-Regular", sans-serif;
+    font-family: "NotoSans", sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
