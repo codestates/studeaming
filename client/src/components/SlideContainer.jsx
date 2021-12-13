@@ -6,7 +6,7 @@ const StyledSlideContainer = styled.div`
   transform: translateX(-${(props) => props.translate}px);
   transition: transform ease-out ${(props) => props.transition}s;
   width: ${(props) => props.width}px;
-  height: 400px;
+  height: 100%;
   display: flex;
   align-items: center;
   position: relative;

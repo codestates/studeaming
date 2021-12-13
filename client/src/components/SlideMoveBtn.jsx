@@ -1,10 +1,5 @@
 import styled from "styled-components";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import {
-  faChevronRight,
-  faChevronLeft,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ArrowBtn = styled.div`
   cursor: pointer;
@@ -12,21 +7,23 @@ const ArrowBtn = styled.div`
 
   &.next {
     position: absolute;
-    top: 50%;
+    top: calc(50% - 12px);
     right: 30px;
+    color: white;
 
     :hover {
-      color: white;
+      transform: scale(1.2);
     }
   }
 
   &.prev {
     position: absolute;
-    top: 50%;
+    top: calc(50% - 12px);
     left: 30px;
+    color: white;
 
     :hover {
-      color: white;
+      transform: scale(1.2);
     }
   }
 `;
