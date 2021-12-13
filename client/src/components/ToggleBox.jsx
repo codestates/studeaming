@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { logout, sideLogOpen, signinModalOpen } from "../store/actions/index";
+import {
+  loginStateChange,
+  sideLogOpen,
+  signinModalOpen,
+} from "../store/actions/index";
 import styled from "styled-components";
 import { gsap } from "gsap";
 import toggleAPI from "../api/studyToggle";
@@ -77,7 +81,7 @@ function ToggleBox({
     const filter = [...toggles.slice(0, idx), ...toggles.slice(idx + 1)];
     setToggles(filter);
     toggleAPI.deleteToggle(toggles[idx].id).catch(() => {
-      dispatch(logout());
+      dispatch(loginStateChange(false));
       dispatch(sideLogOpen(false));
       dispatch(signinModalOpen(true));
     });

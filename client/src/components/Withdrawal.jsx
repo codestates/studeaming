@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { logout } from "../store/actions";
+import { loginStateChange } from "../store/actions";
 import authAPI from "../api/auth";
 import Button from "./Button";
 import SuccessNotify from "./SuccessNotify";
@@ -57,7 +57,7 @@ function Withdrawal() {
           .withdraw()
           .then(() => {
             setIsSuccess(true);
-            dispatch(logout());
+            dispatch(loginStateChange(false));
             navigate("/home");
           })
           .catch(() => {});
@@ -71,7 +71,7 @@ function Withdrawal() {
         .withdraw(password)
         .then(() => {
           setIsSuccess(true);
-          dispatch(logout());
+          dispatch(loginStateChange(false));
           navigate("/home");
         })
         .catch(() => {
