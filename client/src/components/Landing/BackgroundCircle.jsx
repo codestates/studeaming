@@ -39,7 +39,7 @@ const Circle1 = styled.div`
   border-radius: 50%;
   background-color: var(--color-main-25);
 
-  animation: ${Wiggle1} 60s infinite;
+  animation: ${Wiggle1} 100s infinite;
   transition: linear;
   z-index: -1;
   opacity: 0.5;
@@ -54,7 +54,7 @@ const Circle2 = styled.div`
   border-radius: 50%;
   background-color: var(--color-main-25);
 
-  animation: ${Wiggle2} 70s infinite;
+  animation: ${Wiggle2} 100s infinite;
   transition: linear;
   z-index: -1;
   opacity: 0.6;
@@ -69,7 +69,7 @@ const Circle3 = styled.div`
   border-radius: 50%;
   background-color: var(--color-main-25);
 
-  animation: ${Wiggle3} 80s infinite;
+  animation: ${Wiggle3} 100s infinite;
   transition: linear;
   z-index: -1;
   opacity: 0.7;
@@ -84,7 +84,7 @@ const Circle4 = styled.div`
   border-radius: 50%;
   background-color: var(--color-main-25);
 
-  animation: ${Wiggle4} 40s infinite;
+  animation: ${Wiggle4} 100s infinite;
   transition: linear;
   z-index: -1;
   opacity: 0.8;
@@ -98,7 +98,7 @@ const Circle5 = styled.div`
   height: 1vw;
   border-radius: 50%;
   background-color: var(--color-main-25);
-  animation: ${Wiggle5} 50s infinite;
+  animation: ${Wiggle5} 100s infinite;
   transition: linear;
   z-index: -1;
   opacity: 0.8;
