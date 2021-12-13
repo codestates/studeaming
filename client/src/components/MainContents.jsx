@@ -11,7 +11,7 @@ const StyledMainContents = styled.section`
   max-width: 2000px;
   grid-template-rows: repeat(auto-fill, 1fr);
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px 10px;
+  gap: 20px 20px;
   padding: 5px;
 
   @media screen and (max-width: 1480px) {
@@ -72,7 +72,7 @@ const Desc = styled.div`
   width: 100%;
   height: 30%;
   padding: 6px;
-  background-color: #f8f8f8;
+  background-color: var(--color-gray-bg);
 
   @media screen and (max-width: 530px) {
     height: 25%;
@@ -87,7 +87,6 @@ const Desc = styled.div`
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 14px;
   }
 
   > .thumbnail_info {
@@ -108,12 +107,13 @@ const Desc = styled.div`
       padding: 2px;
       > div {
         padding: 3px;
-        font-size: 14px;
+        font-size: 12px;
       }
     }
 
     > .time_info {
       position: absolute;
+      font-size: 12px;
       right: 0;
       bottom: 0;
       color: var(--color-black-25);
@@ -164,7 +164,9 @@ function MainContents({ contents }) {
               <div className="thumbnail_info">
                 <img src={el.profileImg || defaultImg} alt="" />
                 <div className="thumbnail_info_name">
-                  <div style={{ fontWeight: "bold" }}>{el.username}</div>
+                  <div style={{ color: "var(--color-black-50)" }}>
+                    {el.username}
+                  </div>
                   <div style={{ color: "#838080" }}>
                     <IoPeople />
                     {el.user_id === "0"
@@ -173,17 +175,15 @@ function MainContents({ contents }) {
                   </div>
                 </div>
                 <div className="time_info">
-                  {el.user_id === "0" ? (
-                    <span style={{ color: "#9b0101be" }}>asmr</span>
-                  ) : now - el.createdAt > 60 ? (
-                    `${Math.floor((now - el.createdAt) / 60)}시간 ${Math.floor(
-                      (now - el.createdAt) % 60
-                    )}분 전`
-                  ) : Math.floor(now - el.createdAt) >= 1 ? (
-                    `${Math.floor(now - el.createdAt)}분 전`
-                  ) : (
-                    "방금 전"
-                  )}
+                  {el.user_id === "0"
+                    ? null
+                    : now - el.createdAt > 60
+                    ? `${Math.floor(
+                        (now - el.createdAt) / 60
+                      )}시간 ${Math.floor((now - el.createdAt) % 60)}분 전`
+                    : Math.floor(now - el.createdAt) >= 1
+                    ? `${Math.floor(now - el.createdAt)}분 전`
+                    : "방금 전"}
                 </div>
               </div>
             </Desc>
