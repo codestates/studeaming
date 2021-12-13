@@ -24,7 +24,8 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     width: calc(100vw - 300px);
-    height: calc(100vh - 61.69px);
+    height: calc(100vh - 80px);
+
     @media screen and (max-width: 768px) {
       width: 100vw;
       height: 70vh;
@@ -36,6 +37,10 @@ const Container = styled.div`
   @media screen and (max-width: 768px) {
     justify-content: flex-end;
     flex-direction: column;
+  }
+
+  @media screen and (max-width: 480px) {
+    height: calc(100vh - 60px);
   }
 `;
 

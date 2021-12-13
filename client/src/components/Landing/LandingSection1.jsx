@@ -4,11 +4,15 @@ import StartBtn from "./StartBtn";
 const Container = styled.div`
   width: 100%;
   min-width: 330px;
-  height: calc(100vh - 69.28px);
+  height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 480px) {
+    height: calc(100vh - 60px);
+  }
 
   #start-btn-container {
     margin-top: 1rem;

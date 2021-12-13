@@ -8,7 +8,6 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   min-width: 330px;
-  /* height: calc(100vh - 69.28px); */
   padding: 30px 0;
   display: flex;
   justify-content: center;
