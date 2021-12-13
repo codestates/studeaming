@@ -153,10 +153,11 @@ function AsmrSound() {
   );
 
   const { state } = useLocation();
+  const idx = Number(state.uuid);
 
   //todo: 오디오 부분
   const audio = new Audio();
-  audio.src = sound[state[1]].url;
+  audio.src = sound[idx].url;
   audio.volume = 0.1;
 
   const socketRef = useRef(
@@ -293,11 +294,7 @@ function AsmrSound() {
         </StudeamerInfo>
       </ScreenSection>
       <ChatSection>
-        <Chat
-          socket={socketRef.current}
-          viewers={viewers}
-          uuid={state[0].uuid}
-        />
+        <Chat socket={socketRef.current} viewers={viewers} uuid={state.uuid} />
         <AsmrBox>
           {asmr.map((el, idx) => (
             <Asmr key={idx}>{el}</Asmr>

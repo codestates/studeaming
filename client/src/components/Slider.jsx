@@ -25,9 +25,9 @@ const getWidth = () => {
   return window.innerWidth;
 };
 const imageSlider = [
-  { title: "장작타는 소리 들으며 공부하기", img: image1 },
-  { title: "시원한 파도소리 들으며 공부하기", img: image2 },
-  { title: "밤 풍경소리 들으며 공부하기", img: image3 },
+  { title: "장작 타는 소리 들으며 공부하기", img: image1, uuid: "0" },
+  { title: "시냇물 소리 들으며 공부하기", img: image2, uuid: "1" },
+  { title: "밤 풍경소리 들으며 공부하기", img: image3, uuid: "2" },
 ];
 
 function Slider({ contents }) {
@@ -136,12 +136,7 @@ function Slider({ contents }) {
           slides={slides}
         >
           {slides.map((slide, idx) => (
-            <Slide
-              key={slide.img + idx}
-              content={slide}
-              fakeRoom={contents}
-              idx={activeIndex}
-            />
+            <Slide key={slide.img + idx} content={slide} />
           ))}
         </SlideContainer>
         <SlideMoveBtn moveSlide={nextSlide} direction="next" />
