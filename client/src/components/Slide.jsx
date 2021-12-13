@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const StyledSlide = styled.div`
   width: 100%;
@@ -31,10 +32,29 @@ const SlideImg = styled.div`
   }
 `;
 
-function Slide({ content }) {
+function Slide({ content, fakeRoom, idx }) {
+  console.log("페이크룸", fakeRoom);
+  console.log("컨텐츠", idx);
+  const navigate = useNavigate();
+  const navigateLanding = (fakeRoom) => {
+    navigate("/asmrsound", { state: fakeRoom });
+  };
+
   return (
     <StyledSlide>
-      <SlideImg content={content.img}>
+      {/* {fakeRoom.length ? (
+        fakeRoom.map((data, idx) => (
+          <SlideImg
+            content={data.thumbnail}
+            onClick={() => navigateLanding(fakeRoom[idx])}
+          >
+            <h3>{data.title}</h3>
+          </SlideImg>
+        ))
+      ) : (
+        <div>hello world</div>
+      )} */}
+      <SlideImg content={content.img} onClick={() => navigateLanding(fakeRoom)}>
         <h3>{content.title}</h3>
       </SlideImg>
     </StyledSlide>

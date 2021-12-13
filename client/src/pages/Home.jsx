@@ -169,6 +169,7 @@ function Home() {
     // get contents 요청 보내기
     setIsLoading(true);
     studyroomAPI.getStudyRoom().then((res) => {
+      console.log("알이에스", res);
       setIsLoading(false);
       setAxiosItems(res.data.roomList);
       setSearchItems(res.data.roomList);
@@ -182,7 +183,7 @@ function Home() {
 
   return (
     <>
-      <Slider />
+      <Slider contents={searchItems} />
       <ContentsSection>
         <SearchSection>
           <div className="input-box">

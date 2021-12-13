@@ -113,7 +113,11 @@ const Imoticon = styled.div`
 `;
 
 function Chat({ socket, viewers, uuid }) {
-  const { isLogin } = useSelector(({ userReducer }) => userReducer);
+  console.log("뷰저스", viewers);
+  console.log("유유아이디", uuid);
+  const { isLogin, username, profileImg } = useSelector(
+    ({ userReducer }) => userReducer
+  );
   const [inputClick, setInputClick] = useState(false);
   const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
   const [letter, setLetter] = useState({ message: "", idx: null });

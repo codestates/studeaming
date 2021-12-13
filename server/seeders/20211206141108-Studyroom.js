@@ -16,9 +16,17 @@ module.exports = {
         {
           user_id: 0,
           uuid: "fakeuuid2",
-          title: "빗소리 들으며 공부하기",
+          title: "시원한 파도소리 들으며 공부하기",
           thumbnail:
-            "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pexels.com%2Fphoto%2Fwater-rainy-rain-raindrops-110874%2F&psig=AOvVaw3ZWXSKyXNnXG_56cCJwvu5&ust=1639225932623000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCLDlptGe2fQCFQAAAAAdAAAAABAD",
+            "https://images.pexels.com/photos/315998/pexels-photo-315998.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+          headCount: 0,
+        },
+        {
+          user_id: 0,
+          uuid: "fakeuuid3",
+          title: "밤 풍경소리 들으며 공부하기",
+          thumbnail:
+            "https://images.pexels.com/photos/631477/pexels-photo-631477.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
           headCount: 0,
         },
       ],

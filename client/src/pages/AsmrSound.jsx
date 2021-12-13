@@ -6,6 +6,7 @@ import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
 import { io } from "socket.io-client";
 import Chat from "../components/Chat";
+import sound from "../assets/sound";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
 const StyledViewer = styled.section`
@@ -146,12 +147,20 @@ const Asmr = styled.div`
 
 function AsmrSound() {
   const asmr = ["불", "파도", "밤 풍경"];
+  const index = 1;
+
+  //todo: 오디오 부분
+  const audio = new Audio();
+  audio.currentTime = 0;
+  audio.src = "../assets/sound/night.mp3";
+  audio.volume = 0.2;
 
   const { id, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
   );
 
   const { state } = useLocation();
+  console.log("state", state);
 
   const socketRef = useRef(
     io(process.env.REACT_APP_BASE_URL, {
@@ -246,6 +255,15 @@ function AsmrSound() {
 
     socketRef.current.emit("update_viewer", state.uuid, updatedUser);
   }, [id, username, profileImg]);
+
+  //todo: 오디오 부분
+  useEffect(() => {
+    audio.addEventListener("ended", () => {
+      audio.loop = true;
+      audio.play();
+    });
+    audio.play();
+  }, []);
 
   return (
     <StyledViewer>
