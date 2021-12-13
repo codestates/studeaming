@@ -153,7 +153,6 @@ function StreamerSettingMockup() {
     title: "",
     thumbnail: null,
     sound: "",
-    url: "",
   });
   const localVideoRef = useRef(HTMLVideoElement);
   const [players, toggle] = useAudio(sound);
@@ -192,8 +191,9 @@ function StreamerSettingMockup() {
     setStreamingInfo({ ...streamingInfo, thumbnail: null });
   };
 
-  const getSound = (ASMR, url, idx) => {
-    setStreamingInfo({ ...streamingInfo, sound: ASMR, url: url, idx: idx });
+  const getSound = (ASMR, idx) => {
+    console.log(ASMR, idx);
+    setStreamingInfo({ ...streamingInfo, sound: ASMR, idx: idx });
   };
 
   const hoverHandler = (idx) => {
@@ -201,21 +201,24 @@ function StreamerSettingMockup() {
   };
 
   const startBtnHandler = () => {
+    let title = streamingInfo.title,
+      thumbnail = streamingInfo.thumbnail,
+      sound = streamingInfo.sound;
+    const now = Date.now();
     if (!streamingInfo.title.length) {
-      setStreamingInfo({
-        ...streamingInfo,
-        title: `${username}의 스터디밍에 참여하세요!`,
-      });
+      title = `${username}의 스터디밍에 참여하세요!`;
     }
     if (!streamingInfo.thumbnail) {
-      setStreamingInfo({ ...streamingInfo, thumbnail: defaultThumbnail });
+      thumbnail = defaultThumbnail;
     }
     if (!streamingInfo.sound.length) {
-      setStreamingInfo({ ...streamingInfo, sound: "fire" });
+      sound = "fire";
     }
 
     dispatch(modalOff());
-    navigate("/streamer", { state: streamingInfo });
+    navigate("/streamer", {
+      state: { ...streamingInfo, title, thumbnail, sound, createdAt: now },
+    });
   };
 
   useEffect(() => {
@@ -280,7 +283,7 @@ function StreamerSettingMockup() {
                   key={idx}
                   img={ASMR.img}
                   isSelected={ASMR.keyword === streamingInfo.sound}
-                  onClick={() => getSound(ASMR.keyword, ASMR.url, idx)}
+                  onClick={() => getSound(ASMR.keyword, idx)}
                   onMouseEnter={() => hoverHandler(idx)}
                   onMouseLeave={() => hoverHandler(idx)}
                 >
