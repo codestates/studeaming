@@ -193,7 +193,7 @@ function StreamerSettingMockup() {
   };
 
   const getSound = (ASMR, url, idx) => {
-    setStreamingInfo({ ...streamingInfo, sound: ASMR, url: url });
+    setStreamingInfo({ ...streamingInfo, sound: ASMR, url: url, idx: idx });
   };
 
   const hoverHandler = (idx) => {
