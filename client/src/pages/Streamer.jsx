@@ -7,32 +7,46 @@ import { BiFullscreen } from "react-icons/bi";
 import { io } from "socket.io-client";
 import { v4 } from "uuid";
 import Chat from "../components/Chat";
-import sound from "../assets/sound";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
-const StyledViewer = styled.section`
+const StyledStreamer = styled.div`
   width: 100%;
-  height: calc(100vh - 69.28px);
+  height: calc(100vh - 80px);
   display: flex;
+  justify-content: center;
   padding: 20px;
+
   @media screen and (max-width: 480px) {
+    height: calc(100vh - 60px);
+  }
+`;
+
+const Container = styled.div`
+  width: 90%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+
+  @media screen and (max-width: 1000px) {
+    width: 100%;
     flex-direction: column;
+    justify-content: start;
     padding: 0;
   }
 `;
 
 const ScreenSection = styled.section`
-  width: 80vw;
-  /* height: 100%; */
+  width: 100%;
+  max-width: 1280px;
+  min-width: 640px;
   display: flex;
   flex-direction: column;
   position: relative;
   margin-right: 20px;
-  .wrapper {
-    position: relative;
-  }
-  @media screen and (max-width: 480px) {
+
+  @media screen and (max-width: 1000px) {
     width: 100%;
+    min-width: 330px;
     height: 100%;
     margin: 0;
   }
@@ -40,17 +54,16 @@ const ScreenSection = styled.section`
 
 const Screen = styled.div`
   width: 100%;
+  max-width: 1280px;
   min-width: 360px;
-  height: 80%;
-  min-height: 300px;
-  border: 1px solid;
+  height: 100%;
+  min-height: 240px;
   position: relative;
+  background-color: black;
 
-  @media screen and (max-width: 480px) {
-    position: sticky;
-    top: 0;
-    z-index: 1010;
-    height: 40%;
+  @media screen and (max-width: 1000px) {
+    width: 100%;
+    height: 100%;
   }
 
   > i {
@@ -66,19 +79,10 @@ const Screen = styled.div`
 
 const Cam = styled.video`
   width: 100%;
-  min-width: 360px;
   height: 100%;
-  min-height: 300px;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg); /*여기는 사파리*/
   -moz-transform: rotateY(180deg); /*이거는 파이어폭스*/
-
-  @media screen and (max-width: 480px) {
-    position: sticky;
-    top: 0;
-    z-index: 1010;
-    height: 40%;
-  }
 `;
 
 const FullScreen = styled(BiFullscreen)`
@@ -90,9 +94,11 @@ const FullScreen = styled(BiFullscreen)`
 `;
 
 const StudeamerInfo = styled.div`
+  max-width: 1280px;
+  min-width: 360px;
   width: 100%;
   height: 15%;
-  min-height: 100px;
+  min-height: 150px;
   display: flex;
   justify-content: space-between;
   padding: 20px 10px;
@@ -102,6 +108,19 @@ const StudeamerInfo = styled.div`
 const InfoSection1 = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+
+  > .stream_title {
+    display: -webkit-box;
+    font-size: 1.2rem;
+    margin: 0;
+    line-height: 1.2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   > .studeamer_info {
     display: flex;
@@ -114,6 +133,7 @@ const InfoSection1 = styled.div`
       object-fit: cover;
       margin-right: 10px;
     }
+
     > span {
       display: inline-block;
       vertical-align: middle;
@@ -123,12 +143,14 @@ const InfoSection1 = styled.div`
 `;
 
 const ChatSection = styled.section`
-  width: 25%;
+  width: 350px;
+  min-width: 300px;
   height: 100%;
   min-height: 300px;
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 1000px) {
     width: 100%;
+    min-width: 360px;
   }
 `;
 
@@ -138,6 +160,8 @@ const InfoSection2 = styled.div`
   align-items: end;
   justify-content: space-between;
   color: #838080;
+  min-width: 120px;
+
   > span {
     display: inline-block;
     font-size: 12px;
@@ -161,14 +185,9 @@ function Streamer() {
   const { id, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
   );
-
-  const { state } = useLocation();
-
-  //todo: 오디오 부분
-  const audio = new Audio();
-  audio.src = state.url;
-  audio.volume = 0.1;
-
+  const {
+    state: { title, thumbnail, sound, createdAt },
+  } = useLocation();
   const uuidRef = useRef(v4());
   const localVideoRef = useRef(HTMLVideoElement);
   const localStreamRef = useRef();
@@ -179,15 +198,13 @@ function Streamer() {
       upgrade: false,
     })
   );
-  const viewers = useRef([
-    {
-      id: id,
-      username: username,
-      profileImg: profileImg,
-    },
-  ]);
-
+  const viewers = useRef([{ id, username, profileImg }]);
   const [count, setCount] = useState(viewers.current.length);
+  const date = new Date(createdAt);
+  const time = `${date.getHours()} : ${date.getMinutes()}`;
+  const audio = new Audio();
+  audio.src = `/assets/sound/${sound}.mp3`;
+  audio.volume = 0.1;
 
   const connectToPeer = useCallback((socketId) => {
     const peerConnection = new RTCPeerConnection(StunServer);
@@ -236,12 +253,7 @@ function Streamer() {
       viewers.current[0].socketId = socket.id;
     });
 
-    socket.emit("open_room", {
-      uuid: uuid,
-      id: id,
-      title: state.title,
-      thumbnail: state.thumbnail,
-    });
+    socket.emit("open_room", { uuid, id, title, thumbnail });
 
     socket.on("welcome", async (viewerInfo) => {
       const socketId = viewerInfo.socketId;
@@ -254,14 +266,7 @@ function Streamer() {
       const offer = await pc.createOffer();
       pc.setLocalDescription(offer);
 
-      socket.emit(
-        "offer",
-        offer,
-        uuid,
-        viewerInfo.socketId,
-        socket.id,
-        state.idx
-      );
+      socket.emit("offer", offer, uuid, viewerInfo.socketId, socket.id, sound);
 
       socket.emit("get_viewer", uuid, viewerInfo.socketId, viewers.current[0]);
     });
@@ -272,7 +277,6 @@ function Streamer() {
 
     socket.on("ice", (ice, hostId, socketId) => {
       if (hostId === socket.id) {
-        console.log("received candidate", ice);
         pcRef.current[socketId].addIceCandidate(ice);
       }
     });
@@ -297,6 +301,11 @@ function Streamer() {
       });
     });
 
+    audio.addEventListener("ended", () => {
+      audio.loop = true;
+      audio.play();
+    });
+
     audio.play();
 
     return () => {
@@ -310,46 +319,50 @@ function Streamer() {
   }, []);
 
   return (
-    <StyledViewer>
-      <ScreenSection>
-        <Screen>
-          <Cam ref={localVideoRef} autoPlay playsInline undefined />
-          <i
-            onClick={() => {
-              localVideoRef.current.requestFullscreen();
-            }}
-          >
-            <FullScreen />
-          </i>
-        </Screen>
-
-        <StudeamerInfo>
-          <InfoSection1>
-            <h3>{state.title}</h3>
-            <div className="studeamer_info">
-              <img src={state.profileImg || defaultImg} alt="" />
-              <span>{state.username}</span>
-            </div>
-          </InfoSection1>
-          <InfoSection2>
-            <span>오늘 공부 시작 시간</span>
-            <div>
-              <IoPeople size="12" />
-              <span style={{ fontSize: "12px", marginLeft: "3px" }}>
-                {count}명 공부중
+    <StyledStreamer>
+      <Container>
+        <ScreenSection>
+          <Screen>
+            <Cam ref={localVideoRef} autoPlay playsInline undefined />
+            <i
+              onClick={() => {
+                localVideoRef.current.requestFullscreen();
+              }}
+            >
+              <FullScreen />
+            </i>
+          </Screen>
+          <StudeamerInfo>
+            <InfoSection1>
+              <span className="stream_title">{title}</span>
+              <div className="studeamer_info">
+                <img src={profileImg || defaultImg} alt="" />
+                <span>{username}</span>
+              </div>
+            </InfoSection1>
+            <InfoSection2>
+              <span style={{ textAlign: "right" }}>
+                공부 시작 시간 <br />
+                {time}
               </span>
-            </div>
-          </InfoSection2>
-        </StudeamerInfo>
-      </ScreenSection>
-      <ChatSection>
-        <Chat
-          socket={socketRef.current}
-          viewers={viewers}
-          uuid={uuidRef.current}
-        />
-      </ChatSection>
-    </StyledViewer>
+              <div>
+                <IoPeople size="12" />
+                <span style={{ fontSize: "12px", marginLeft: "3px" }}>
+                  {count}명 공부중
+                </span>
+              </div>
+            </InfoSection2>
+          </StudeamerInfo>
+        </ScreenSection>
+        <ChatSection>
+          <Chat
+            socket={socketRef.current}
+            viewers={viewers}
+            uuid={uuidRef.current}
+          />
+        </ChatSection>
+      </Container>
+    </StyledStreamer>
   );
 }
 
