@@ -150,10 +150,10 @@ function Home() {
       const sort = [...items].sort((a, b) => b.headCount - a.headCount);
       setSearchItems(sort);
     } else if (selectedFilterOpt === "최신 순") {
-      const sort = [...items].sort((a, b) => b.openedAt - a.openedAt);
+      const sort = [...items].sort((a, b) => b.createdAt - a.createdAt);
       setSearchItems(sort);
     } else if (selectedFilterOpt === "오래 공부한 순") {
-      const sort = [...items].sort((a, b) => a.openedAt - b.openedAt);
+      const sort = [...items].sort((a, b) => a.createdAt - b.createdAt);
       setSearchItems(sort);
     }
   };
