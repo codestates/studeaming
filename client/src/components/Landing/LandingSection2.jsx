@@ -8,7 +8,8 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   min-width: 330px;
-  height: calc(100vh - 69.28px);
+  /* height: calc(100vh - 69.28px); */
+  padding: 30px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,12 +67,19 @@ const TextContainer = styled.div`
     @media screen and (max-width: 900px) {
       align-items: center;
     }
+
+    .stream-description {
+      display: flex;
+      justify-content: flex-start;
+      align-items: start;
+      margin-bottom: 0.2rem;
+    }
   }
 
   #stream-description {
-    margin: 0.2rem 0;
     display: flex;
     align-items: flex-start;
+    margin: 0.2rem 0;
   }
 `;
 
@@ -149,22 +157,23 @@ function LandingSection2() {
             공부하는 모습을 실시간으로 송출해보세요
           </h3>
           <div id="stream-description-container">
-            <div id="stream-description-1">
+            <div id="stream-description-1" className="stream-description">
               <StyledCheck />
               <span>누구든 스터디머가 될 수 있습니다!</span>
             </div>
-            <div id="stream-description-2">
+            <div id="stream-description-2" className="stream-description">
               <StyledCheck />
               <span>
-                <div>ASMR 찾아다니지 마세요</div>
-                <div>제공되는 백색소음을 선택해서 재생할 수 있습니다</div>
+                ASMR 찾아다니지 마세요 <br />
+                제공되는 백색소음을 선택해서 재생할 수 있습니다
               </span>
             </div>
-            <div id="stream-description-3">
+            <div id="stream-description-3" className="stream-description">
               <StyledCheck />
               <span>
-                <div>서로에게 응원을 보낼 수 있는</div>
-                <div>클린한 채팅 기능이 준비되어있습니다</div>
+                서로에게 응원을 보낼 수 있는
+                <br />
+                클린한 채팅 기능이 준비되어있습니다
               </span>
             </div>
           </div>
