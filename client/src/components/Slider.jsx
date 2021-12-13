@@ -29,12 +29,13 @@ const imageSlider = [
 
 function Slider({ contents }) {
   const [slideInfo, setSlideInfo] = useState({
-    activeIndex: 0,
+    activeIndex: 1,
     translate: getWidth(),
     transition: 0.45,
     slides: [...imageSlider],
   });
   const { activeIndex, translate, transition, slides } = slideInfo;
+  console.log("액티브 인덱스", activeIndex);
 
   const autoPlayRef = useRef();
   const transitionRef = useRef();
@@ -141,8 +142,8 @@ function Slider({ contents }) {
           <Slide
             key={slide.img + idx}
             content={slide}
-            fakeRoom={contents[idx]}
-            idx={idx}
+            fakeRoom={contents}
+            idx={activeIndex}
           />
         ))}
       </SlideContainer>

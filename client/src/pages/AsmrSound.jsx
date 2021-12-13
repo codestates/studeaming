@@ -147,13 +147,6 @@ const Asmr = styled.div`
 
 function AsmrSound() {
   const asmr = ["불", "파도", "밤 풍경"];
-  const index = 1;
-
-  //todo: 오디오 부분
-  const audio = new Audio();
-  audio.currentTime = 0;
-  audio.src = "../assets/sound/night.mp3";
-  audio.volume = 0.2;
 
   const { id, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
@@ -161,6 +154,11 @@ function AsmrSound() {
 
   const { state } = useLocation();
   console.log("state", state);
+
+  //todo: 오디오 부분
+  const audio = new Audio();
+  audio.src = sound[state[1]].url;
+  audio.volume = 0.1;
 
   const socketRef = useRef(
     io(process.env.REACT_APP_BASE_URL, {
@@ -256,13 +254,16 @@ function AsmrSound() {
     socketRef.current.emit("update_viewer", state.uuid, updatedUser);
   }, [id, username, profileImg]);
 
-  //todo: 오디오 부분
+  //todo: 오디오 무한재생부분 및 페이지 아웃시 음악 일시정지
   useEffect(() => {
     audio.addEventListener("ended", () => {
       audio.loop = true;
       audio.play();
     });
     audio.play();
+    return () => {
+      audio.pause();
+    };
   }, []);
 
   return (
@@ -293,7 +294,11 @@ function AsmrSound() {
         </StudeamerInfo>
       </ScreenSection>
       <ChatSection>
-        <Chat socket={socketRef.current} viewers={viewers} uuid={state.uuid} />
+        <Chat
+          socket={socketRef.current}
+          viewers={viewers}
+          uuid={state[0].uuid}
+        />
         <AsmrBox>
           {asmr.map((el, idx) => (
             <Asmr key={idx}>{el}</Asmr>

@@ -8,6 +8,7 @@ import { BiFullscreen } from "react-icons/bi";
 import { GiSiren } from "react-icons/gi";
 import { io } from "socket.io-client";
 import Chat from "../components/Chat";
+import sound from "../assets/sound";
 import FollowBtn from "../components/FollowBtn";
 import defaultImg from "../assets/images/img_profile_default.svg";
 

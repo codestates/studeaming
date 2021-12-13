@@ -7,6 +7,7 @@ import { BiFullscreen } from "react-icons/bi";
 import { io } from "socket.io-client";
 import { v4 } from "uuid";
 import Chat from "../components/Chat";
+import sound from "../assets/sound";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
 const StyledViewer = styled.section`

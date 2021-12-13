@@ -33,28 +33,17 @@ const SlideImg = styled.div`
 `;
 
 function Slide({ content, fakeRoom, idx }) {
-  console.log("페이크룸", fakeRoom);
-  console.log("컨텐츠", idx);
   const navigate = useNavigate();
   const navigateLanding = (fakeRoom) => {
-    navigate("/asmrsound", { state: fakeRoom });
+    navigate("/asmrsound", { state: [fakeRoom, idx] });
   };
 
   return (
     <StyledSlide>
-      {/* {fakeRoom.length ? (
-        fakeRoom.map((data, idx) => (
-          <SlideImg
-            content={data.thumbnail}
-            onClick={() => navigateLanding(fakeRoom[idx])}
-          >
-            <h3>{data.title}</h3>
-          </SlideImg>
-        ))
-      ) : (
-        <div>hello world</div>
-      )} */}
-      <SlideImg content={content.img} onClick={() => navigateLanding(fakeRoom)}>
+      <SlideImg
+        content={content.img}
+        onClick={() => navigateLanding(fakeRoom[idx])}
+      >
         <h3>{content.title}</h3>
       </SlideImg>
     </StyledSlide>
