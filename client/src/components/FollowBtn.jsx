@@ -78,6 +78,7 @@ function FollowBtn({ username }) {
 
   useEffect(() => {
     checkFollowing();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {

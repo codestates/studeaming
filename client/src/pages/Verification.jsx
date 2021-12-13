@@ -40,6 +40,7 @@ function Verification() {
     if (!isSigninOpen) {
       navigate("/home");
     }
+    // eslint-disable-next-line
   }, [isSigninOpen]);
 
   return <></>;
