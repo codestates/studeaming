@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
 
     const roomList = await Promise.all(
       studyrooms.map(async (room) => {
-        room.createdAt = getUTC(room.createdA);
+        room.createdAt = getUTC(room.createdAt) / (60 * 1000);
 
         if (room.user_id !== "0") {
           const user = await User.findOne({
