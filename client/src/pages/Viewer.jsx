@@ -8,7 +8,6 @@ import { BiFullscreen } from "react-icons/bi";
 import { GiSiren } from "react-icons/gi";
 import { io } from "socket.io-client";
 import Chat from "../components/Chat";
-import sound from "../assets/sound";
 import FollowBtn from "../components/FollowBtn";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
@@ -231,7 +230,7 @@ function Viewer({ route, navigation }) {
       }
     });
 
-    socket.on("offer", async (offer, socketId, hostId, soundIdx) => {
+    socket.on("offer", async (offer, socketId, hostId, sound) => {
       if (socketId === socket.id) {
         peerConnection.onicecandidate = (data) => {
           if (data.candidate) {
@@ -249,8 +248,8 @@ function Viewer({ route, navigation }) {
         const answer = await peerConnection.createAnswer();
         peerConnection.setLocalDescription(answer);
 
-        if (soundIdx) {
-          audio.src = sound[soundIdx].url;
+        if (sound) {
+          audio.src = `/assets/sound/${sound}.mp3`;
           audio.volume = 0.1;
           audio.play();
         }
@@ -297,6 +296,11 @@ function Viewer({ route, navigation }) {
           viewer.profileImg = updatedViewer.profileImg;
         }
       });
+    });
+
+    audio.addEventListener("ended", () => {
+      audio.loop = true;
+      audio.play();
     });
 
     return () => {
