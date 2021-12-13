@@ -169,7 +169,7 @@ function Calendar() {
                 .startOf("week")
                 .add(n + idx, "day");
 
-              const isThisMonth = current.format("MM") == date.format("MM");
+              const isThisMonth = current.format("MM") === date.format("MM");
               const isToday =
                 today.format("YYYYMMDD") === current.format("YYYYMMDD")
                   ? "today"
