@@ -151,7 +151,6 @@ function DailyLog({ moment }) {
         setIsForSure(false);
       })
       .catch(() => {});
-    setIsForSure(false); /* 서버 요청 후 삭제 */
   };
 
   useEffect(() => {
