@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import statisticsAPI from "../api/statistics";
+import userAPI from "../api/user";
+import {
+  logout,
+  pwdEditModalOpen,
+  withdrawalModalOpen,
+  profileModalOpen,
+  signinModalOpen,
+} from "../store/actions";
 import Sidebar from "../components/Sidebar";
 import Calendar from "../components/Calendar";
 
@@ -83,11 +93,12 @@ const MonthlyBody = styled.div`
 `;
 
 function Mypage() {
-  const [studyTime, setStudyTime] = useState({ hour: 121, minute: 15 });
-  const [studeamingTime, setStudeamingTime] = useState({
-    hour: 62,
-    minute: 37,
-  });
+  const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
+  const [studeamingTime, setStudeamingTime] = useState({ hour: 0, minute: 0 });
+  const [following, setFollowing] = useState([]);
+  const [badges, setBadges] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const getTotalTime = () => {
     statisticsAPI
@@ -105,13 +116,59 @@ function Mypage() {
       .catch((err) => {});
   };
 
+  const getFollowing = async () => {
+    try {
+      const res = await userAPI.getFollows();
+      setFollowing(res.data.studeamerList);
+    } catch {
+      navigate("/home");
+      dispatch(signinModalOpen(true));
+    }
+  };
+
+  const getBadge = async () => {
+    try {
+      const res = await userAPI.getAchievement();
+      setBadges(res.data.achievements);
+    } catch {
+      navigate("/home");
+      dispatch(signinModalOpen(true));
+    }
+  };
+
+  const openFollowingProfile = (username) => {
+    dispatch(profileModalOpen(true, username));
+  };
+
+  const signoutHandler = () => {
+    dispatch(logout());
+    navigate("/home");
+  };
+
+  const editPwdHandler = () => {
+    dispatch(pwdEditModalOpen(true));
+  };
+
+  const withdrawalHandler = () => {
+    dispatch(withdrawalModalOpen(true));
+  };
+
   useEffect(() => {
     getTotalTime();
+    getFollowing();
+    getBadge();
   }, []);
 
   return (
     <Container>
-      <Sidebar />
+      <Sidebar
+        following={following}
+        badges={badges}
+        openFollowingProfile={openFollowingProfile}
+        signoutHandler={signoutHandler}
+        editPwdHandler={editPwdHandler}
+        withdrawalHandler={withdrawalHandler}
+      />
       <div className="monthly-container">
         <MonthlyBody>
           <section id="study_time_section">
