@@ -156,6 +156,7 @@ function DailyLog({ moment }) {
 
   useEffect(() => {
     getDailyData(date, offset);
+    // eslint-disable-next-line
   }, []);
 
   return (
