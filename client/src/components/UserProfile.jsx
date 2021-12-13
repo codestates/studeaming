@@ -137,12 +137,17 @@ function UserProfile({ username }) {
   useEffect(() => {
     getProfile(username);
     getBadges(username);
+    // eslint-disable-next-line
   }, []);
 
   return (
     <Container>
       <UserInfo>
-        <img src={profile.profileImg || defaultImg} id="profile_img" />
+        <img
+          src={profile.profileImg || defaultImg}
+          id="profile_img"
+          alt="profile"
+        />
         <div className="description">
           <div id="username">{profile.username}</div>
           <FollowBtn username={username} />
