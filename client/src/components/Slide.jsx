@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const StyledSlide = styled.div`
   width: 100%;
-  height: 80%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,24 +11,24 @@ const StyledSlide = styled.div`
 
 const SlideImg = styled.div`
   width: 100%;
-  max-width: 600px;
   height: 100%;
   background-image: url("${(props) => props.content}");
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0.8;
+  opacity: 0.85;
 
   :hover {
     cursor: pointer;
   }
 
-  > h3 {
+  > span {
     color: white;
+    font-size: 1.6rem;
   }
 `;
 
@@ -44,7 +44,7 @@ function Slide({ content, fakeRoom, idx }) {
         content={content.img}
         onClick={() => navigateLanding(fakeRoom[idx])}
       >
-        <h3>{content.title}</h3>
+        <span>{content.title}</span>
       </SlideImg>
     </StyledSlide>
   );
