@@ -7,7 +7,7 @@ import StartBtn from "./StartBtn";
 
 const Container = styled.div`
   width: 100%;
-  height: calc(100vh - 69.28px);
+  height: calc(100vh - 80px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,6 +16,10 @@ const Container = styled.div`
 
   @media screen and (max-width: 600px) {
     margin-top: -50px;
+  }
+
+  @media screen and (max-width: 480px) {
+    height: calc(100vh - 60px);
   }
 `;
 
