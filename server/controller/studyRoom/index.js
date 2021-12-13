@@ -47,9 +47,9 @@ module.exports = {
       } catch {}
     });
 
-    socket.on("offer", (offer, uuid, socketId, hostId) => {
+    socket.on("offer", (offer, uuid, socketId, hostId, soundIdx) => {
       console.log("호스트가 offer 보냄", hostId);
-      socket.to(uuid).emit("offer", offer, socketId, hostId);
+      socket.to(uuid).emit("offer", offer, socketId, hostId, soundIdx);
     });
 
     socket.on("answer", (answer, uuid, socketId) => {

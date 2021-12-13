@@ -227,6 +227,9 @@ function Streamer() {
       .then((stream) => {
         localVideoRef.current.srcObject = stream;
         localStreamRef.current = stream;
+      })
+      .catch((err) => {
+        //카메라 불러오지 못함
       });
 
     socket.on("connect", () => {
@@ -251,7 +254,14 @@ function Streamer() {
       const offer = await pc.createOffer();
       pc.setLocalDescription(offer);
 
-      socket.emit("offer", offer, uuid, viewerInfo.socketId, socket.id);
+      socket.emit(
+        "offer",
+        offer,
+        uuid,
+        viewerInfo.socketId,
+        socket.id,
+        state.idx
+      );
 
       socket.emit("get_viewer", uuid, viewerInfo.socketId, viewers.current[0]);
     });

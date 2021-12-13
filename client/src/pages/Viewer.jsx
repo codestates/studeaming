@@ -195,6 +195,7 @@ function Viewer({ route, navigation }) {
   useEffect(() => {
     const peerConnection = new RTCPeerConnection(StunServer); //rtc 커넥션 객체를 만듦
     const socket = socketRef.current;
+    const audio = new Audio();
 
     socket.on("connect", () => {
       viewers.current[0].socketId = socket.id;
@@ -230,7 +231,7 @@ function Viewer({ route, navigation }) {
       }
     });
 
-    socket.on("offer", async (offer, socketId, hostId) => {
+    socket.on("offer", async (offer, socketId, hostId, soundIdx) => {
       if (socketId === socket.id) {
         peerConnection.onicecandidate = (data) => {
           if (data.candidate) {
@@ -247,6 +248,12 @@ function Viewer({ route, navigation }) {
         peerConnection.setRemoteDescription(offer);
         const answer = await peerConnection.createAnswer();
         peerConnection.setLocalDescription(answer);
+
+        if (soundIdx) {
+          audio.src = sound[soundIdx].url;
+          audio.volume = 0.1;
+          audio.play();
+        }
 
         socket.emit("answer", answer, state.uuid, socket.id);
       } else return;
@@ -293,6 +300,7 @@ function Viewer({ route, navigation }) {
     });
 
     return () => {
+      audio.pause();
       socket.disconnect();
       if (peerConnection) {
         peerConnection.close();
