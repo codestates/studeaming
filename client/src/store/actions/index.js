@@ -2,11 +2,9 @@ export const CHANGE_LOGIN_STATE = "CHANGE_LOGIN_STATE";
 export const VERIFY_SOCIAL_LOGINED = "VERIFY_SOCIAL_LOGINED";
 export const VERIFY_GUEST_LOGINED = "VERIFY_GUEST_LOGINED";
 export const GET_USERINFO = "GET_USERINFO";
-export const LOGOUT = "LOGOUT";
 export const GET_FOLLOWS = "GET_FOLLOWS";
 export const FOLLOW = "FOLLOW";
 export const UNFOLLOW = "UNFOLLOW";
-// TODO : 다른 액션 타입 추가
 export const SIGNIN_MODAL_OPEN = "SIGNIN_MODAL_OPEN";
 export const SIGNUP_MODAL_OPEN = "SIGNUP_MODAL_OPEN";
 export const PWDEDIT_MODAL_OPEN = "PWDEDIT_MODAL_OPEN";
@@ -47,12 +45,6 @@ export const getUserInfo = (data) => {
   };
 };
 
-export const logout = () => {
-  return {
-    type: LOGOUT,
-  };
-};
-
 export const getFollows = (list) => {
   return {
     type: GET_FOLLOWS,
@@ -74,7 +66,6 @@ export const unfollow = (username) => {
   };
 };
 
-// TODO : 다른 액션 추가
 export const signinModalOpen = (boolean) => {
   return {
     type: SIGNIN_MODAL_OPEN,
