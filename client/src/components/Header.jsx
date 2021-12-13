@@ -230,7 +230,7 @@ function Header() {
       )}
       <div className="logo_container">
         <WebLogo onClick={navigateLanding} img={project_logo_mobile} />
-        <MobileLogo onClieck={navigateLanding} img={project_logo_web} />
+        <MobileLogo onClick={navigateLanding} img={project_logo_web} />
       </div>
       <UserBox>
         {isLogin ? (
