@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import styled from "styled-components";
 import statisticsAPI from "../api/statistics";
 import userAPI from "../api/user";
+import authAPI from "../api/auth";
 import {
   logout,
   pwdEditModalOpen,
@@ -141,8 +142,13 @@ function Mypage() {
   };
 
   const signoutHandler = () => {
-    dispatch(logout());
-    navigate("/home");
+    authAPI
+      .signout()
+      .then(() => {
+        dispatch(logout());
+        navigate("/home");
+      })
+      .catch(() => {});
   };
 
   const editPwdHandler = () => {
