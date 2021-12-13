@@ -121,7 +121,8 @@ function Signin() {
         .then((res) => {
           // set follows state
           dispatch(getFollows(res.data.studeamerList));
-          if (redirect === "viewer") dispatch(signinModalOpen(false));
+          if (redirect === "viewer" || "asmrsound")
+            dispatch(signinModalOpen(false));
           else navigate("/home");
         })
         .catch((err) => {
