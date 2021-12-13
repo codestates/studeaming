@@ -32,18 +32,15 @@ const SlideImg = styled.div`
   }
 `;
 
-function Slide({ content, fakeRoom, idx }) {
+function Slide({ content }) {
   const navigate = useNavigate();
-  const navigateLanding = (fakeRoom) => {
-    navigate("/asmrsound", { state: [fakeRoom, idx] });
+  const navigateLanding = () => {
+    navigate("/asmrsound", { state: content });
   };
 
   return (
     <StyledSlide>
-      <SlideImg
-        content={content.img}
-        onClick={() => navigateLanding(fakeRoom[idx])}
-      >
+      <SlideImg content={content.img} onClick={() => navigateLanding()}>
         <span>{content.title}</span>
       </SlideImg>
     </StyledSlide>

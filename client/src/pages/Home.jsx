@@ -183,7 +183,7 @@ function Home() {
 
   return (
     <>
-      <Slider contents={searchItems} />
+      <Slider contents={searchItems.filter((item) => item.user_id === 0)} />
       <ContentsSection>
         <SearchSection>
           <div className="input-box">
