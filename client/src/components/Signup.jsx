@@ -225,7 +225,7 @@ function Signup() {
         <InputSection>
           {signupInfo.image ? (
             <ProfileImg onClick={removeProfileImg}>
-              <img src={signupInfo.image} />
+              <img src={signupInfo.image} alt="profile" />
               <div id="remove_profile_img">&times;</div>
             </ProfileImg>
           ) : (
