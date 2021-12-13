@@ -12,6 +12,11 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  margin-top: -200px;
+
+  @media screen and (max-width: 600px) {
+    margin-top: -50px;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -213,7 +218,7 @@ function LandingSection4() {
         toggleActions: "restart none none none",
         start: "top center",
       },
-      delay: 2,
+      delay: 1.5,
       duration: 0.5,
       x: 20,
     });
@@ -224,7 +229,7 @@ function LandingSection4() {
         toggleActions: "restart none none none",
         start: "top center",
       },
-      delay: 2,
+      delay: 1.5,
       duration: 0.5,
       backgroundColor: "#E2ECFC",
     });
@@ -235,7 +240,7 @@ function LandingSection4() {
         toggleActions: "restart none none none",
         start: "top center",
       },
-      delay: 2.5,
+      delay: 2,
       duration: 1,
       width: 150,
     });
