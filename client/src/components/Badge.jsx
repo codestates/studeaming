@@ -8,14 +8,6 @@ const Container = styled.div`
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
-
-  /* @media screen and (max-width: 768px) {
-    display: flex;
-    justify-content: flex-start;
-    width: fit-content;
-    height: fit-content;
-    gap: 2px;
-  } */
 `;
 
 const BadgeBox = styled.div`
@@ -92,11 +84,6 @@ const BadgeBox = styled.div`
   .emoticon {
     font-size: 22px;
   }
-
-  /* @media screen and (max-width: 768px) {
-    width: 30px;
-    height: 30px;
-  } */
 `;
 
 function Badge({ badges, isOthersProfile }) {
