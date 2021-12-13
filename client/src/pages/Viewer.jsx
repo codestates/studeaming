@@ -47,6 +47,7 @@ const Screen = styled.div`
   min-height: 300px;
   border: 1px solid;
   position: relative;
+  background-color: var(--color-black);
 
   @media screen and (max-width: 480px) {
     position: sticky;
