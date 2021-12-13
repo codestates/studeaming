@@ -6,6 +6,7 @@ import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
 import { io } from "socket.io-client";
 import Chat from "../components/Chat";
+import sound from "../assets/sound";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
 const StyledViewer = styled.section`
@@ -152,6 +153,12 @@ function AsmrSound() {
   );
 
   const { state } = useLocation();
+  console.log("state", state);
+
+  //todo: 오디오 부분
+  const audio = new Audio();
+  audio.src = sound[state[1]].url;
+  audio.volume = 0.1;
 
   const socketRef = useRef(
     io(process.env.REACT_APP_BASE_URL, {
@@ -247,6 +254,18 @@ function AsmrSound() {
     socketRef.current.emit("update_viewer", state.uuid, updatedUser);
   }, [id, username, profileImg]);
 
+  //todo: 오디오 무한재생부분 및 페이지 아웃시 음악 일시정지
+  useEffect(() => {
+    audio.addEventListener("ended", () => {
+      audio.loop = true;
+      audio.play();
+    });
+    audio.play();
+    return () => {
+      audio.pause();
+    };
+  }, []);
+
   return (
     <StyledViewer>
       <ScreenSection>
@@ -275,7 +294,11 @@ function AsmrSound() {
         </StudeamerInfo>
       </ScreenSection>
       <ChatSection>
-        <Chat socket={socketRef.current} viewers={viewers} uuid={state.uuid} />
+        <Chat
+          socket={socketRef.current}
+          viewers={viewers}
+          uuid={state[0].uuid}
+        />
         <AsmrBox>
           {asmr.map((el, idx) => (
             <Asmr key={idx}>{el}</Asmr>

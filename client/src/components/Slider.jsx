@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SlideContainer from "./SlideContainer";
 import SlideMoveBtn from "./SlideMoveBtn";
@@ -26,14 +27,15 @@ const imageSlider = [
   { title: "밤 풍경소리 들으며 공부하기", img: image3 },
 ];
 
-function Slider() {
+function Slider({ contents }) {
   const [slideInfo, setSlideInfo] = useState({
-    activeIndex: 0,
+    activeIndex: 1,
     translate: getWidth(),
     transition: 0.45,
     slides: [...imageSlider],
   });
   const { activeIndex, translate, transition, slides } = slideInfo;
+  console.log("액티브 인덱스", activeIndex);
 
   const autoPlayRef = useRef();
   const transitionRef = useRef();
@@ -123,6 +125,11 @@ function Slider() {
     });
   };
 
+  // const navigate = useNavigate();
+  // const navigateLanding = (slide) => {
+  //   navigate("/asmrsound", { state: slide });
+  // };
+
   return (
     <StyledSlider>
       <SlideContainer
@@ -132,7 +139,12 @@ function Slider() {
         slides={slides}
       >
         {slides.map((slide, idx) => (
-          <Slide key={slide.img + idx} content={slide} />
+          <Slide
+            key={slide.img + idx}
+            content={slide}
+            fakeRoom={contents}
+            idx={activeIndex}
+          />
         ))}
       </SlideContainer>
       <SlideMoveBtn moveSlide={nextSlide} direction="next" />
