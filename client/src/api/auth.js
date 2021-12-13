@@ -14,6 +14,8 @@ const authAPI = {
       case "username":
         payload = { username: input };
         break;
+      default:
+        payload = {};
     }
     return api.post(`auth/signup/availability`, { type, ...payload });
   },
