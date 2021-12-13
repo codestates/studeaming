@@ -41,10 +41,17 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     font-size: var(--font-size-regular);
 
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    ::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera*/
+    }
+
     @media screen and (max-width: 768px) {
       font-size: var(--font-size-small);
     }    
   }
+
   a {
     text-decoration: none; 
     outline: none;
@@ -53,10 +60,12 @@ const GlobalStyle = createGlobalStyle`
       text-decoration: none; 
     }
   }
+
   button {
     all: unset;
     cursor: pointer;
   }
+  
   textarea {
     all: unset;
   }
