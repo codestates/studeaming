@@ -9,7 +9,7 @@ import {
   Input,
   ErrorMsg,
   FailureMsg,
-} from "./reusableStyle";
+} from "../styles/reusableStyle";
 import SuccessNotify from "./SuccessNotify";
 import Button from "./Button";
 

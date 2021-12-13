@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { modalOff } from "../store/actions";
 import useAudio from "../hooks/useAudio";
-import { Input, Desc } from "./reusableStyle";
+import { Input, Desc } from "../styles/reusableStyle";
 import sound from "../assets/sound";
 import defaultThumbnail from "../assets/images/empty.png";
 
