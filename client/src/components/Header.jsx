@@ -41,6 +41,7 @@ const Hamburger = styled(AiOutlineMenu)`
   cursor: pointer;
   font-size: 1.4rem;
   margin-left: 2rem;
+  color: var(--color-black-50);
 
   @media screen and (max-width: 768px) {
     margin-left: 1rem;
@@ -54,6 +55,7 @@ const Hamburger = styled(AiOutlineMenu)`
 const HamburgerDown = styled(AiOutlineMenu)`
   display: none;
   font-size: 1.4rem;
+  color: var(--color-black-50);
 
   @media screen and (max-width: 480px) {
     display: flex;
@@ -65,10 +67,12 @@ const HamburgerDown = styled(AiOutlineMenu)`
 const HamburgerUp = styled(IoIosArrowUp)`
   display: none;
   font-size: 1.4rem;
+  color: var(--color-black-50);
 
   @media screen and (max-width: 480px) {
     display: flex;
     cursor: pointer;
+    margin-left: 1rem;
   }
 `;
 
@@ -113,6 +117,7 @@ const UserBox = styled.div`
 
 const Video = styled(AiOutlineVideoCamera)`
   font-size: 1.4rem;
+  color: var(--color-black-50);
 
   @media screen and (max-width: 1024px) {
     display: none;
@@ -125,6 +130,7 @@ const User = styled(AiOutlineUser)`
   margin-left: 1.75rem;
   cursor: pointer;
   font-size: 1.4rem;
+  color: var(--color-black-50);
 
   @media screen and (max-width: 420px) {
     margin-left: 0.75rem;
@@ -135,6 +141,7 @@ const HomeIcon = styled(AiOutlineHome)`
   cursor: pointer;
   margin-right: 1.75rem;
   font-size: 1.4rem;
+  color: var(--color-black-50);
 
   @media screen and (max-width: 420px) {
     margin-right: 0.5rem;
@@ -145,6 +152,7 @@ const LoginIcon = styled(AiOutlineLogin)`
   cursor: pointer;
   margin-left: 1.75rem;
   font-size: 1.4rem;
+  color: var(--color-black-50);
 
   @media screen and (max-width: 420px) {
     margin-left: 0.5rem;
