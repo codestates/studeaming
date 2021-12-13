@@ -57,6 +57,7 @@ const useAudio = (sounds) => {
         });
       });
     };
+    // eslint-disable-next-line
   }, []);
 
   return [players, toggle];
