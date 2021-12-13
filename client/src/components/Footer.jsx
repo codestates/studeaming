@@ -13,6 +13,7 @@ const FooterBox = styled.div`
     align-items: flex-start;
   }
 `;
+
 const LogoBox = styled.div`
   flex: 1 0 auto;
 
@@ -22,6 +23,7 @@ const LogoBox = styled.div`
     padding: 1rem 1.6rem;
   }
 `;
+
 const TeamLogo = styled.img`
   display: block;
   width: 200px;
@@ -34,7 +36,6 @@ const Nav = styled.nav`
   :first-of-type {
     margin-right: 4rem;
   }
-  /* justify-content: center; */
 `;
 
 const Menu = styled.div`
@@ -81,6 +82,7 @@ function Footer() {
     { name: "나수민", github: "https://github.com/soominna" },
     { name: "문예인", github: "https://github.com/yeinMOON" },
   ];
+
   return (
     <FooterBox>
       <LogoBox>
@@ -106,9 +108,9 @@ function Footer() {
       </Nav>
       <Nav>
         <Menu>member</Menu>
-        {members.map((member) => {
+        {members.map((member, idx) => {
           return (
-            <Element href={member.github} target="_blank">
+            <Element key={idx} href={member.github} target="_blank">
               {member.name}
               <span className="emoticon"> 👋🏼 </span>
             </Element>
