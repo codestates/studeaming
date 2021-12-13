@@ -2,9 +2,7 @@ import styled from "styled-components";
 
 const AllDots = styled.div`
   width: 100%;
-  position: absolute;
   display: flex;
-  top: 95%;
   justify-content: center;
   z-index: 200;
 
@@ -12,18 +10,15 @@ const AllDots = styled.div`
     cursor: pointer;
     height: 8px;
     width: 8px;
-    margin: 0px 3px;
+    margin: 10px 3px 0px 3px;
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 50%;
     display: inline-block;
-
-    :hover {
-      background-color: rgba(255, 255, 255, 0.5);
-    }
   }
 
   > .active-dot {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(0, 0, 0, 0.8);
+    transform: scale(1.2);
   }
 `;
 
