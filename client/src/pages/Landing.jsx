@@ -38,10 +38,10 @@ function Landing() {
         <div id="content-box">
           <BackgroundCircle />
           {newWindow === 0 ? <Welcome /> : null}
-          <LandingSection1 className="landing-section" />
-          <LandingSection2 className="landing-section" />
-          <LandingSection3 className="landing-section" />
-          <LandingSection4 className="landing-section" />
+          <LandingSection1 />
+          <LandingSection2 />
+          <LandingSection3 />
+          <LandingSection4 />
         </div>
       </LandingContainer>
       <TopBtn />
