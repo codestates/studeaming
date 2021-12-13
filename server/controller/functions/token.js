@@ -2,7 +2,7 @@ const { sign, verify } = require("jsonwebtoken");
 require("dotenv").config();
 const cookieOpt = {
   httpOnly: true,
-  samesite: "none",
+  samesite: "None",
   secure: true,
   domain: process.env.COOKIE_DOMAIN,
 };
@@ -12,16 +12,16 @@ module.exports = {
     const accessToken = sign(data, process.env.ACCESS_SECRET, {
       expiresIn: "1h",
     });
-    res.cookie("authorization", accessToken, cookieOpt);
+    res.cookie("authorization", accessToken, { ...cookieOpt, path: "/" });
   },
   sendRefreshToken: (res, data) => {
     const refreshToken = sign(data, process.env.REFRESH_SECRET, {
-      expiresIn: "100h",
+      expiresIn: "7d",
     });
-    console.log("refresh token", refreshToken);
     res.cookie("refresh", refreshToken, {
       ...cookieOpt,
       path: "/auth/token",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
   },
   isAccessAuthorized: (req) => {
@@ -47,7 +47,10 @@ module.exports = {
     }
   },
   clearToken: (res) => {
-    res.clearCookie("authorization", { domain: process.env.COOKIE_DOMAIN });
+    res.clearCookie("authorization", {
+      domain: process.env.COOKIE_DOMAIN,
+      path: "/",
+    });
     res.clearCookie("refresh", {
       domain: process.env.CLIENT_DOMAIN,
       path: "/auth/refresh",
