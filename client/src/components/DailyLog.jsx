@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import "dayjs/locale/ko";
 import logAPI from "../api/studyLog";
+import { loginStateChange, signinModalOpen } from "../store/actions";
 import LogChart from "./LogChart";
 
 const Container = styled.div`
@@ -115,6 +118,8 @@ function DailyLog({ moment }) {
   const [isEditing, setIsEditing] = useState(false);
   const [comment, setComment] = useState("");
   const [isForSure, setIsForSure] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const date = moment.format("YYYYMMDD");
   const offset = new window.Date().getTimezoneOffset();
 
@@ -126,7 +131,11 @@ function DailyLog({ moment }) {
       const minute = logRes.data.studyTime % 60;
       setStudyTime({ hour, minute });
       setComment(commentRes.data.comment);
-    } catch {}
+    } catch {
+      dispatch(loginStateChange(false));
+      navigate("/home");
+      dispatch(signinModalOpen(true));
+    }
   };
 
   const getComment = (e) => {
@@ -150,7 +159,11 @@ function DailyLog({ moment }) {
       .then(() => {
         setIsForSure(false);
       })
-      .catch(() => {});
+      .catch(() => {
+        dispatch(loginStateChange(false));
+        navigate("/home");
+        dispatch(signinModalOpen(true));
+      });
   };
 
   useEffect(() => {

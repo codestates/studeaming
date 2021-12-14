@@ -108,7 +108,6 @@ function Signin() {
       setIsReqFailed(true);
       setMessage("올바른 이메일 형식이 아닙니다.");
     } else {
-      // signin request
       authAPI
         .signin(signinInfo.email, signinInfo.password)
         .then(() => {
@@ -117,14 +116,12 @@ function Signin() {
           return userAPI.getUserInfo();
         })
         .then((res) => {
-          // set userinfo state
           const { id, username, profileImg, about, studeaming } = res.data.user;
           const data = { id, username, profileImg, about, studeaming };
           dispatch(getUserInfo(data));
           return userAPI.getFollows();
         })
         .then((res) => {
-          // set follows state
           dispatch(getFollows(res.data.studeamerList));
           if (redirect === "viewer" || "asmrsound")
             dispatch(signinModalOpen(false));
@@ -167,7 +164,9 @@ function Signin() {
           ),
         });
       })
-      .catch(() => {});
+      .catch(() => {
+        setMessage("새로고침 후 다시 시도해주세요.");
+      });
   };
 
   const openSignupHandler = () => {
