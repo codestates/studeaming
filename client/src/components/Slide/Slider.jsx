@@ -83,11 +83,21 @@ function Slider({ contents }) {
   };
 
   const dotClick = (idx) => {
+    let slideImgs = [];
+
+    if (idx === 2) {
+      slideImgs = [imageSlider[1], imageSlider[2], imageSlider[0]];
+    } else if (idx === 0) {
+      slideImgs = [imageSlider[2], imageSlider[0], imageSlider[1]];
+    } else {
+      slideImgs = [imageSlider[0], imageSlider[1], imageSlider[2]];
+    }
+
     setSlideInfo({
       ...slideInfo,
+      slides: slideImgs,
       activeIndex: idx,
-      translate: getWidth() * idx,
-      transition: 0,
+      transition: 0.45,
     });
   };
 
