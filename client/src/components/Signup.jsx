@@ -24,7 +24,7 @@ const ProfileImg = styled.div`
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   :hover {
     color: #f5f5f5;
   }
@@ -32,7 +32,7 @@ const ProfileImg = styled.div`
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     object-fit: cover;
   }
   #remove_profile_img {
@@ -42,7 +42,6 @@ const ProfileImg = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    /* top: 50%; */
     top: 0;
     left: 0;
     color: transparent;
@@ -67,14 +66,51 @@ const ImgLabel = styled.label`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+
   + input {
     display: none;
   }
 `;
 
+const Terms = styled.span`
+  align-self: flex-start;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+  cursor: pointer;
+
+  :hover {
+    font-weight: 600;
+  }
+`;
+
 const ButtonContainer = styled.div`
   width: 220px;
+`;
+
+const TermsContainer = styled.div`
+  padding: 0 4px;
+  display: ${(props) => (props.isTermsOpen ? "block" : "none")};
+  width: 300px;
+
+  .terms-body {
+    display: inline-block;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+  }
+  .terms-head {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-black-50);
+    margin-bottom: 0em;
+  }
+
+  #terms-notification {
+    font-size: 0.8rem;
+    color: var(--color-black-50);
+    margin: 0.2rem 0 1rem;
+  }
 `;
 
 function Signup() {
@@ -100,6 +136,7 @@ function Signup() {
   });
   const [isReqFailed, setIsReqFailed] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
   const regExpEmail =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
   const regExpPwd = /^(?=.*?[a-z])(?=.*?[0-9]).{8,16}$/i;
@@ -185,6 +222,14 @@ function Signup() {
       });
   };
 
+  const openTerms = () => {
+    setIsTermsOpen(true);
+  };
+
+  const closeTerms = () => {
+    setIsTermsOpen(false);
+  };
+
   const signupHandler = () => {
     const { email, username, password, check } = isValid;
     if (email && username && password && check) {
@@ -214,81 +259,109 @@ function Signup() {
   }, [signupInfo.password, signupInfo.check]);
 
   return (
-    <AuthContainer>
-      <Title>회원가입</Title>
-      {isSuccess ? (
-        <SuccessNotify
-          message={`${signupInfo.username}님 환영합니다!`}
-          description="이메일 인증 후 로그인해주세요."
-        />
-      ) : (
-        <InputSection>
-          {signupInfo.image ? (
-            <ProfileImg onClick={removeProfileImg}>
-              <img src={signupInfo.image} alt="profile" />
-              <div id="remove_profile_img">&times;</div>
-            </ProfileImg>
-          ) : (
-            <div>
-              <ImgLabel htmlFor="profile_img">프로필 업로드</ImgLabel>
-              <input
-                type="file"
-                id="profile_img"
-                accept="image/*"
-                onChange={getProfileImg}
-              ></input>
-            </div>
-          )}
-          <InputContainer>
-            <Desc htmlFor="email">이메일</Desc>
-            <Input
-              type="email"
-              id="email"
-              onChange={handleInputValue("email")}
-              onBlur={checkEmail}
-            ></Input>
-            <ErrorMsg isNoti={message.email.includes("인증")}>
-              {message.email}
-            </ErrorMsg>
-          </InputContainer>
-          <InputContainer>
-            <Desc htmlFor="username">닉네임</Desc>
-            <Input
-              id="username"
-              onChange={handleInputValue("username")}
-              onBlur={checkUsername}
-            ></Input>
-            <ErrorMsg>{message.username}</ErrorMsg>
-          </InputContainer>
-          <InputContainer>
-            <Desc htmlFor="password">비밀번호</Desc>
-            <Input
-              type="password"
-              id="password"
-              onChange={handleInputValue("password")}
-              onBlur={checkPassword}
-            ></Input>
-            <ErrorMsg>{message.password}</ErrorMsg>
-          </InputContainer>
-          <InputContainer>
-            <Desc htmlFor="check_password">비밀번호 확인</Desc>
-            <Input
-              type="password"
-              id="check_password"
-              onChange={handleInputValue("check")}
-              onKeyUp={(e) => {
-                e.key === "Enter" && signupHandler();
-              }}
-            ></Input>
-            <ErrorMsg>{message.check}</ErrorMsg>
-          </InputContainer>
-          {isReqFailed && <FailureMsg>{message.failure}</FailureMsg>}
-          <ButtonContainer>
-            <Button message="회원가입" clickEvent={signupHandler} />
-          </ButtonContainer>
-        </InputSection>
-      )}
-    </AuthContainer>
+    <>
+      <AuthContainer isTermsOpen={isTermsOpen}>
+        <Title>회원가입</Title>
+        {isSuccess ? (
+          <SuccessNotify
+            message={`${signupInfo.username}님 환영합니다!`}
+            description="이메일 인증 후 로그인해주세요."
+          />
+        ) : (
+          <InputSection>
+            {signupInfo.image ? (
+              <ProfileImg onClick={removeProfileImg}>
+                <img src={signupInfo.image} alt="profile" />
+                <div id="remove_profile_img">&times;</div>
+              </ProfileImg>
+            ) : (
+              <div>
+                <ImgLabel htmlFor="profile_img">프로필 업로드</ImgLabel>
+                <input
+                  type="file"
+                  id="profile_img"
+                  accept="image/*"
+                  onChange={getProfileImg}
+                ></input>
+              </div>
+            )}
+            <InputContainer>
+              <Desc htmlFor="email">이메일</Desc>
+              <Input
+                type="email"
+                id="email"
+                onChange={handleInputValue("email")}
+                onBlur={checkEmail}
+              ></Input>
+              <ErrorMsg isNoti={message.email.includes("인증")}>
+                {message.email}
+              </ErrorMsg>
+            </InputContainer>
+            <InputContainer>
+              <Desc htmlFor="username">닉네임</Desc>
+              <Input
+                id="username"
+                onChange={handleInputValue("username")}
+                onBlur={checkUsername}
+              ></Input>
+              <ErrorMsg>{message.username}</ErrorMsg>
+            </InputContainer>
+            <InputContainer>
+              <Desc htmlFor="password">비밀번호</Desc>
+              <Input
+                type="password"
+                id="password"
+                onChange={handleInputValue("password")}
+                onBlur={checkPassword}
+              ></Input>
+              <ErrorMsg>{message.password}</ErrorMsg>
+            </InputContainer>
+            <InputContainer>
+              <Desc htmlFor="check_password">비밀번호 확인</Desc>
+              <Input
+                type="password"
+                id="check_password"
+                onChange={handleInputValue("check")}
+                onKeyUp={(e) => {
+                  e.key === "Enter" && signupHandler();
+                }}
+              ></Input>
+              <ErrorMsg>{message.check}</ErrorMsg>
+            </InputContainer>
+            <Terms onClick={openTerms}>👉 개인정보 수집 및 이용내역</Terms>
+            {isReqFailed && <FailureMsg>{message.failure}</FailureMsg>}
+            <ButtonContainer>
+              <Button message="동의 및 회원가입" clickEvent={signupHandler} />
+            </ButtonContainer>
+          </InputSection>
+        )}
+      </AuthContainer>
+      <TermsContainer isTermsOpen={isTermsOpen}>
+        <Title>개인정보 수집 및 이용내역</Title>
+        <h3 className="terms-head">수집 내역</h3>
+        <span className="terms-body">
+          이메일, 비밀번호, 가입인증 정보, 카메라 송출 내역 및 캡쳐본
+        </span>
+        <h3 className="terms-head">수집 목적</h3>
+        <span className="terms-body">
+          본인 여부 확인 및 부적절한 영상 송출에 대한 신고로 제출된 영상 캡쳐본
+          검수를 통한 이용 권한 제재 판단
+        </span>
+        <h3 className="terms-head">보유 및 이용 기간</h3>
+        <span className="terms-body">회원가입 철회 시 까지</span>
+        <div id="terms-notification">
+          위 사항은 스터디밍 회원가입 및 서비스 제공에 필요한 필수 정보 수집에
+          관한 내용입니다. 수집 내역은 임의로 사용되지 않으며 수집 목적에
+          따라서만 이용됩니다. <br />
+          해당 정보 수집 및 이용을 거부하실 수 있으며, 동의를 거부하실 경우
+          회원가입 및 회원 서비스 이용이 불가능합니다.
+        </div>
+        <Button
+          message="회원가입으로 돌아가기"
+          clickEvent={closeTerms}
+        ></Button>
+      </TermsContainer>
+    </>
   );
 }
 
