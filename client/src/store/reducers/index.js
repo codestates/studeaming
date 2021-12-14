@@ -9,7 +9,7 @@ import followReducer from "./followReducer";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["userReducer"],
+  whitelist: ["followReducer", "userReducer"],
 };
 
 const rootReducer = combineReducers({
