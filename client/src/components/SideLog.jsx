@@ -17,9 +17,10 @@ import logAPI from "../api/studyLog";
 import authAPI from "../api/auth";
 import ToggleBox from "./ToggleBox";
 import LogChart from "./LogChart";
+import Button from "./Button";
 import defaultImg from "../assets/images/img_profile_default.svg";
 
-const SideLogSection = styled.section`
+const SideLogSection = styled.div`
   min-width: 332px;
   height: 690px;
   display: flex;
@@ -200,9 +201,10 @@ const PlusIcon = styled(IoIosAdd)`
 
 const SideLogCloseBackIcon = styled(IoIosArrowBack)`
   position: absolute;
-  top: 50%;
+  top: 60%;
   right: -30px;
   font-size: 24px;
+  z-index: 100;
 
   :hover {
     cursor: pointer;
@@ -221,10 +223,6 @@ const SideLogCloseUpIcon = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-
-    :hover {
-      cursor: pointer;
-    }
   }
 `;
 
@@ -236,6 +234,7 @@ const SideLogUpIcon = styled(IoIosArrowUp)`
     position: absolute;
     top: 5px;
     left: 1.5rem;
+    z-index: 100;
 
     :hover {
       cursor: pointer;
@@ -245,23 +244,42 @@ const SideLogUpIcon = styled(IoIosArrowUp)`
 
 const LoginBlur = styled.div`
   position: absolute;
-  top: 54px;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 125%;
-  background-color: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(2px);
+  height: 100%;
+  background-color: var(--color-gray-bg-25);
+  backdrop-filter: blur(4px);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 10;
 
-  > .guestlogin {
-    display: inline-block;
+  @media screen and (max-width: 480px) {
+    height: 200%;
+  }
+`;
 
-    :hover {
-      cursor: pointer;
-      color: blue;
-    }
+const WhatToDo = styled.div`
+  width: 200px;
+  padding: 1rem 0;
+  text-align: center;
+  font-weight: bold;
+  color: var(--color-black-50);
+
+  @media screen and (max-width: 480px) {
+    position: absolute;
+    top: 12%;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  width: 180px;
+
+  @media screen and (max-width: 480px) {
+    position: absolute;
+    top: 27%;
   }
 `;
 
@@ -270,7 +288,7 @@ function SideLog() {
     ({ userReducer }) => userReducer
   );
   const [toggles, setToggles] = useState([
-    { name: "휴식", isOn: 0, color: "#a5c7e5", id: null },
+    { name: "휴식", isOn: 0, color: "yellow", id: null },
   ]);
   const [plusClick, setPlusClick] = useState(false);
   const [pickedColor, setPickedColor] = useState("gray-bg-100");
@@ -370,6 +388,16 @@ function SideLog() {
         dispatch(loginStateChange(true));
         dispatch(verifyGuestLogined(true));
         dispatch(getUserInfo(data));
+        toggleAPI
+          .getToggles()
+          .then((res) => {
+            setToggles(res.data.toggleList);
+          })
+          .catch((e) => {
+            dispatch(loginStateChange(false));
+            dispatch(sideLogOpen(false));
+            dispatch(signinModalOpen(true));
+          });
       })
       .catch(() => {});
   };
@@ -391,6 +419,25 @@ function SideLog() {
 
   return (
     <SideLogSection id="side_log">
+      {isLogin ? null : (
+        <LoginBlur>
+          <WhatToDo>
+            <span>
+              게스트 로그인시 1시간 동안
+              <br />
+              스트리밍을 제외한
+              <br />
+              모든 서비스 이용이 가능합니다.
+            </span>
+          </WhatToDo>
+          <ButtonContainer>
+            <Button
+              message="게스트 로그인하기"
+              clickEvent={guestSigninHandler}
+            />
+          </ButtonContainer>
+        </LoginBlur>
+      )}
       <SideLogUpIcon onClick={sideLogCloseUpIconHandler} />
       <ContentsContainer>
         <UserBox>
@@ -478,19 +525,16 @@ function SideLog() {
             )
           ) : null}
         </ToggleBoxWrapper>
-        {isLogin ? null : (
-          <LoginBlur>
-            <span className="guestlogin" onClick={guestSigninHandler}>
-              게스트 로그인하기
-            </span>
-          </LoginBlur>
-        )}
         <div style={{ height: "100%" }}>
           <LogChart date={eightDigitDate} offset={offset} />
         </div>
         <SideLogCloseBackIcon onClick={sideLogCloseBackIconHandler} />
         <SideLogCloseUpIcon>
-          <IoIosArrowUp size="24" onClick={sideLogCloseUpIconHandler} />
+          <IoIosArrowUp
+            size="24"
+            style={{ cursor: "pointer" }}
+            onClick={sideLogCloseUpIconHandler}
+          />
         </SideLogCloseUpIcon>
       </ContentsContainer>
     </SideLogSection>
