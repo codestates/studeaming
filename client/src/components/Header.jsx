@@ -139,23 +139,23 @@ const User = styled(AiOutlineUser)`
 
 const HomeIcon = styled(AiOutlineHome)`
   cursor: pointer;
-  margin-right: 1.75rem;
+  margin-right: 1.5rem;
   font-size: 1.4rem;
   color: var(--color-black-50);
 
-  @media screen and (max-width: 420px) {
-    margin-right: 0.5rem;
+  @media screen and (max-width: 768px) {
+    margin-right: 0.3rem;
   }
 `;
 
 const LoginIcon = styled(AiOutlineLogin)`
   cursor: pointer;
-  margin-left: 1.75rem;
+  margin-left: 1.5rem;
   font-size: 1.4rem;
   color: var(--color-black-50);
 
-  @media screen and (max-width: 420px) {
-    margin-left: 0.5rem;
+  @media screen and (max-width: 768px) {
+    margin-left: 0.3rem;
   }
 `;
 

@@ -42,6 +42,7 @@ const Head = styled.div`
       display: inline-block;
       padding: 0.4rem 0.6rem;
       font-size: 0.8rem;
+      margin-bottom: 5px;
     }
 
     .jump-to-button {

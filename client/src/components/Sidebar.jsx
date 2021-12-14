@@ -5,7 +5,7 @@ import defaultImg from "../assets/images/img_profile_default.svg";
 
 const Container = styled.div`
   width: 300px;
-  height: calc(100vh - 61.69px);
+  height: calc(100vh - 80px);
   background-color: var(--color-main-0);
   display: flex;
   flex-direction: column;
