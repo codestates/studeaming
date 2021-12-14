@@ -82,7 +82,7 @@ function UserInfoEdit() {
     let src = event.target.files[0];
     reader.onloadend = () => {
       setEditInfo({
-        about: reader.result,
+        profileImg: reader.result,
       });
     };
     reader.readAsDataURL(src);
@@ -92,7 +92,7 @@ function UserInfoEdit() {
   };
 
   const removeProfileImg = () => {
-    setEditInfo({ ...editInfo, about: null });
+    setEditInfo({ ...editInfo, profileImg: null });
   };
 
   const handleInputValue = (key) => (e) => {
@@ -113,7 +113,7 @@ function UserInfoEdit() {
     <>
       {editInfo.about ? (
         <ProfileImg>
-          <img src={editInfo.about} />
+          <img src={editInfo.profileImg} />
           <div id="remove_profile_img">
             <span
               onClick={removeProfileImg}
