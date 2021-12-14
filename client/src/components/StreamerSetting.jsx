@@ -137,13 +137,15 @@ const StartBtn = styled.button`
   width: 120px;
   height: 50px;
   border-radius: 10px;
-  background-color: #7a7ef4;
+  color: ${(props) => (props.isActive ? "white" : "#ececec")};
+  background-color: ${(props) => (props.isActive ? "#7a7ef4" : "#8c8ca3")};
   text-align: center;
   font-size: 0.9rem;
-  color: white;
+
+  cursor: ${(props) => (props.isActive ? "pointer" : "not-allowed")};
 
   :hover {
-    background-color: #656bff;
+    background-color: ${(props) => (props.isActive ? "#656bff" : "#8c8ca3")};
   }
 `;
 
@@ -157,6 +159,7 @@ function StreamerSettingMockup() {
   const localVideoRef = useRef(HTMLVideoElement);
   const [players, toggle] = useAudio(sound);
   const [hover, setHover] = useState({ mounted: false, idx: null });
+  const [isActive, setActive] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let localStream;
@@ -172,6 +175,7 @@ function StreamerSettingMockup() {
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       localStream = stream;
+      setActive(true);
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
     } catch (err) {
       console.log("Error opening video camera", err);
@@ -201,24 +205,26 @@ function StreamerSettingMockup() {
   };
 
   const startBtnHandler = () => {
-    let title = streamingInfo.title,
-      thumbnail = streamingInfo.thumbnail,
-      sound = streamingInfo.sound;
-    const now = Date.now();
-    if (!streamingInfo.title.length) {
-      title = `${username}의 스터디밍에 참여하세요!`;
-    }
-    if (!streamingInfo.thumbnail) {
-      thumbnail = defaultThumbnail;
-    }
-    if (!streamingInfo.sound.length) {
-      sound = "fire";
-    }
+    if (isActive) {
+      let title = streamingInfo.title,
+        thumbnail = streamingInfo.thumbnail,
+        sound = streamingInfo.sound;
+      const now = Date.now();
+      if (!streamingInfo.title.length) {
+        title = `${username}의 스터디밍에 참여하세요!`;
+      }
+      if (!streamingInfo.thumbnail) {
+        thumbnail = defaultThumbnail;
+      }
+      if (!streamingInfo.sound.length) {
+        sound = "fire";
+      }
 
-    dispatch(modalOff());
-    navigate("/streamer", {
-      state: { ...streamingInfo, title, thumbnail, sound, createdAt: now },
-    });
+      dispatch(modalOff());
+      navigate("/streamer", {
+        state: { ...streamingInfo, title, thumbnail, sound, createdAt: now },
+      });
+    }
   };
 
   useEffect(() => {
@@ -293,7 +299,9 @@ function StreamerSettingMockup() {
             })}
           </div>
         </div>
-        <StartBtn onClick={startBtnHandler}>방송 시작</StartBtn>
+        <StartBtn isActive={isActive} onClick={startBtnHandler}>
+          방송 시작
+        </StartBtn>
       </Container>
     </>
   );
