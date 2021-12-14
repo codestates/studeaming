@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import statisticsAPI from "../api/statistics";
@@ -99,9 +99,9 @@ const MonthlyBody = styled.div`
 `;
 
 function Mypage() {
+  const { follows } = useSelector(({ followReducer }) => followReducer);
   const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
   const [studeamingTime, setStudeamingTime] = useState({ hour: 0, minute: 0 });
-  const [following, setFollowing] = useState([]);
   const [badges, setBadges] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -123,17 +123,6 @@ function Mypage() {
         navigate("/home");
         dispatch(signinModalOpen(true));
       });
-  };
-
-  const getFollowing = async () => {
-    try {
-      const res = await userAPI.getFollows();
-      setFollowing(res.data.studeamerList);
-    } catch {
-      dispatch(loginStateChange(false));
-      navigate("/home");
-      dispatch(signinModalOpen(true));
-    }
   };
 
   const getBadge = async () => {
@@ -174,7 +163,6 @@ function Mypage() {
 
   useEffect(() => {
     getTotalTime();
-    getFollowing();
     getBadge();
     // eslint-disable-next-line
   }, []);
@@ -182,7 +170,7 @@ function Mypage() {
   return (
     <Container>
       <Sidebar
-        following={following}
+        following={follows}
         badges={badges}
         openFollowingProfile={openFollowingProfile}
         signoutHandler={signoutHandler}

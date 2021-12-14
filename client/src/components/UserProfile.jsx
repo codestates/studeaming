@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import userAPI from "../api/user";
 import { modalOff } from "../store/actions";
@@ -52,7 +53,7 @@ const UserInfo = styled.section`
 `;
 
 const Subheading = styled.h3`
-  margin: 1.4rem 0 1rem;
+  margin: 1.2rem 0 0.8rem;
 `;
 
 const StudyInfo = styled.section`
@@ -63,6 +64,19 @@ const StudyInfo = styled.section`
     font-size: 2rem;
     font-weight: 700;
     color: var(--color-black-25);
+  }
+`;
+
+const TagContainer = styled.div`
+  height: 30px;
+
+  span {
+    font-size: 0.8rem;
+    color: var(--color-black-25);
+  }
+
+  @media screen and (max-width: 768px) {
+    hieght: fit-content;
   }
 `;
 
@@ -95,6 +109,7 @@ const BadgeContainer = styled.div`
 `;
 
 function UserProfile({ username }) {
+  const { follows } = useSelector(({ followReducer }) => followReducer);
   const [profile, setProfile] = useState({
     username: "",
     profileImg: "",
@@ -144,9 +159,15 @@ function UserProfile({ username }) {
       </UserInfo>
       <StudyInfo>
         <Subheading>최근에 한 공부</Subheading>
-        {profile.studylogList.map((log, idx) => {
-          return <Tag key={idx}>{log}</Tag>;
-        })}
+        <TagContainer>
+          {profile.studylogList.length ? (
+            profile.studylogList.map((log, idx) => {
+              return <Tag key={idx}>{log}</Tag>;
+            })
+          ) : (
+            <span>아직 공부를 시작하지 않았네요 😔</span>
+          )}
+        </TagContainer>
         <Subheading>한 달 동안 공부한 시간</Subheading>
         <span id="studytime">
           {Math.floor(profile.studyTime / 60)}시간 {profile.studyTime % 60}분
