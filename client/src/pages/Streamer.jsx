@@ -8,6 +8,8 @@ import { io } from "socket.io-client";
 import { v4 } from "uuid";
 import Chat from "../components/Chat";
 import defaultImg from "../assets/images/img_profile_default.svg";
+import { notification } from "antd";
+import "antd/dist/antd.css";
 
 const StyledStreamer = styled.div`
   width: 100%;
@@ -206,6 +208,9 @@ function Streamer() {
   audio.src = `/assets/sound/${sound}.mp3`;
   audio.volume = 0.1;
 
+  //todo: 추가
+  const [ReallyOut, setReallyOut] = useState(true);
+
   const connectToPeer = useCallback((socketId) => {
     const peerConnection = new RTCPeerConnection(StunServer);
 
@@ -310,6 +315,11 @@ function Streamer() {
 
     return () => {
       audio.pause();
+      notification.warning({
+        message: (
+          <div style={{ fontSize: "1rem" }}>방송이 종료 되었습니다.</div>
+        ),
+      });
       socket.disconnect();
       localStreamRef.current.getTracks()[0].stop();
       Object.values(pcs).forEach((pc) => {
