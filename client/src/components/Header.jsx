@@ -160,7 +160,9 @@ const LoginIcon = styled(AiOutlineLogin)`
 `;
 
 function Header() {
-  const { isLogin } = useSelector(({ userReducer }) => userReducer);
+  const { isLogin, isGuestLogined } = useSelector(
+    ({ userReducer }) => userReducer
+  );
   const { isSideLogOpen } = useSelector(({ sideLogReducer }) => sideLogReducer);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -233,27 +235,19 @@ function Header() {
         <MobileLogo onClick={navigateLanding} img={project_logo_web} />
       </div>
       <UserBox>
+        <HomeIcon
+          onClick={() => {
+            navigate("/home");
+          }}
+          title="home"
+        />
+        {isLogin && !isGuestLogined && (
+          <Video onClick={streamHandler} title="start studeaming" />
+        )}
         {isLogin ? (
-          <>
-            <HomeIcon
-              onClick={() => {
-                navigate("/home");
-              }}
-              title="home"
-            />
-            <Video onClick={streamHandler} title="start studeaming" />
-            <User onClick={navigateMypage} title="mypage" />
-          </>
+          <User onClick={navigateMypage} title="mypage" />
         ) : (
-          <>
-            <HomeIcon
-              onClick={() => {
-                navigate("/home");
-              }}
-              title="home"
-            />
-            <LoginIcon onClick={loginHandler} title="login" />
-          </>
+          <LoginIcon onClick={loginHandler} title="login" />
         )}
       </UserBox>
     </HeaderSection>
