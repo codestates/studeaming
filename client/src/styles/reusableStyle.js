@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const AuthContainer = styled.div`
   width: 280px;
   height: fit-content;
-  display: flex;
+  display: ${(props) => (props.isTermsOpen ? "none" : "flex")};
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -24,7 +24,7 @@ export const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   :nth-last-of-type(2) {
-    margin-bottom: 20px;
+    margin-bottom: 14px;
   }
 `;
 
@@ -61,7 +61,7 @@ export const Input = styled.input`
 export const ErrorMsg = styled.span`
   display: inline-block;
   color: ${(props) => (props.isNoti ? "green" : "#f04949")};
-  font-size: 10px;
+  font-size: 12px;
 `;
 
 export const FailureMsg = styled(ErrorMsg)`
