@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { FaTelegramPlane } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
-import "dayjs/locale/ko";
-import { signinModalOpen } from "../store/actions/index";
+import { signinModalOpen, profileModalOpen } from "../store/actions/index";
 import logAPI from "../api/studyLog";
+import userAPI from "../api/user";
 
 const ChatStyle = styled.section`
   display: flex;
@@ -24,6 +24,10 @@ const ChatSection = styled.ul`
   display: flex;
   flex-direction: column;
   overflow: scroll;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ChatInputBox = styled.div`
@@ -47,15 +51,6 @@ const ChatInput = styled.input`
   > .non_member {
     color: #838080;
   }
-`;
-
-const Comment = styled.span`
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 25%;
-  left: 10px;
 `;
 
 const CloseIcon = styled(IoIosCloseCircle)`
@@ -109,12 +104,11 @@ const Imoticon = styled.div`
 `;
 
 function Chat({ socket, viewers, uuid }) {
-  const { isLogin } = useSelector(({ userReducer }) => userReducer);
+  const { isLogin, username } = useSelector(({ userReducer }) => userReducer);
   const [inputClick, setInputClick] = useState(false);
   const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
   const [letter, setLetter] = useState({ message: "", idx: null });
   const [chattingList, setChattingList] = useState([]);
-
   const dispatch = useDispatch();
   const inputRef = useRef(null);
   const ChatingRef = useRef(HTMLUListElement);
@@ -201,6 +195,18 @@ function Chat({ socket, viewers, uuid }) {
     }
   };
 
+  const openUserInfoHandler = (e) => {
+    const name = e.target.textContent;
+    if (name !== username) {
+      userAPI
+        .getOthersInfo(name)
+        .then((res) => {
+          dispatch(profileModalOpen(true, res.data.profile.username));
+        })
+        .catch(() => {});
+    }
+  };
+
   useEffect(() => {
     const newChattingList = [...chattingList];
     socket.on("newChat", (uuid, userId, chatIdx) => {
@@ -227,6 +233,10 @@ function Chat({ socket, viewers, uuid }) {
               fontSize: "12px",
               color: "var(--color-black-50)",
               marginRight: "0.8rem",
+              cursor: "pointer",
+            }}
+            onClick={(e) => {
+              openUserInfoHandler(e);
             }}
           >
             {writeUser[0].username}
