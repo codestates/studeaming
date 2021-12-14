@@ -32,6 +32,12 @@ const Description = styled.section`
   padding-right: 40px;
   min-width: 352px;
 
+  h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-black);
+  }
+
   @media screen and (max-width: 900px) {
     align-items: start;
     padding: 0;
@@ -105,7 +111,7 @@ function LandingSection3() {
         trigger: "#section3-container",
         pin: true,
         scrub: true,
-        start: "top 69.28px",
+        start: "top 70px",
       },
     });
     tl.from("#section3-image", {
