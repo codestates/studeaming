@@ -40,13 +40,16 @@ const ScreenSection = styled.section`
 `;
 
 const Screen = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   min-width: 360px;
   height: 80%;
   min-height: 300px;
   border: 1px solid;
   position: relative;
-  background-color: var(--color-black);
+  background-color: black;
 
   @media screen and (max-width: 480px) {
     position: sticky;
@@ -190,6 +193,7 @@ function Viewer({ route, navigation }) {
   ]);
 
   const [count, setCount] = useState(viewers.current.length);
+  const [Liveon, setLiveon] = useState(true);
 
   useEffect(() => {
     const peerConnection = new RTCPeerConnection(StunServer); //rtc 커넥션 객체를 만듦
@@ -271,9 +275,11 @@ function Viewer({ route, navigation }) {
         (viewer) => viewer.socketId !== socketId
       );
       setCount(viewers.current.length);
+      <Cam ref={peerVideoRef} autoPlay playsInline undefined />;
     });
 
     socket.on("close_room", () => {
+      setLiveon(false);
       socket.disconnect();
       peerConnection.close();
     });
@@ -335,7 +341,15 @@ function Viewer({ route, navigation }) {
     <StyledViewer>
       <ScreenSection>
         <Screen>
-          <Cam ref={peerVideoRef} autoPlay playsInline undefined />
+          {Liveon ? (
+            <Cam ref={peerVideoRef} autoPlay playsInline undefined />
+          ) : (
+            <span
+              style={{ color: "white", fontSize: "2rem", fontWeight: "bold" }}
+            >
+              방송이 종료 되었습니다.
+            </span>
+          )}
           <i
             onClick={() => {
               dispatch(reportModalOpen(true, state.username));
