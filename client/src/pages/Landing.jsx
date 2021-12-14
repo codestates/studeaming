@@ -9,7 +9,7 @@ import Footer from "../components/Footer";
 import TopBtn from "../components/TopBtn";
 
 const LandingContainer = styled.section`
-  width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
