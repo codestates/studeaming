@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { gsap } from "gsap";
 import styled from "styled-components";
 
 const StyledSlideContainer = styled.div`

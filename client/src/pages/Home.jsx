@@ -10,7 +10,7 @@ import {
   getUserInfo,
   getFollows,
 } from "../store/actions";
-import Slider from "../components/Slider";
+import Slider from "../components/Slide/Slider";
 import MainContents from "../components/MainContents";
 import TopBtn from "../components/TopBtn";
 import Loading from "../components/Loading";
