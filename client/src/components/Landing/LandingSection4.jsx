@@ -12,7 +12,11 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  margin-top: -200px;
+  margin-top: -150px;
+
+  @media screen and (max-width: 900px) {
+    margin-top: 20px;
+  }
 
   @media screen and (max-width: 600px) {
     margin-top: -50px;
@@ -127,6 +131,12 @@ const Description = styled.section`
   flex-direction: column;
   align-items: start;
   padding-left: 40px;
+
+  h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-black);
+  }
 
   @media screen and (max-width: 900px) {
     order: -1;
