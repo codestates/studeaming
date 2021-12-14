@@ -6,6 +6,7 @@ import { reportModalOpen } from "../store/actions/index";
 import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
 import { GiSiren } from "react-icons/gi";
+import { ImVolumeMedium, ImVolumeMute2 } from "react-icons/im";
 import { io } from "socket.io-client";
 import Chat from "../components/Chat";
 import FollowBtn from "../components/FollowBtn";
@@ -13,27 +14,42 @@ import defaultImg from "../assets/images/img_profile_default.svg";
 
 const StyledViewer = styled.section`
   width: 100%;
-  height: calc(100vh - 69.28px);
+  height: calc(100vh - 80px);
   display: flex;
+  justify-content: center;
   padding: 20px;
+
   @media screen and (max-width: 480px) {
+    height: calc(100vh - 60px);
+  }
+`;
+
+const Container = styled.div`
+  width: 90%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+
+  @media screen and (max-width: 1000px) {
+    width: 100%;
     flex-direction: column;
+    justify-content: start;
     padding: 0;
   }
 `;
 
 const ScreenSection = styled.section`
-  width: 80vw;
-  /* height: 100%; */
+  width: 100%;
+  max-width: 1280px;
+  min-width: 640px;
   display: flex;
   flex-direction: column;
   position: relative;
   margin-right: 20px;
-  .wrapper {
-    position: relative;
-  }
-  @media screen and (max-width: 480px) {
+
+  @media screen and (max-width: 1000px) {
     width: 100%;
+    min-width: 330px;
     height: 100%;
     margin: 0;
   }
@@ -44,18 +60,16 @@ const Screen = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  max-width: 1280px;
   min-width: 360px;
-  height: 80%;
-  min-height: 300px;
-  border: 1px solid;
+  height: 100%;
+  min-height: 240px;
   position: relative;
   background-color: black;
 
-  @media screen and (max-width: 480px) {
-    position: sticky;
-    top: 0;
-    z-index: 1010;
-    height: 40%;
+  @media screen and (max-width: 1000px) {
+    width: 100%;
+    height: 100%;
   }
 
   > i {
@@ -71,19 +85,10 @@ const Screen = styled.div`
 
 const Cam = styled.video`
   width: 100%;
-  min-width: 360px;
   height: 100%;
-  min-height: 300px;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg); /*여기는 사파리*/
   -moz-transform: rotateY(180deg); /*이거는 파이어폭스*/
-
-  @media screen and (max-width: 480px) {
-    position: sticky;
-    top: 0;
-    z-index: 1010;
-    height: 40%;
-  }
 `;
 
 const Siren = styled(GiSiren)`
@@ -92,18 +97,37 @@ const Siren = styled(GiSiren)`
   right: 10px;
   z-index: 10;
 `;
+
 const FullScreen = styled(BiFullscreen)`
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  bottom: 20px;
+  right: 20px;
   color: grey;
   z-index: 10;
 `;
 
+const Volume = styled(ImVolumeMedium)`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  z-index: 10;
+`;
+
+const Mute = styled(ImVolumeMute2)`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  z-index: 10;
+`;
+
 const StudeamerInfo = styled.div`
+  max-width: 1280px;
+  min-width: 360px;
   width: 100%;
   height: 15%;
-  min-height: 100px;
+  min-height: 150px;
   display: flex;
   justify-content: space-between;
   padding: 20px 10px;
@@ -113,6 +137,19 @@ const StudeamerInfo = styled.div`
 const InfoSection1 = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+
+  > .stream_title {
+    display: -webkit-box;
+    font-size: 1.2rem;
+    margin: 0;
+    line-height: 1.2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   > .studeamer_info {
     display: flex;
@@ -125,6 +162,7 @@ const InfoSection1 = styled.div`
       object-fit: cover;
       margin-right: 10px;
     }
+
     > span {
       display: inline-block;
       vertical-align: middle;
@@ -134,12 +172,14 @@ const InfoSection1 = styled.div`
 `;
 
 const ChatSection = styled.section`
-  width: 25%;
+  width: 350px;
+  min-width: 300px;
   height: 100%;
   min-height: 300px;
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 1000px) {
     width: 100%;
+    min-width: 360px;
   }
 `;
 
@@ -149,6 +189,8 @@ const InfoSection2 = styled.div`
   align-items: end;
   justify-content: space-between;
   color: #838080;
+  min-width: 120px;
+
   > span {
     display: inline-block;
     font-size: 12px;
@@ -168,15 +210,14 @@ const StunServer = {
   ],
 };
 
-function Viewer({ route, navigation }) {
+function Viewer() {
   const { id, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
   );
-
-  const dispatch = useDispatch();
-
   const { state } = useLocation();
-
+  const date = new Date(state.createdAt * 60 * 1000);
+  const time = `${date.getHours()} : ${date.getMinutes()}`;
+  const dispatch = useDispatch();
   const peerVideoRef = useRef(HTMLVideoElement);
   const socketRef = useRef(
     io(process.env.REACT_APP_BASE_URL, {
@@ -186,26 +227,30 @@ function Viewer({ route, navigation }) {
   );
   const viewers = useRef([
     {
-      id: id,
-      username: username,
-      profileImg: profileImg,
+      id,
+      username,
+      profileImg,
     },
   ]);
-
   const [count, setCount] = useState(viewers.current.length);
   const [Liveon, setLiveon] = useState(true);
+  const [isMute, setIsMute] = useState(false);
+  const audioRef = useRef(HTMLAudioElement);
+
+  const muteHandler = () => {
+    setIsMute(!isMute);
+  };
 
   useEffect(() => {
     const peerConnection = new RTCPeerConnection(StunServer); //rtc 커넥션 객체를 만듦
     const socket = socketRef.current;
-    const audio = new Audio();
 
     socket.on("connect", () => {
       viewers.current[0].socketId = socket.id;
       socket.emit("join_room", {
-        id: id,
-        username: username,
-        profileImg: profileImg,
+        id,
+        username,
+        profileImg,
         socketId: socket.id,
         uuid: state.uuid,
       });
@@ -253,9 +298,9 @@ function Viewer({ route, navigation }) {
         peerConnection.setLocalDescription(answer);
 
         if (sound) {
-          audio.src = `/assets/sound/${sound}.mp3`;
-          audio.volume = 0.1;
-          audio.play();
+          audioRef.current.src = `/assets/sound/${sound}.mp3`;
+          audioRef.current.volume = 0.1;
+          audioRef.current.play();
         }
 
         socket.emit("answer", answer, state.uuid, socket.id);
@@ -263,9 +308,7 @@ function Viewer({ route, navigation }) {
     });
 
     socket.on("ice", (ice, socketId) => {
-      console.log(socket.id, socketId);
       if (socket.id === socketId) {
-        console.log("received candidate", ice);
         peerConnection.addIceCandidate(ice);
       } else return;
     });
@@ -285,16 +328,10 @@ function Viewer({ route, navigation }) {
     });
 
     peerConnection.ontrack = (data) => {
-      console.log("received stream", data.streams[0]);
       peerVideoRef.current.srcObject = data.streams[0];
     };
 
-    peerConnection.oniceconnectionstatechange = (e) => {
-      console.log("ice connected ", e, peerConnection.connectionState);
-    };
-
     socket.on("update_viewer", (updatedViewer) => {
-      console.log("update_viewer");
       viewers.current.forEach((viewer) => {
         if (viewer.socketId === updatedViewer.socketId) {
           viewer.id = updatedViewer.id;
@@ -304,13 +341,12 @@ function Viewer({ route, navigation }) {
       });
     });
 
-    audio.addEventListener("ended", () => {
-      audio.loop = true;
-      audio.play();
+    audioRef.current.addEventListener("ended", () => {
+      audioRef.current.loop = true;
+      audioRef.current.play();
     });
 
     return () => {
-      audio.pause();
       socket.disconnect();
       if (peerConnection) {
         peerConnection.close();
@@ -320,9 +356,9 @@ function Viewer({ route, navigation }) {
 
   useEffect(() => {
     const updatedUser = {
-      id: id,
-      username: username,
-      profileImg: profileImg,
+      id,
+      username,
+      profileImg,
       socketId: socketRef.current.id,
     };
 
@@ -337,58 +373,81 @@ function Viewer({ route, navigation }) {
     socketRef.current.emit("update_viewer", state.uuid, updatedUser);
   }, [id, username, profileImg]);
 
+  useEffect(() => {
+    if (!isMute) audioRef.current.play();
+    else audioRef.current.pause();
+  }, [isMute]);
+
   return (
     <StyledViewer>
-      <ScreenSection>
-        <Screen>
-          {Liveon ? (
-            <Cam ref={peerVideoRef} autoPlay playsInline undefined />
-          ) : (
-            <span
-              style={{ color: "white", fontSize: "2rem", fontWeight: "bold" }}
-            >
-              방송이 종료 되었습니다.
-            </span>
-          )}
-          <i
-            onClick={() => {
-              dispatch(reportModalOpen(true, state.username));
-            }}
-          >
-            <Siren color="red" />
-          </i>
-          <i
-            onClick={() => {
-              peerVideoRef.current.requestFullscreen();
-            }}
-          >
-            <FullScreen />
-          </i>
-        </Screen>
-
-        <StudeamerInfo>
-          <InfoSection1>
-            <h3>{state.title}</h3>
-            <div className="studeamer_info">
-              <img src={state.profileImg || defaultImg} alt="" />
-              <span>{state.username}</span>
-              <FollowBtn username={state.username} />
-            </div>
-          </InfoSection1>
-          <InfoSection2>
-            <span>오늘 공부 시작 시간</span>
-            <div>
-              <IoPeople size="12" />
-              <span style={{ fontSize: "12px", marginLeft: "3px" }}>
-                {count}명 공부중
+      <audio ref={audioRef} />
+      <Container>
+        <ScreenSection>
+          <Screen>
+            {Liveon ? (
+              <Cam ref={peerVideoRef} autoPlay playsInline undefined />
+            ) : (
+              <span
+                style={{ color: "white", fontSize: "2rem", fontWeight: "bold" }}
+              >
+                방송이 종료 되었습니다.
               </span>
-            </div>
-          </InfoSection2>
-        </StudeamerInfo>
-      </ScreenSection>
-      <ChatSection>
-        <Chat socket={socketRef.current} viewers={viewers} uuid={state.uuid} />
-      </ChatSection>
+            )}
+            <i
+              onClick={() => {
+                dispatch(reportModalOpen(true, state.username));
+              }}
+            >
+              <Siren color="red" />
+            </i>
+            <i
+              onClick={() => {
+                peerVideoRef.current.requestFullscreen();
+              }}
+            >
+              <FullScreen />
+            </i>
+            {isMute ? (
+              <i>
+                <Mute onClick={muteHandler} />
+              </i>
+            ) : (
+              <i>
+                <Volume onClick={muteHandler} />
+              </i>
+            )}
+          </Screen>
+          <StudeamerInfo>
+            <InfoSection1>
+              <span className="stream_title">{state.title}</span>
+              <div className="studeamer_info">
+                <img src={state.profileImg || defaultImg} alt="" />
+                <span>{state.username}</span>
+                <FollowBtn username={state.username} />
+              </div>
+            </InfoSection1>
+            <InfoSection2>
+              <span style={{ textAlign: "right" }}>
+                공부 시작 시간 <br />
+                {time}
+              </span>
+              <div>
+                <IoPeople size="12" />
+                <span style={{ fontSize: "12px", marginLeft: "3px" }}>
+                  {count}명 공부중
+                </span>
+              </div>
+            </InfoSection2>
+          </StudeamerInfo>
+        </ScreenSection>
+        <ChatSection>
+          <Chat
+            socket={socketRef.current}
+            viewers={viewers}
+            uuid={state.uuid}
+          />
+        </ChatSection>
+      </Container>
     </StyledViewer>
   );
 }
