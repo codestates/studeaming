@@ -9,10 +9,10 @@ module.exports = {
     const head = crypto.randomBytes(256).toString("hex").substr(100, 6);
     const tail = crypto.randomBytes(256).toString("base64").substr(50, 6);
     const code = head + tail + id.toString();
-    const verifyCode = code.split("/").reduce((acc, cur) => acc + cur);
+    const emailVerifyCode = code.split("/").reduce((acc, cur) => acc + cur);
 
     try {
-      await User.update({ verifyCode }, { where: { id } });
+      await User.update({ emailVerifyCode }, { where: { id } });
 
       setTimeout(async () => {
         const user = await User.findOne({ where: { id }, raw: true });
@@ -22,7 +22,7 @@ module.exports = {
         }
       }, 60 * 60 * 1000);
 
-      return verifyCode;
+      return emailVerifyCode;
     } catch {}
   },
 

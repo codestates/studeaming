@@ -1,5 +1,5 @@
 const { isAccessAuthorized } = require("../functions/token");
-const { getStudyTime, getStudyLogs } = require("../functions/model");
+const { getStudyTime, getStudylogs } = require("../functions/model");
 
 module.exports = async (req, res) => {
   try {
@@ -24,11 +24,11 @@ module.exports = async (req, res) => {
     const dateStart = Math.round(utc);
     const dateEnd = dateStart + 24 * 60;
 
-    const studyLogList = await getStudyLogs(user.id, dateStart, dateEnd);
-    const studyTime = await getStudyTime(studyLogList);
+    const studylogList = await getStudylogs(user.id, dateStart, dateEnd);
+    const studyTime = await getStudyTime(studylogList);
 
     res.send({
-      studylogList: studyLogList,
+      studylogList: studylogList,
       studyTime: studyTime,
     });
   } catch (e) {
