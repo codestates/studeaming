@@ -4,6 +4,8 @@ import { IoPeople } from "react-icons/io5";
 import defaultImg from "../assets/images/img_profile_default.svg";
 import empty from "../assets/images/empty.png";
 import studyroomAPI from "../api/studyroom";
+import { notification } from "antd";
+import "antd/dist/antd.css";
 
 const StyledMainContents = styled.section`
   display: grid;
@@ -129,6 +131,11 @@ const NoContents = styled.div`
 function MainContents({ contents }) {
   const now = Date.now() / (60 * 1000);
   const navigate = useNavigate();
+  const refreshPage = () => {
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  };
   const navigateLanding = (el) => {
     if (el.user_id === "0") {
       navigate("/asmrsound", { state: el });
@@ -139,9 +146,24 @@ function MainContents({ contents }) {
           const roomInfo = res.data.roomList.filter(
             (room) => room.uuid === el.uuid
           );
-          if (roomInfo[0].headCount < 5) {
+          if (!roomInfo.length) {
+            notification.warning({
+              message: (
+                <div style={{ fontSize: "1rem" }}>종료된 방송입니다.</div>
+              ),
+            });
+            refreshPage();
+          } else if (roomInfo[0].headCount < 5) {
             navigate("/viewer", { state: el });
           } else {
+            notification.warning({
+              message: (
+                <div style={{ fontSize: "1rem" }}>
+                  입장 가능 인원이 초과되었습니다.
+                </div>
+              ),
+            });
+            refreshPage();
           }
         })
         .catch(() => {});
