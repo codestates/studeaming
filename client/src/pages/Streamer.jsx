@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
+import { ImVolumeMedium, ImVolumeMute2 } from "react-icons/im";
 import { io } from "socket.io-client";
 import { v4 } from "uuid";
 import Chat from "../components/Chat";
@@ -92,6 +93,22 @@ const FullScreen = styled(BiFullscreen)`
   bottom: 10px;
   right: 10px;
   color: grey;
+  z-index: 10;
+`;
+
+const Volume = styled(ImVolumeMedium)`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  z-index: 10;
+`;
+
+const Mute = styled(ImVolumeMute2)`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
   z-index: 10;
 `;
 
@@ -201,15 +218,18 @@ function Streamer() {
     })
   );
   const viewers = useRef([{ id, username, profileImg }]);
+  const audioRef = useRef(HTMLAudioElement);
   const [count, setCount] = useState(viewers.current.length);
+  const [isMute, setIsMute] = useState(false);
   const date = new Date(createdAt);
   const time = `${date.getHours()} : ${date.getMinutes()}`;
-  const audio = new Audio();
-  audio.src = `/assets/sound/${sound}.mp3`;
-  audio.volume = 0.1;
 
   //todo: 추가
   const [ReallyOut, setReallyOut] = useState(true);
+
+  const muteHandler = () => {
+    setIsMute(!isMute);
+  };
 
   const connectToPeer = useCallback((socketId) => {
     const peerConnection = new RTCPeerConnection(StunServer);
@@ -306,15 +326,7 @@ function Streamer() {
       });
     });
 
-    audio.addEventListener("ended", () => {
-      audio.loop = true;
-      audio.play();
-    });
-
-    audio.play();
-
     return () => {
-      audio.pause();
       notification.warning({
         message: (
           <div style={{ fontSize: "1rem" }}>방송이 종료 되었습니다.</div>
@@ -328,8 +340,27 @@ function Streamer() {
     };
   }, []);
 
+  useEffect(() => {
+    audioRef.current.addEventListener("ended", () => {
+      audioRef.current.loof = true;
+      audioRef.current.play();
+    });
+    audioRef.current.volume = 0.1;
+  }, []);
+
+  useEffect(() => {
+    if (!isMute) audioRef.current.play();
+    else audioRef.current.pause();
+  }, [isMute]);
+
   return (
     <StyledStreamer>
+      <audio
+        autoPlay
+        src={`/assets/sound/${sound}.mp3`}
+        preload="auto"
+        ref={audioRef}
+      />
       <Container>
         <ScreenSection>
           <Screen>
@@ -341,6 +372,15 @@ function Streamer() {
             >
               <FullScreen />
             </i>
+            {isMute ? (
+              <i>
+                <Mute onClick={muteHandler} />
+              </i>
+            ) : (
+              <i>
+                <Volume onClick={muteHandler} />
+              </i>
+            )}
           </Screen>
           <StudeamerInfo>
             <InfoSection1>
