@@ -8,6 +8,7 @@ import { io } from "socket.io-client";
 import Chat from "../components/Chat";
 import sound from "../assets/sound";
 import defaultImg from "../assets/images/img_profile_default.svg";
+import night from "../assets/images/fire2.jpg";
 
 const StyledViewer = styled.section`
   width: 100%;
@@ -43,8 +44,9 @@ const Screen = styled.div`
   min-height: 300px;
   border: 1px solid;
   position: relative;
-  background-color: black;
 
+  background-image: url(${night});
+  background-size: cover;
   @media screen and (max-width: 480px) {
     position: sticky;
     top: 0;
