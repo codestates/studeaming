@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { getUserInfo, userInfoEditModalOpen } from "../store/actions/index";
@@ -70,22 +70,38 @@ function UserInfoEdit() {
     username,
     about,
   });
+  const formData = useRef();
   const dispatch = useDispatch();
 
   const getProfileImg = (event) => {
-    const src = event.target.files[0];
-    setEditInfo({ ...editInfo, profileImg: URL.createObjectURL(src) });
+    // const src = event.target.files[0];
+    // setEditInfo({ ...editInfo, profileImg: URL.createObjectURL(src) });
+
+    event.preventDefault();
+    let reader = new FileReader();
+    let src = event.target.files[0];
+    reader.onloadend = () => {
+      setEditInfo({
+        about: reader.result,
+      });
+    };
+    reader.readAsDataURL(src);
+
+    formData.current = new FormData();
+    formData.current.append("profile_img", src);
   };
 
   const removeProfileImg = () => {
-    setEditInfo({ ...editInfo, profileImg: null });
+    setEditInfo({ ...editInfo, about: null });
   };
 
   const handleInputValue = (key) => (e) => {
     setEditInfo({ ...editInfo, [key]: e.target.value });
   };
 
-  const editRequest = () => {
+  const editRequest = async () => {
+    const image = await userAPI.saveProfile(formData.current);
+    await setEditInfo({ profileImg: image.data.image });
     userAPI.modifyUserInfo(editInfo).then((res) => {
       const data = res.data.user;
       dispatch(getUserInfo(data));
@@ -95,9 +111,9 @@ function UserInfoEdit() {
 
   return (
     <>
-      {editInfo.profileImg ? (
+      {editInfo.about ? (
         <ProfileImg>
-          <img src={editInfo.profileImg} />
+          <img src={editInfo.about} />
           <div id="remove_profile_img">
             <span
               onClick={removeProfileImg}
