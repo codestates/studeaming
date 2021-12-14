@@ -36,6 +36,12 @@ const userAPI = {
   getOthersAchievement: (username) => {
     return api.get(`user/${username}/achievement`);
   },
+
+  saveProfile: (formData) => {
+    return api.post(`/img`, formData, {
+      header: { "content-type": "multipart/form-data" },
+    });
+  },
 };
 
 export default userAPI;

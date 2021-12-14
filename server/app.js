@@ -12,6 +12,7 @@ const studyToggleRouter = require("./routes/studyToggle");
 const studylogRouter = require("./routes/studylog");
 const verifyRouter = require("./routes/verify");
 const studyroomRouter = require("./routes/studyroom");
+const imgRouter = require("./routes/img");
 const cronJob = require("./controller/functions/cronJob");
 const studyRoom = require("./controller/studyRoom/index");
 const options = require("./swagger.js");
@@ -54,6 +55,7 @@ app.use("/studylog", studylogRouter);
 app.use("/studytoggle", studyToggleRouter);
 app.use("/studyroom", studyroomRouter);
 app.use("/verification", verifyRouter);
+app.use("/img", imgRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(apiSpec));
 
 app.use(function (err, req, res, next) {
