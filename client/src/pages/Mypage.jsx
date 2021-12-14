@@ -115,11 +115,14 @@ function Mypage() {
         const studyMinute = studyTime % 60;
         const studeamingHour = Math.floor(studeamingTime / 60);
         const studeamingMinute = studeamingTime % 60;
-
         setStudyTime({ hour: studyHour, minute: studyMinute });
         setStudeamingTime({ hour: studeamingHour, minute: studeamingMinute });
       })
-      .catch((err) => {});
+      .catch(() => {
+        dispatch(loginStateChange(false));
+        navigate("/home");
+        dispatch(signinModalOpen(true));
+      });
   };
 
   const getFollowing = async () => {
@@ -127,6 +130,7 @@ function Mypage() {
       const res = await userAPI.getFollows();
       setFollowing(res.data.studeamerList);
     } catch {
+      dispatch(loginStateChange(false));
       navigate("/home");
       dispatch(signinModalOpen(true));
     }
@@ -137,6 +141,7 @@ function Mypage() {
       const res = await userAPI.getAchievement();
       setBadges(res.data.achievements);
     } catch {
+      dispatch(loginStateChange(false));
       navigate("/home");
       dispatch(signinModalOpen(true));
     }
@@ -153,7 +158,10 @@ function Mypage() {
         dispatch(loginStateChange(false));
         navigate("/home");
       })
-      .catch(() => {});
+      .catch(() => {
+        dispatch(loginStateChange(false));
+        navigate("/home");
+      });
   };
 
   const editPwdHandler = () => {

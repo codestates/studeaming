@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import dayjs from "dayjs";
 import { VscChevronLeft, VscChevronRight } from "react-icons/vsc";
 import statisticsAPI from "../api/statistics";
-import { dailyLogOpen } from "../store/actions";
+import {
+  loginStateChange,
+  signinModalOpen,
+  dailyLogOpen,
+} from "../store/actions";
 
 const weekOfYear = require("dayjs/plugin/weekOfYear");
 dayjs.extend(weekOfYear);
@@ -70,7 +75,6 @@ const Week = styled.div`
 `;
 
 const Date = styled.div`
-  /* border: 0.2px solid var(--color-black-25); */
   background-color: ${(props) => {
     if (props.isThisMonth) return "var(--color-gray-bg)";
     else {
@@ -110,6 +114,7 @@ function Calendar() {
   const [standard, setStandard] = useState(() => dayjs()); /* 월 변경 기준*/
   const [grape, setGrape] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const today = dayjs();
 
   const getReport = (moment) => {
@@ -129,7 +134,11 @@ function Calendar() {
         });
         setGrape(report);
       })
-      .catch((err) => console.log(err));
+      .catch(() => {
+        dispatch(loginStateChange(false));
+        navigate("/home");
+        dispatch(signinModalOpen(true));
+      });
   };
 
   const handleDayClick = (moment, isFuture) => {
