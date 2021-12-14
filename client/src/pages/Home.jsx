@@ -21,20 +21,25 @@ import studyroomAPI from "../api/studyroom";
 const ContentsSection = styled.section`
   display: flex;
   flex-direction: column;
+  padding: 50px 30px;
+
+  @media screen and (max-width: 970px) {
+    padding: 30px 20px;
+  }
 `;
 
 const SearchSection = styled.section`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 50px 80px;
+  margin-bottom: 50px;
 
   > .input-box {
     position: relative;
   }
 
   @media screen and (max-width: 970px) {
-    padding: 50px 20px;
+    margin-bottom: 30px;
   }
   @media screen and (min-width: 2000px) {
     width: 2000px;
@@ -42,14 +47,14 @@ const SearchSection = styled.section`
 `;
 
 const SearchInput = styled.input`
-  width: 250px;
-  height: 30px;
+  width: 300px;
+  height: 2.4rem;
   background-color: #f8f8f8;
   border: none;
   outline: none;
   border-radius: 2rem;
   padding-left: 20px;
-  font-size: 10px;
+  font-size: 0.9rem;
 
   ::placeholder {
     color: #bcbcbc;
@@ -57,6 +62,10 @@ const SearchInput = styled.input`
 
   @media screen and (max-width: 380px) {
     width: 200px;
+
+    ::placeholder {
+      font-size: 10px;
+    }
   }
 `;
 
@@ -71,7 +80,7 @@ const SearchIcon = styled(AiOutlineSearch)`
 const Filter = styled.select`
   border: none;
   outline: none;
-  font-size: 10px;
+  font-size: 0.9rem;
 `;
 
 function Home() {
@@ -189,7 +198,7 @@ function Home() {
           <div className="input-box">
             <SearchInput
               type="text"
-              placeholder="주제, 스터디머 등으로 검색해보세요"
+              placeholder="제목 또는 스터디머로 검색해보세요"
               onChange={(e) => searchItem(e.target.value)}
             ></SearchInput>
             <SearchIcon />
