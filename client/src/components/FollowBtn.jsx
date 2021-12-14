@@ -21,6 +21,7 @@ const FollowIcon = styled(FontAwesomeIcon)`
   color: var(--color-main-100);
   font-size: 1.2rem;
   margin: 0 0.4rem;
+  cursor: pointer;
 `;
 
 const SigninNoti = styled.div`
@@ -77,7 +78,7 @@ function FollowBtn({ username }) {
   };
 
   useEffect(() => {
-    checkFollowing();
+    checkFollowing(username);
     // eslint-disable-next-line
   }, []);
 
