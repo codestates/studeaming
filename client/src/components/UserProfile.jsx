@@ -26,7 +26,6 @@ const Container = styled.div`
 `;
 
 const UserInfo = styled.section`
-  /* background-color: lightblue; */
   grid-area: userInfo;
   display: flex;
   align-items: center;
@@ -57,7 +56,6 @@ const Subheading = styled.h3`
 `;
 
 const StudyInfo = styled.section`
-  /* background-color: gray; */
   grid-area: studyInfo;
   margin-right: 1rem;
 
@@ -72,7 +70,6 @@ const Tag = styled.span`
   display: inline-block;
   padding: 0.6rem;
   margin: 0 0.4rem 0.4rem 0;
-  /* border: 0.1px solid var(--color-black-25); */
   background-color: var(--color-main-0);
   border-radius: 10px;
   color: var(--color-black-25);
@@ -92,8 +89,6 @@ const BadgeContainer = styled.div`
     justify-content: flex-start;
     margin-top: 1rem;
     background-color: transparent;
-    /* width: 100%;
-    height: fit-content; */
     padding: 5px 0;
     display: none;
   }
@@ -101,18 +96,11 @@ const BadgeContainer = styled.div`
 
 function UserProfile({ username }) {
   const [profile, setProfile] = useState({
-    username: "전자전기",
+    username: "",
     profileImg: "",
-    about: "안녕하세요, 전자전기공학부 대학생입니다.",
-    studylogList: [
-      "반도체공학",
-      "회로설계",
-      "스페인어",
-      "디지털 영상처리",
-      "자동제어",
-      "컴퓨터구조",
-    ],
-    studyTime: 1890,
+    about: "",
+    studylogList: [],
+    studyTime: 0,
   });
   const [badges, setBadges] = useState(dummyBadges);
 
