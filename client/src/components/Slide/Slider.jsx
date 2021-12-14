@@ -26,9 +26,9 @@ const getWidth = () => {
 };
 
 const imageSlider = [
-  { title: "장작 타는 소리 들으며 공부하기", img: image1, uuid: "0" },
-  { title: "시냇물 소리 들으며 공부하기", img: image2, uuid: "1" },
-  { title: "밤 풍경소리 들으며 공부하기", img: image3, uuid: "2" },
+  { title: "장작 타는 소리 들으며 공부하기", img: image1, uuid: "fire" },
+  { title: "시냇물 소리 들으며 공부하기", img: image2, uuid: "stream" },
+  { title: "밤 풍경소리 들으며 공부하기", img: image3, uuid: "night" },
 ];
 
 function Slider({ contents }) {
