@@ -41,12 +41,6 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     font-size: var(--font-size-regular);
 
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-    ::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Opera*/
-    }
-
     @media screen and (max-width: 768px) {
       font-size: var(--font-size-small);
     }    
