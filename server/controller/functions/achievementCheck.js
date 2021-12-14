@@ -116,7 +116,7 @@ module.exports = {
 
       const studyTime = await getStudyTime(logs);
 
-      if (studyTime > 24 * 60) {
+      if (studyTime > 12 * 60) {
         await user_achievement.findOrCreate({
           where: { user_id: id, achievement_id: 6 },
         });
