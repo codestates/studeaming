@@ -3,35 +3,51 @@ import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { IoPeople } from "react-icons/io5";
-import { BiFullscreen } from "react-icons/bi";
+import { ImVolumeMedium, ImVolumeMute2 } from "react-icons/im";
 import { io } from "socket.io-client";
 import Chat from "../components/Chat";
 import sound from "../assets/sound";
 import defaultImg from "../assets/images/img_profile_default.svg";
 import night from "../assets/images/fire2.jpg";
 
-const StyledViewer = styled.section`
+const StyledAsmrSound = styled.div`
   width: 100%;
-  height: calc(100vh - 61.7px);
+  height: calc(100vh - 80px);
   display: flex;
+  justify-content: center;
   padding: 20px;
 
   @media screen and (max-width: 480px) {
+    height: calc(100vh - 60px);
+  }
+`;
+
+const Container = styled.div`
+  width: 90%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+
+  @media screen and (max-width: 1000px) {
+    width: 100%;
     flex-direction: column;
+    justify-content: start;
     padding: 0;
   }
 `;
 
 const ScreenSection = styled.section`
-  width: 80vw;
-  height: 100%;
+  width: 100%;
+  max-width: 1280px;
+  min-width: 640px;
   display: flex;
   flex-direction: column;
   position: relative;
   margin-right: 20px;
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 1000px) {
     width: 100%;
+    min-width: 330px;
     height: 100%;
     margin: 0;
   }
@@ -39,19 +55,16 @@ const ScreenSection = styled.section`
 
 const Screen = styled.div`
   width: 100%;
+  max-width: 1280px;
   min-width: 360px;
-  height: 80%;
-  min-height: 300px;
-  border: 1px solid;
+  height: 100%;
+  min-height: 240px;
   position: relative;
+  background-color: black;
 
-  background-image: url(${night});
-  background-size: cover;
-  @media screen and (max-width: 480px) {
-    position: sticky;
-    top: 0;
-    z-index: 1010;
-    height: 40%;
+  @media screen and (max-width: 1000px) {
+    width: 100%;
+    height: 100%;
   }
 
   > i {
@@ -66,17 +79,37 @@ const Screen = styled.div`
   }
 `;
 
-const FullScreen = styled(BiFullscreen)`
+const Volume = styled(ImVolumeMedium)`
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  color: grey;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  z-index: 10;
+`;
+
+const Mute = styled(ImVolumeMute2)`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  z-index: 10;
+`;
+
+const Img = styled.div`
+  width: 100%;
+  height: 100%;
+  background-image: url(${(props) => props.img});
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 const StudeamerInfo = styled.div`
+  max-width: 1280px;
+  min-width: 360px;
   width: 100%;
-  height: 20%;
-  min-height: 100px;
+  height: 15%;
+  min-height: 150px;
   display: flex;
   justify-content: space-between;
   padding: 20px 10px;
@@ -86,6 +119,19 @@ const StudeamerInfo = styled.div`
 const InfoSection1 = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+
+  > .stream_title {
+    display: -webkit-box;
+    font-size: 1.2rem;
+    margin: 0;
+    line-height: 1.2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   > .studeamer_info {
     display: flex;
@@ -111,8 +157,9 @@ const InfoSection2 = styled.div`
   display: flex;
   flex-direction: column;
   align-items: end;
-  justify-content: space-between;
+  justify-content: end;
   color: #838080;
+  min-width: 120px;
 
   > span {
     display: inline-block;
@@ -121,46 +168,32 @@ const InfoSection2 = styled.div`
 `;
 
 const ChatSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  width: 25%;
+  width: 350px;
+  min-width: 300px;
   height: 100%;
   min-height: 300px;
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 1000px) {
     width: 100%;
+    min-width: 360px;
   }
 `;
 
-const AsmrBox = styled.section`
-  width: 100%;
-  height: 100px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-`;
-
-const Asmr = styled.div`
-  margin: 5px;
-  border: 1px solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 function AsmrSound() {
-  const asmr = ["불", "파도", "밤 풍경"];
-
   const { id, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
   );
 
   const { state } = useLocation();
-  const idx = Number(state.uuid);
+  console.log(state);
+  // const idx = Number(state.uuid);
 
-  //todo: 오디오 부분
-  const audio = new Audio();
-  audio.src = sound[idx].url;
-  audio.volume = 0.1;
+  const [isMute, setIsMute] = useState(false);
+  const audioRef = useRef(HTMLAudioElement);
+
+  const muteHandler = () => {
+    setIsMute(!isMute);
+  };
 
   const socketRef = useRef(
     io(process.env.REACT_APP_BASE_URL, {
@@ -168,13 +201,7 @@ function AsmrSound() {
       upgrade: false,
     })
   );
-  const viewers = useRef([
-    {
-      id: id,
-      username: username,
-      profileImg: profileImg,
-    },
-  ]);
+  const viewers = useRef([{ id, username, profileImg }]);
 
   const [count, setCount] = useState(viewers.current.length);
 
@@ -184,9 +211,9 @@ function AsmrSound() {
     socket.on("connect", () => {
       viewers.current[0].socketId = socket.id;
       socket.emit("join_room", {
-        id: id,
-        username: username,
-        profileImg: profileImg,
+        id,
+        username,
+        profileImg,
         socketId: socket.id,
         uuid: state.uuid,
       });
@@ -258,52 +285,59 @@ function AsmrSound() {
 
   //todo: 오디오 무한재생부분 및 페이지 아웃시 음악 일시정지
   useEffect(() => {
-    audio.addEventListener("ended", () => {
-      audio.loop = true;
-      audio.play();
+    audioRef.current.addEventListener("ended", () => {
+      audioRef.current.loop = true;
+      audioRef.current.play();
     });
-    audio.play();
-    return () => {
-      audio.pause();
-    };
+    audioRef.current.volume = 0.1;
   }, []);
 
+  useEffect(() => {
+    if (!isMute) audioRef.current.play();
+    else audioRef.current.pause();
+  }, [isMute]);
+
   return (
-    <StyledViewer>
-      <ScreenSection>
-        <Screen>
-          <i>
-            <FullScreen />
-          </i>
-        </Screen>
-        <StudeamerInfo>
-          <InfoSection1>
-            <h3>{"ASMR👂 Study With Me🔥"}</h3>
-            <div className="studeamer_info">
-              <img src={defaultImg} alt="" />
-              <span>{"Studeaming"}</span>
-            </div>
-          </InfoSection1>
-          <InfoSection2>
-            <span>오늘 공부 시작 시간</span>
-            <div>
-              <IoPeople size="12" />
-              <span style={{ fontSize: "12px", marginLeft: "3px" }}>
-                {count}명 공부중
-              </span>
-            </div>
-          </InfoSection2>
-        </StudeamerInfo>
-      </ScreenSection>
-      <ChatSection>
-        <Chat socket={socketRef.current} viewers={viewers} uuid={state.uuid} />
-        <AsmrBox>
-          {asmr.map((el, idx) => (
-            <Asmr key={idx}>{el}</Asmr>
-          ))}
-        </AsmrBox>
-      </ChatSection>
-    </StyledViewer>
+    <StyledAsmrSound>
+      <audio
+        autoPlay
+        src={`assets/sound/${state.uuid}.mp3`}
+        preload="auto"
+        ref={audioRef}
+      />
+      <Container>
+        <ScreenSection>
+          <Screen>
+            <Img img={`assets/images/${state.uuid}.jpg`} />
+            <i onClick={muteHandler}>{isMute ? <Mute /> : <Volume />}</i>
+          </Screen>
+          <StudeamerInfo>
+            <InfoSection1>
+              <span className="stream_title">ASMR👂 Study With Me🔥</span>
+              <div className="studeamer_info">
+                <img src={defaultImg} alt="" />
+                <span>Studeaming</span>
+              </div>
+            </InfoSection1>
+            <InfoSection2>
+              <div>
+                <IoPeople size="12" />
+                <span style={{ fontSize: "12px", marginLeft: "3px" }}>
+                  {count}명 공부중
+                </span>
+              </div>
+            </InfoSection2>
+          </StudeamerInfo>
+        </ScreenSection>
+        <ChatSection>
+          <Chat
+            socket={socketRef.current}
+            viewers={viewers}
+            uuid={state.uuid}
+          />
+        </ChatSection>
+      </Container>
+    </StyledAsmrSound>
   );
 }
 
