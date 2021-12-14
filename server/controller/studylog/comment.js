@@ -1,6 +1,5 @@
-const { User, Daily } = require("../../models");
+const { Comment } = require("../../models");
 const { isAccessAuthorized } = require("../functions/token");
-const { Op } = require("sequelize");
 
 module.exports = {
   get: async (req, res) => {
@@ -13,13 +12,13 @@ module.exports = {
         req.params.date.slice(6, 8)
       );
 
-      const [daily, created] = await Daily.findOrCreate({
+      const [comment, created] = await Comment.findOrCreate({
         where: { user_id: user.id, date: date },
         defaults: { comment: "" },
         raw: true,
       });
-      console.log(daily, created);
-      res.send({ comment: daily.comment });
+
+      res.send({ comment: comment.comment });
     } catch (e) {
       res.status(500).send(e);
     }
@@ -33,7 +32,7 @@ module.exports = {
         req.params.date.slice(6, 8)
       );
 
-      const updatedComment = await Daily.update(
+      const updatedComment = await Comment.update(
         { comment: req.body.comment },
         {
           where: {
