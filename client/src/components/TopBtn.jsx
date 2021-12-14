@@ -9,12 +9,11 @@ const TopBtnStyled = styled.div`
   align-items: center;
   right: 30px;
   bottom: 30px;
-  border: 1px solid;
   border-radius: 50%;
   width: 40px;
   height: 40px;
   cursor: pointer;
-  background-color: white;
+  background-color: var(--color-main-75);
 
   :hover {
     box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
@@ -33,7 +32,7 @@ function TopBtn() {
     <>
       {scrollFlag && (
         <TopBtnStyled onClick={moveToTop}>
-          <VscFoldUp />
+          <VscFoldUp style={{ color: "white" }} />
         </TopBtnStyled>
       )}
     </>
