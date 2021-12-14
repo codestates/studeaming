@@ -19,7 +19,7 @@ const Container = styled.div`
   display: flex;
   justify-content: flex-start;
 
-  .monthly-container {
+  .statistics-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -44,7 +44,7 @@ const Container = styled.div`
   }
 `;
 
-const MonthlyBody = styled.div`
+const MonthlyBody = styled.section`
   width: 100%;
   height: 100%;
   max-width: 1000px;
@@ -98,8 +98,14 @@ const MonthlyBody = styled.div`
   }
 `;
 
+const StatisticsBody = styled.section`
+  color: var(--color-black-50);
+  text-align: center;
+`;
+
 function Mypage() {
   const { follows } = useSelector(({ followReducer }) => followReducer);
+  const [selectedTab, setSelectedTab] = useState("calendar");
   const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
   const [studeamingTime, setStudeamingTime] = useState({ hour: 0, minute: 0 });
   const [badges, setBadges] = useState([]);
@@ -161,6 +167,10 @@ function Mypage() {
     dispatch(withdrawalModalOpen(true));
   };
 
+  const tabHandler = (tab) => {
+    setSelectedTab(tab);
+  };
+
   useEffect(() => {
     getTotalTime();
     getBadge();
@@ -176,26 +186,36 @@ function Mypage() {
         signoutHandler={signoutHandler}
         editPwdHandler={editPwdHandler}
         withdrawalHandler={withdrawalHandler}
+        selectedTab={selectedTab}
+        tabHandler={tabHandler}
       />
-      <div className="monthly-container">
-        <MonthlyBody>
-          <section id="study_time_section">
-            <span className="study_time">
-              <span className="hour_title">총 스터디밍 시간</span>
-              <span className="study_hour">
-                {studeamingTime.hour}시간 {studeamingTime.minute}분
+      <div className="statistics-container">
+        {selectedTab === "calendar" ? (
+          <MonthlyBody>
+            <section id="study_time_section">
+              <span className="study_time">
+                <span className="hour_title">총 스터디밍 시간</span>
+                <span className="study_hour">
+                  {studeamingTime.hour}시간 {studeamingTime.minute}분
+                </span>
               </span>
-            </span>
-            <div id="division_line"></div>
-            <span className="study_time">
-              <span className="hour_title">총 공부 시간</span>
-              <span className="study_hour">
-                {studyTime.hour}시간 {studyTime.minute}분
+              <div id="division_line"></div>
+              <span className="study_time">
+                <span className="hour_title">총 공부 시간</span>
+                <span className="study_hour">
+                  {studyTime.hour}시간 {studyTime.minute}분
+                </span>
               </span>
-            </span>
-          </section>
-          <Calendar></Calendar>
-        </MonthlyBody>
+            </section>
+            <Calendar></Calendar>
+          </MonthlyBody>
+        ) : (
+          <StatisticsBody>
+            일간 / 주간 / 월간 통계 서비스는 준비 중입니다.
+            <br />
+            조금만 기다려주세요🙏
+          </StatisticsBody>
+        )}
       </div>
     </Container>
   );
