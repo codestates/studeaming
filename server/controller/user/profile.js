@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 const { User, Currentlog } = require("../../models");
-const { getStudyTime, getStudyLogs } = require("../functions/model");
+const { getStudyTime, getStudylogs } = require("../functions/model");
 
 module.exports = async (req, res) => {
   const username = req.params.username;
@@ -21,8 +21,8 @@ module.exports = async (req, res) => {
     const now = new Date();
     const aMonthAgo = new Date(new Date().setDate(now.getDate() - 30));
 
-    const studyLogs = await getStudyLogs(user.id, aMonthAgo, now);
-    const studyTime = await getStudyTime(studyLogs);
+    const studylogs = await getStudylogs(user.id, aMonthAgo, now);
+    const studyTime = await getStudyTime(studylogs);
 
     res.send({
       profile: {

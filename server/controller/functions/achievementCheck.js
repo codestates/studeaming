@@ -1,5 +1,5 @@
 const { User, user_achievement, Studylog } = require("../../models");
-const { getStudyTime, getStudyLogs } = require("./model");
+const { getStudyTime, getStudylogs } = require("./model");
 
 const haveAchievement = async (user_id, achievement_id) => {
   try {
@@ -108,7 +108,7 @@ module.exports = {
     if (isAchieved) return;
 
     try {
-      const logs = await getStudyLogs(
+      const logs = await getStudylogs(
         id,
         Date.now() / (60 * 1000) - 24 * 60,
         Date.now() / (60 * 1000)
@@ -162,7 +162,7 @@ module.exports = {
         if (isAchieved) return;
 
         let day = today;
-        const studylogs = await getStudyLogs(user.id, aWeekAgo, today);
+        const studylogs = await getStudylogs(user.id, aWeekAgo, today);
 
         while (day > aWeekAgo) {
           let studyTime = await getStudyTime(studylogs, day - 24 * 60, day);

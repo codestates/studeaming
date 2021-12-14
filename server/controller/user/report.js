@@ -1,5 +1,5 @@
 const { User } = require("../../models");
-const { getStudyTime, getStudyLogs } = require("../functions/model");
+const { getStudyTime, getStudylogs } = require("../functions/model");
 const { isAccessAuthorized } = require("../functions/token");
 
 module.exports = {
@@ -8,8 +8,8 @@ module.exports = {
       const id = isAccessAuthorized(req).id;
       const now = Math.round(Date.now() / (60 * 1000));
 
-      const studyLogs = await getStudyLogs(id, 0, now);
-      const studyTime = await getStudyTime(studyLogs);
+      const studylogs = await getStudylogs(id, 0, now);
+      const studyTime = await getStudyTime(studylogs);
 
       const user = await User.findOne({ where: { id }, raw: true });
 
@@ -35,12 +35,12 @@ module.exports = {
         dateEnd += 60 * 24;
       }
 
-      const studyLogs = await getStudyLogs(id, dateStart, dateEnd);
+      const studylogs = await getStudylogs(id, dateStart, dateEnd);
       const monthlyReport = [];
 
       while (dateStart < dateEnd) {
         monthlyReport.push(
-          await getStudyTime(studyLogs, dateStart, dateStart + 60 * 24)
+          await getStudyTime(studylogs, dateStart, dateStart + 60 * 24)
         );
         dateStart += 60 * 24;
       }
