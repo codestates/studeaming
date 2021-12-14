@@ -4,7 +4,7 @@ const {
   Currentlog,
   user_achievement,
   user_follower,
-  Daily,
+  Comment,
 } = require("../../models");
 const { Op } = require("sequelize");
 
@@ -52,9 +52,10 @@ module.exports = {
     }
   },
   // todo: refactor
-  getStudyTime: async (studyLogList, start, end) => {
-    return studyLogList.reduce((acc, cur) => {
-      if (cur.name !== "휴식") {
+  getStudyTime: async (studylogList, start, end) => {
+    return studylogList
+      .filter((log) => log.name !== "휴식")
+      .reduce((acc, cur) => {
         if (
           (start === undefined && end === undefined) ||
           (cur.startedAt > start && cur.finishedAt < end)
@@ -64,7 +65,7 @@ module.exports = {
           (cur.startedAt < start && cur.finishedAt < start) ||
           (cur.startedAt > end && cur.finishedAt > end)
         ) {
-          return acc + 0;
+          return acc;
         } else if (cur.startedAt < start && cur.finishedAt > end) {
           return acc + end - start;
         } else if (cur.startedAt < start) {
@@ -72,13 +73,10 @@ module.exports = {
         } else {
           return acc + end - cur.startedAt;
         }
-      } else {
-        return acc;
-      }
-    }, 0);
+      }, 0);
   },
-  getStudyLogs: async (id, start, end) => {
-    const studyLogList = await Studylog.findAll({
+  getStudylogs: async (id, start, end) => {
+    const studylogList = await Studylog.findAll({
       where: {
         user_id: id,
 
@@ -88,7 +86,7 @@ module.exports = {
       raw: true,
     });
 
-    studyLogList.forEach((log) => {
+    studylogList.forEach((log) => {
       if (log.startedAt < start) {
         log.startedAt = start;
       }
@@ -99,7 +97,7 @@ module.exports = {
       }
     }); //각 배열 요소들의 startedAt(start보다 전이라면 start)부터 finishedAt(null이라면 현재시간, end보다 뒤라면 end)까지
 
-    return studyLogList;
+    return studylogList;
   },
 
   toggleOff: async (id) => {
@@ -127,7 +125,7 @@ module.exports = {
       await user_follower.destroy({
         where: { [Op.or]: [{ user_id: id }, { studeamer_id: id }] },
       });
-      await Daily.destroy({ where: { user_id: id } });
+      await Comment.destroy({ where: { user_id: id } });
     } catch (e) {}
   },
 };
