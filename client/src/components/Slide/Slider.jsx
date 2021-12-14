@@ -4,9 +4,9 @@ import SlideContainer from "./SlideContainer";
 import SlideMoveBtn from "./SlideMoveBtn";
 import Dots from "./Dots";
 import Slide from "./Slide";
-import image1 from "../assets/images/fire.jpg";
-import image2 from "../assets/images/wave.jpeg";
-import image3 from "../assets/images/night.jpg";
+import image1 from "../../assets/images/fire.jpg";
+import image2 from "../../assets/images/wave.jpeg";
+import image3 from "../../assets/images/night.jpg";
 
 const StyledSlider = styled.section`
   width: 100%;
@@ -24,6 +24,7 @@ const StyledSlider = styled.section`
 const getWidth = () => {
   return window.innerWidth;
 };
+
 const imageSlider = [
   { title: "장작 타는 소리 들으며 공부하기", img: image1, uuid: "0" },
   { title: "시냇물 소리 들으며 공부하기", img: image2, uuid: "1" },
