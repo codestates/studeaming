@@ -129,8 +129,8 @@ function Calendar() {
           if (time <= 0) return 0;
           else if (0 < time && time <= 120) return 25;
           else if (120 < time && time <= 240) return 50;
-          else if (240 < time && time <= 360) return 75;
-          else if (360 < time) return 100;
+          else if (240 < time && time <= 360) return 60;
+          else if (360 < time) return 75;
           else return 0;
         });
         setGrape(report);
