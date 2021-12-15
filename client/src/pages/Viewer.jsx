@@ -270,6 +270,7 @@ function Viewer() {
   useEffect(() => {
     const peerConnection = new RTCPeerConnection(StunServer); //rtc 커넥션 객체를 만듦
     const socket = socketRef.current;
+    setCount(state.headCount + 1);
 
     socket.on("connect", () => {
       viewers.current[0].socketId = socket.id;
