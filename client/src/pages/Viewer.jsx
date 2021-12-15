@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { reportModalOpen } from "../store/actions/index";
+import { profileModalOpen, reportModalOpen } from "../store/actions/index";
 import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
 import { GiSiren } from "react-icons/gi";
@@ -95,6 +95,7 @@ const Siren = styled(GiSiren)`
   position: absolute;
   top: 10px;
   right: 10px;
+  font-size: 1.4rem;
   z-index: 10;
 `;
 
@@ -103,6 +104,7 @@ const FullScreen = styled(BiFullscreen)`
   bottom: 20px;
   right: 20px;
   color: grey;
+  font-size: 1.4rem;
   z-index: 10;
 `;
 
@@ -131,7 +133,7 @@ const StudeamerInfo = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 20px 10px;
-  background-color: #f8f8f8;
+  /* background-color: #f8f8f8; */
 `;
 
 const InfoSection1 = styled.div`
@@ -141,7 +143,9 @@ const InfoSection1 = styled.div`
 
   > .stream_title {
     display: -webkit-box;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-black-50);
     margin: 0;
     line-height: 1.2;
     -webkit-line-clamp: 2;
@@ -168,6 +172,14 @@ const InfoSection1 = styled.div`
       vertical-align: middle;
       line-height: normal;
     }
+
+    #studeamer_name {
+      margin-top: -3px;
+      :hover {
+        font-weight: 600;
+        cursor: pointer;
+      }
+    }
   }
 `;
 
@@ -191,9 +203,19 @@ const InfoSection2 = styled.div`
   color: #838080;
   min-width: 120px;
 
-  > span {
+  span {
     display: inline-block;
-    font-size: 12px;
+    font-size: 0.9rem;
+  }
+
+  #study_time {
+    text-align: right;
+  }
+
+  #study_people {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 `;
 
@@ -236,6 +258,10 @@ function Viewer() {
   const [Liveon, setLiveon] = useState(true);
   const [isMute, setIsMute] = useState(false);
   const audioRef = useRef(HTMLAudioElement);
+
+  const openUserProfile = (name) => {
+    dispatch(profileModalOpen(true, name));
+  };
 
   const muteHandler = () => {
     setIsMute(!isMute);
@@ -325,6 +351,8 @@ function Viewer() {
       setLiveon(false);
       socket.disconnect();
       peerConnection.close();
+      audioRef.current.muted = true;
+      audioRef.current.pause();
     });
 
     peerConnection.ontrack = (data) => {
@@ -378,9 +406,13 @@ function Viewer() {
     else audioRef.current.pause();
   }, [isMute]);
 
+  useEffect(() => {
+    audioRef.current.volume = 0.1;
+  }, []);
+
   return (
     <StyledViewer>
-      <audio ref={audioRef} />
+      <audio autoPlay ref={audioRef} src="/assets/sound/fire.mp3" />
       <Container>
         <ScreenSection>
           <Screen>
@@ -422,20 +454,25 @@ function Viewer() {
               <span className="stream_title">{state.title}</span>
               <div className="studeamer_info">
                 <img src={state.profileImg || defaultImg} alt="" />
-                <span>{state.username}</span>
+                <span
+                  id="studeamer_name"
+                  onClick={() => {
+                    openUserProfile(state.username);
+                  }}
+                >
+                  {state.username}
+                </span>
                 <FollowBtn username={state.username} />
               </div>
             </InfoSection1>
             <InfoSection2>
-              <span style={{ textAlign: "right" }}>
+              <span id="study_time">
                 공부 시작 시간 <br />
                 {time}
               </span>
-              <div>
-                <IoPeople size="12" />
-                <span style={{ fontSize: "12px", marginLeft: "3px" }}>
-                  {count}명 공부중
-                </span>
+              <div id="study_people">
+                <IoPeople />
+                <span>{count}명 공부중</span>
               </div>
             </InfoSection2>
           </StudeamerInfo>
