@@ -136,7 +136,7 @@ const ToggleEditBox = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 1rem;
-  border: 1px solid;
+  box-shadow: 0px 0px 4px var(--color-black-25);
   padding: 5px;
   display: flex;
   flex-direction: column;
