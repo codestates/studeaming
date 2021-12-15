@@ -113,17 +113,20 @@ const StudeamerInfo = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 20px 10px;
-  background-color: #f8f8f8;
+  /* background-color: #f8f8f8; */
 `;
 
 const InfoSection1 = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin-top: 4px;
 
   > .stream_title {
     display: -webkit-box;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-black-50);
     margin: 0;
     line-height: 1.2;
     -webkit-line-clamp: 2;
@@ -185,7 +188,7 @@ function AsmrSound() {
   );
 
   const { state } = useLocation();
-  console.log(state);
+  // console.log(state);
   // const idx = Number(state.uuid);
 
   const [isMute, setIsMute] = useState(false);
@@ -313,7 +316,7 @@ function AsmrSound() {
           </Screen>
           <StudeamerInfo>
             <InfoSection1>
-              <span className="stream_title">ASMR👂 Study With Me🔥</span>
+              <span className="stream_title">ASMR👂 Study With Me🔥 </span>
               <div className="studeamer_info">
                 <img src={defaultImg} alt="" />
                 <span>Studeaming</span>
