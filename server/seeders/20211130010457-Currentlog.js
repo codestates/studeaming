@@ -41,6 +41,13 @@ module.exports = {
           color: "purple",
           isOn: false,
         },
+        {
+          user_id: 4,
+          name: "휴식",
+          color: "yellow",
+          isOn: false,
+        },
+        { user_id: 4, name: "전자기학", color: "green", isOn: false },
       ],
       {}
     );
