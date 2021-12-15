@@ -26,9 +26,7 @@ module.exports = {
         defaultValue: 1,
       },
       thumbnail: {
-        allowNull: false,
         type: Sequelize.STRING,
-        defaultValue: "",
       },
       createdAt: {
         allowNull: false,

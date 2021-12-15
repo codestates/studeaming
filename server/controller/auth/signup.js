@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
     console.log(res.req.file);
     const profileImg = res.req.file
       ? `${process.env.SERVER_URL}/${res.req.file.path}`
-      : "";
+      : null;
     encryptPassword.encrypt(res, req.body.password, async (hash) => {
       try {
         const [newUser, created] = await User.findOrCreate({
