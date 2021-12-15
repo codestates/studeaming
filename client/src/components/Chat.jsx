@@ -144,41 +144,22 @@ function Chat({ socket, viewers, uuid }) {
       const hour = Math.floor(res.data.studyTime / 60);
       const minute = res.data.studyTime % 60;
       setStudyTime({ hour, minute });
+      setInputClick(false);
+      setLetter({ message: `${hour}시간 ${minute}분째 공부 중! 🕖`, idx });
+      inputRef.current.focus();
+    } else {
+      const message = chat[idx].comment;
+      setInputClick(false);
+      setLetter({ message, idx });
+      inputRef.current.focus();
     }
-    const message = chat[idx].comment;
-    setInputClick(false);
-    setLetter({ message, idx });
-    inputRef.current.focus();
   };
 
   const sendHandler = (idx) => {
-    const newChattingList = [...chattingList];
-    socket.on("welcome", (user) => {
-      const Usernotification = (
-        <div>
-          <span style={{ fontSize: "12px" }}>
-            {user.username || "구경꾼"}님이 입장하셨습니다.
-          </span>
-        </div>
-      );
-      newChattingList.push(Usernotification);
-      setChattingList(newChattingList);
-    });
-
-    socket.on("leave_room", (_, username) => {
-      const Usernotification = (
-        <div>
-          <span style={{ fontSize: "12px" }}>
-            {username || "구경꾼"}님이 나가셨습니다.
-          </span>
-        </div>
-      );
-      newChattingList.push(Usernotification);
-      setChattingList(newChattingList);
-    });
-
-    if (idx || idx === 0) {
+    if (idx) {
       socket.emit("chat", uuid, socket.id, idx);
+    } else if (idx === 0) {
+      socket.emit("chat", uuid, socket.id, idx, chat[idx].comment);
     }
   };
 
@@ -211,12 +192,15 @@ function Chat({ socket, viewers, uuid }) {
 
   useEffect(() => {
     const newChattingList = [...chattingList];
-    socket.on("newChat", (uuid, userId, chatIdx) => {
+    socket.on("newChat", (uuid, userId, chatIdx, recievedChat) => {
       const writeUser = viewers.current.filter(
         (viewer) => viewer.socketId && viewer.socketId === userId
       );
 
-      setLetter({ message: chat[chatIdx], idx: chatIdx });
+      setLetter({
+        message: chatIdx ? chat[chatIdx] : recievedChat,
+        idx: chatIdx,
+      });
 
       const newLetter = (
         <div>
@@ -243,13 +227,39 @@ function Chat({ socket, viewers, uuid }) {
           >
             {writeUser[0].username}
           </span>
-          <span style={{ fontSize: "12px" }}>{chat[chatIdx].comment}</span>
+          <span style={{ fontSize: "12px" }}>
+            {chatIdx ? chat[chatIdx].comment : recievedChat}
+          </span>
         </div>
       );
       newChattingList.push(newLetter);
       setLetter({ message: "", idx: null });
       setChattingList(newChattingList);
       inputRef.current.blur();
+    });
+
+    socket.on("welcome", (user) => {
+      const Usernotification = (
+        <div>
+          <span style={{ fontSize: "12px" }}>
+            {user.username || "구경꾼"}님이 입장하셨습니다.
+          </span>
+        </div>
+      );
+      newChattingList.push(Usernotification);
+      setChattingList(newChattingList);
+    });
+
+    socket.on("leave_room", (_, username) => {
+      const Usernotification = (
+        <div>
+          <span style={{ fontSize: "12px" }}>
+            {username || "구경꾼"}님이 나가셨습니다.
+          </span>
+        </div>
+      );
+      newChattingList.push(Usernotification);
+      setChattingList(newChattingList);
     });
   }, []);
 
