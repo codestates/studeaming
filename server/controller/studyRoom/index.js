@@ -68,6 +68,16 @@ module.exports = {
       socket.to(uuid).emit("update_viewer", viewer);
     });
 
+    socket.on("update_title", async (uuid, id, studeamingTitle) => {
+      try {
+        await Studyroom.update(
+          { title: studeamingTitle },
+          { where: { user_id: id } }
+        );
+        socket.to(uuid).emit("update_title", studeamingTitle);
+      } catch (err) {}
+    });
+
     socket.on("disconnect", async () => {
       const uuid = socket.data.uuid;
 
