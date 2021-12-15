@@ -49,7 +49,7 @@ const Container = styled.div`
 
     span {
       font-size: 14px;
-      font-color: var(--color-black-50);
+      color: var(--color-black-50);
     }
   }
 `;
