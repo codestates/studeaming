@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
+const fs = require("fs");
 const cron = require("node-cron");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
@@ -12,7 +13,6 @@ const studyToggleRouter = require("./routes/studyToggle");
 const studylogRouter = require("./routes/studylog");
 const verifyRouter = require("./routes/verify");
 const studyroomRouter = require("./routes/studyroom");
-const imgRouter = require("./routes/img");
 const cronJob = require("./controller/functions/cronJob");
 const studyRoom = require("./controller/studyRoom/index");
 const options = require("./swagger.js");
@@ -35,6 +35,12 @@ app.use(cookieParser());
 
 app.use(cors(corsOpt));
 
+fs.readdir("uploads", (error) => {
+  if (error) {
+    fs.mkdirSync("uploads");
+  }
+});
+
 cron.schedule("0 0 * * 1", () => {
   cronJob();
 });
@@ -55,8 +61,9 @@ app.use("/studylog", studylogRouter);
 app.use("/studytoggle", studyToggleRouter);
 app.use("/studyroom", studyroomRouter);
 app.use("/verification", verifyRouter);
-app.use("/img", imgRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(apiSpec));
+
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 app.use(function (err, req, res, next) {
   res.status(err.status || 404);
