@@ -6,7 +6,6 @@ import { modalOff } from "../store/actions";
 import FollowBtn from "./FollowBtn";
 import Badge from "./Badge";
 import defaultImg from "../assets/images/img_profile_default.svg";
-import dummyBadges from "../assets/dummy/bages";
 
 const Container = styled.div`
   display: grid;
@@ -117,7 +116,7 @@ function UserProfile({ username }) {
     studylogList: [],
     studyTime: 0,
   });
-  const [badges, setBadges] = useState(dummyBadges);
+  const [badges, setBadges] = useState([]);
 
   const getProfile = async (username) => {
     try {
