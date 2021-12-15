@@ -22,6 +22,8 @@ const StyledReport = styled.section`
   }
 
   > select {
+    border: none;
+    outline: none;
     margin-bottom: 10px;
   }
 
