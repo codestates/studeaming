@@ -55,8 +55,8 @@ module.exports = {
       socket.to(uuid).emit("ice", ice, recieverId, senderId);
     });
 
-    socket.on("chat", (uuid, userId, chatIdx) => {
-      io.to(uuid).emit("newChat", uuid, userId, chatIdx);
+    socket.on("chat", (uuid, userId, chatIdx, chat) => {
+      io.to(uuid).emit("newChat", uuid, userId, chatIdx, chat);
     });
 
     socket.on("get_viewer", (uuid, requestId, viewerInfo) => {
