@@ -53,6 +53,10 @@ const Following = styled.ul`
   display: block;
   overflow: scroll;
 
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   li {
     display: flex;
     align-items: center;
@@ -98,7 +102,7 @@ const TabContainer = styled.div`
     width: 120px;
     height: 40px;
     margin-left: 40px;
-    background-color: var(--color-main-0);
+    background-color: var(--color-main-50);
     border-radius: 8px 8px 0 0;
     border-top: 0.6px solid var(--color-gray-bg-100);
     border-right: 3px solid var(--color-gray-bg-100);
@@ -127,7 +131,7 @@ const TabContainer = styled.div`
   }
 
   .selected {
-    background-color: var(--color-main-50);
+    background-color: var(--color-main-0);
     border-top: 0.6px solid var(--color-gray-bg-100);
     border-right: 3px solid var(--color-gray-bg-100);
     height: 50px;
