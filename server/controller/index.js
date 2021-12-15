@@ -17,5 +17,5 @@ module.exports = {
   follows: require("./user/follows"),
   achievement: require("./user/achievement"),
   report: require("./user/report"),
-  getStudyroom: require("./studyRoom/studyroom"),
+  studyRoom: require("./studyRoom/studyroom"),
 };
