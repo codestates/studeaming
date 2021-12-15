@@ -1,5 +1,6 @@
 const { Studyroom, User } = require("../../models");
 const { getUTC } = require("../functions/utils");
+const { isAccessAuthorized } = require("../functions/token");
 
 module.exports = {
   get: async (req, res) => {
@@ -48,13 +49,14 @@ module.exports = {
   },
   post: async (req, res) => {
     try {
+      const user = isAccessAuthorized(req);
       const thumbnail = res.req.file
         ? `${process.env.SERVER_URL}/${res.req.file.path}`
-        : "";
+        : null;
 
       const studyroom = await Studyroom.create({
         uuid: req.body.uuid,
-        user_id: req.body.id,
+        user_id: user.id,
         title: req.body.title,
         thumbnail: thumbnail,
         headCount: 1,

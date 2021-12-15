@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { modalOff } from "../store/actions";
 import useAudio from "../hooks/useAudio";
+import { v4 } from "uuid";
+import studyroomAPI from "../api/studyroom";
 import { Input, Desc } from "../styles/reusableStyle";
 import sound from "../assets/sound";
-import defaultThumbnail from "../assets/images/empty.png";
 
 const Container = styled.div`
   display: flex;
@@ -165,7 +166,9 @@ function StreamerSettingMockup() {
     thumbnail: null,
     sound: "",
   });
+  const [imageUrl, setImageUrl] = useState(null);
   const localVideoRef = useRef(HTMLVideoElement);
+  const formData = useRef();
   const [players, toggle] = useAudio(sound);
   const [hover, setHover] = useState({ mounted: false, idx: null });
   const [isActive, setActive] = useState(false);
@@ -197,11 +200,13 @@ function StreamerSettingMockup() {
 
   const getThumbnail = (event) => {
     const src = event.target.files[0];
-    setStreamingInfo({ ...streamingInfo, thumbnail: URL.createObjectURL(src) });
+    setStreamingInfo({ ...streamingInfo, thumbnail: src });
+    setImageUrl(URL.createObjectURL(src));
   };
 
   const removeThumbnail = () => {
     setStreamingInfo({ ...streamingInfo, thumbnail: null });
+    setImageUrl(null);
   };
 
   const getSound = (ASMR, idx) => {
@@ -216,23 +221,30 @@ function StreamerSettingMockup() {
   const startBtnHandler = () => {
     if (isActive) {
       let title = streamingInfo.title,
-        thumbnail = streamingInfo.thumbnail,
         sound = streamingInfo.sound;
+      const uuid = v4();
       const now = Date.now();
       if (!streamingInfo.title.length) {
         title = `${username}의 스터디밍에 참여하세요!`;
-      }
-      if (!streamingInfo.thumbnail) {
-        thumbnail = defaultThumbnail;
       }
       if (!streamingInfo.sound.length) {
         sound = "fire";
       }
 
-      dispatch(modalOff());
-      navigate("/streamer", {
-        state: { ...streamingInfo, title, thumbnail, sound, createdAt: now },
-      });
+      formData.current = new FormData();
+      formData.current.append("title", title);
+      formData.current.append("uuid", uuid);
+      formData.current.append("profile_img", streamingInfo.thumbnail);
+
+      studyroomAPI
+        .postStudyRoom(formData.current)
+        .then((res) => {
+          dispatch(modalOff());
+          navigate("/streamer", {
+            state: { uuid, title, sound, createdAt: now },
+          });
+        })
+        .catch((err) => {});
     }
   };
 
@@ -275,9 +287,9 @@ function StreamerSettingMockup() {
             <Desc>제목을 입력하세요</Desc>
             <Input onBlur={getTitle} />
             <Desc>썸네일을 선택하세요</Desc>
-            {streamingInfo.thumbnail ? (
+            {imageUrl ? (
               <Thumbnail onClick={removeThumbnail}>
-                <img src={streamingInfo.thumbnail} />
+                <img src={imageUrl} />
                 <div id="remove-thumbnail-btn">&times;</div>
               </Thumbnail>
             ) : (

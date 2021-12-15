@@ -6,7 +6,6 @@ import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
 import { ImVolumeMedium, ImVolumeMute2 } from "react-icons/im";
 import { io } from "socket.io-client";
-import { v4 } from "uuid";
 import Chat from "../components/Chat";
 import defaultImg from "../assets/images/img_profile_default.svg";
 import { notification, Popconfirm } from "antd";
@@ -227,9 +226,8 @@ function Streamer() {
     ({ userReducer }) => userReducer
   );
   const {
-    state: { title, thumbnail, sound, createdAt },
+    state: { uuid, title, sound, createdAt },
   } = useLocation();
-  const uuidRef = useRef(v4());
   const localVideoRef = useRef(HTMLVideoElement);
   const localStreamRef = useRef(HTMLDivElement);
   const pcRef = useRef({});
@@ -286,7 +284,7 @@ function Streamer() {
       socketRef.current.emit(
         "ice",
         data.candidate,
-        uuidRef.current,
+        uuid,
         socketId,
         socketRef.current.id
       );
@@ -304,7 +302,6 @@ function Streamer() {
   }, []);
 
   useEffect(() => {
-    const uuid = uuidRef.current;
     const socket = socketRef.current;
     const pcs = pcRef.current;
 
@@ -325,7 +322,7 @@ function Streamer() {
       viewers.current[0].socketId = socket.id;
     });
 
-    socket.emit("open_room", { uuid, id, title, thumbnail });
+    socket.emit("open_room", id, uuid);
 
     socket.on("welcome", async (viewerInfo) => {
       const socketId = viewerInfo.socketId;
@@ -480,11 +477,7 @@ function Streamer() {
           </StudeamingControl>
         </ScreenSection>
         <ChatSection>
-          <Chat
-            socket={socketRef.current}
-            viewers={viewers}
-            uuid={uuidRef.current}
-          />
+          <Chat socket={socketRef.current} viewers={viewers} uuid={uuid} />
         </ChatSection>
       </Container>
     </StyledStreamer>
