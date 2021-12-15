@@ -19,11 +19,12 @@ const ChatStyle = styled.section`
 const ChatSection = styled.ul`
   width: 100%;
   height: 95%;
-  border-radius: 0.5rem;
+  border-radius: 5px;
   background-color: #e4e8f7;
   display: flex;
   flex-direction: column;
   overflow: scroll;
+  margin-bottom: 4px;
 
   ::-webkit-scrollbar {
     display: none;
@@ -43,7 +44,7 @@ const ChatInput = styled.input`
   height: 100%;
   border: none;
   outline: none;
-  border-radius: 3rem;
+  border-radius: 5px;
   background-color: #f8f8f8;
   font-size: 12px;
   padding-left: 30px;
@@ -84,7 +85,7 @@ const ImoticonBox = styled.div`
     opacity: 1;
   }
 
-  @media screen and (max-height: 780px) {
+  @media screen and (max-height: 1000px) {
     bottom: 35px;
   }
 `;
@@ -120,15 +121,15 @@ function Chat({ socket, viewers, uuid }) {
   const chat = [
     {
       imoticon: "🕖",
-      comment: `${studyTime.hour}시간 ${studyTime.minute}분째 공부중!🕖`,
+      comment: `${studyTime.hour}시간 ${studyTime.minute}분째 공부 중! 🕖`,
     },
-    { imoticon: "🙂", comment: "안녕하세요!🙂" },
-    { imoticon: "💪", comment: "열공하세요!💪" },
-    { imoticon: "👋", comment: "안녕히계세요!👋" },
-    { imoticon: "🙏", comment: "잘부탁드립니다!🙏" },
-    { imoticon: "🤔", comment: "음..🤔" },
-    { imoticon: "😴", comment: "졸리네요..😴" },
-    { imoticon: "😭", comment: "슬프네요😭" },
+    { imoticon: "🙂", comment: "오늘도 화이팅이에요 🙂" },
+    { imoticon: "💪", comment: "열공합시다! 💪" },
+    { imoticon: "👋", comment: "다음에 또 만나요, 안녕히계세요!👋" },
+    { imoticon: "🙏", comment: "반가워요, 잘 부탁드립니다!🙏" },
+    { imoticon: "😭", comment: "오늘은 잘 안풀리는 날이에요 😭" },
+    { imoticon: "😴", comment: "졸리네요.. 모두 잠을 이겨냅시다 😴" },
+    { imoticon: "🥰", comment: "모두 잘 될 거에요 🥰" },
   ];
 
   const imoticonOpenHandler = () => {
