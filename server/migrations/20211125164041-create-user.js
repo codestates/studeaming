@@ -20,9 +20,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       profileImg: {
-        allowNull: false,
         type: Sequelize.STRING,
-        defaultValue: "",
       },
       about: {
         allowNull: false,

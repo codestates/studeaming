@@ -6,6 +6,7 @@ import { IoIosCloseCircle } from "react-icons/io";
 import { signinModalOpen, profileModalOpen } from "../store/actions/index";
 import logAPI from "../api/studyLog";
 import userAPI from "../api/user";
+import defaultImg from "../assets/images/img_profile_default.svg";
 
 const ChatStyle = styled.section`
   display: flex;
@@ -220,7 +221,7 @@ function Chat({ socket, viewers, uuid }) {
       const newLetter = (
         <div>
           <img
-            src={writeUser[0].profileImg}
+            src={writeUser[0].profileImg ? writeUser[0].profileImg : defaultImg}
             alt=""
             style={{
               width: "30px",

@@ -180,7 +180,7 @@ function MainContents({ contents }) {
               navigateLanding(el);
             }}
           >
-            <Thumbnail img={el.thumbnail} />
+            <Thumbnail img={el.thumbnail ? el.thumbnail : empty} />
             <Desc>
               <div className="thumbnail_title">{el.title}</div>
               <div className="thumbnail_info">
