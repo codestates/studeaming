@@ -18,8 +18,8 @@ module.exports = async (req, res) => {
       raw: true,
     });
 
-    const now = new Date();
-    const aMonthAgo = new Date(new Date().setDate(now.getDate() - 30));
+    const now = Date.now() / (1000 * 60);
+    const aMonthAgo = now - 30 * 24 * 60;
 
     const studylogs = await getStudylogs(user.id, aMonthAgo, now);
     const studyTime = await getStudyTime(studylogs);
