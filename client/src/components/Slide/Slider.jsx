@@ -5,7 +5,7 @@ import SlideMoveBtn from "./SlideMoveBtn";
 import Dots from "./Dots";
 import Slide from "./Slide";
 import image1 from "../../assets/images/fire.jpg";
-import image2 from "../../assets/images/wave.jpeg";
+import image2 from "../../assets/images/stream.jpeg";
 import image3 from "../../assets/images/night.jpg";
 
 const StyledSlider = styled.section`
