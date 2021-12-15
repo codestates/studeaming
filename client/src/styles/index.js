@@ -69,6 +69,7 @@ const GlobalStyle = createGlobalStyle`
     --font-size-regular: 16px;
     --font-size-small: 14px;
     --color-main-100: #777CFF;
+    --color-main-60: #B0B4FF;
     --color-main-75: #9296FF;
     --color-main-50: #CFD1FF;
     --color-main-25: #E3E4FF;
@@ -81,7 +82,7 @@ const GlobalStyle = createGlobalStyle`
     --color-gray-bg-50: #FDFDFD;
     --color-gray-bg-100: #D3D3D3;
     --color-red: #FCD3D3;
-    --color-pink: #FBB4EB;
+    --color-pink: #F9D8FF;
     --color-orange: #FFD7D0;
     --color-yellow: #FDF4A1;
     --color-green: #D8F4D8;
