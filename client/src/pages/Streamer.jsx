@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { IoPeople } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
@@ -9,7 +9,7 @@ import { io } from "socket.io-client";
 import { v4 } from "uuid";
 import Chat from "../components/Chat";
 import defaultImg from "../assets/images/img_profile_default.svg";
-import { notification } from "antd";
+import { notification, Popconfirm } from "antd";
 import "antd/dist/antd.css";
 
 const StyledStreamer = styled.div`
@@ -159,6 +159,28 @@ const InfoSection1 = styled.div`
       line-height: normal;
     }
   }
+
+  > input {
+    width: 200px;
+    border: none;
+    outline: none;
+  }
+`;
+
+const StudeamingControl = styled.div`
+  text-align: right;
+
+  > span {
+    margin-left: 1rem;
+    padding: 0.1rem;
+    font-size: 0.8rem;
+    color: var(--color-black-50);
+    background-color: var(--color-gray-bg-100);
+
+    :hover {
+      cursor: pointer;
+    }
+  }
 `;
 
 const ChatSection = styled.section`
@@ -209,7 +231,7 @@ function Streamer() {
   } = useLocation();
   const uuidRef = useRef(v4());
   const localVideoRef = useRef(HTMLVideoElement);
-  const localStreamRef = useRef();
+  const localStreamRef = useRef(HTMLDivElement);
   const pcRef = useRef({});
   const socketRef = useRef(
     io(process.env.REACT_APP_BASE_URL, {
@@ -219,16 +241,41 @@ function Streamer() {
   );
   const viewers = useRef([{ id, username, profileImg }]);
   const audioRef = useRef(HTMLAudioElement);
+  const inputRef = useRef(HTMLInputElement);
+  const outRef = useRef(HTMLDivElement);
   const [count, setCount] = useState(viewers.current.length);
   const [isMute, setIsMute] = useState(false);
+  const [studeamingTitle, setStudeamingTitle] = useState(title);
+  const [titleEditClick, setTitleEditClick] = useState(false);
+  const navigate = useNavigate();
   const date = new Date(createdAt);
   const time = `${date.getHours()} : ${date.getMinutes()}`;
 
-  //todo: 추가
-  const [ReallyOut, setReallyOut] = useState(true);
-
   const muteHandler = () => {
     setIsMute(!isMute);
+  };
+
+  const streamingFinish = () => {
+    navigate("/home");
+  };
+
+  const titleEditClickHandler = () => {
+    if (!titleEditClick) setTitleEditClick(true);
+    else {
+      editCompleteHandler();
+    }
+  };
+
+  useEffect(() => {
+    if (titleEditClick) inputRef.current.focus();
+  }, [titleEditClick]);
+
+  const editCompleteHandler = () => {
+    setTitleEditClick(false);
+    socketRef.current.emit("update_title", {
+      id,
+      studeamingTitle,
+    });
   };
 
   const connectToPeer = useCallback((socketId) => {
@@ -338,7 +385,7 @@ function Streamer() {
         pc.close();
       });
     };
-  }, []);
+  }, [localVideoRef]);
 
   useEffect(() => {
     audioRef.current.addEventListener("ended", () => {
@@ -354,7 +401,7 @@ function Streamer() {
   }, [isMute]);
 
   return (
-    <StyledStreamer>
+    <StyledStreamer ref={outRef}>
       <audio
         autoPlay
         src={`/assets/sound/${sound}.mp3`}
@@ -384,7 +431,21 @@ function Streamer() {
           </Screen>
           <StudeamerInfo>
             <InfoSection1>
-              <span className="stream_title">{title}</span>
+              {titleEditClick ? (
+                <input
+                  type="text"
+                  value={studeamingTitle}
+                  ref={inputRef}
+                  onChange={(e) => {
+                    setStudeamingTitle(e.target.value);
+                  }}
+                  onKeyUp={(e) => {
+                    if (e.key === "Enter") titleEditClickHandler();
+                  }}
+                />
+              ) : (
+                <span className="stream_title">{studeamingTitle}</span>
+              )}
               <div className="studeamer_info">
                 <img src={profileImg || defaultImg} alt="" />
                 <span>{username}</span>
@@ -403,6 +464,20 @@ function Streamer() {
               </div>
             </InfoSection2>
           </StudeamerInfo>
+          <StudeamingControl>
+            <span onClick={titleEditClickHandler}>방제목 변경</span>
+            <Popconfirm
+              title="스터디밍을 종료하시겠습니까?"
+              okText="예"
+              cancelText="아니오"
+              placement="topLeft"
+              onConfirm={() => {
+                streamingFinish();
+              }}
+            >
+              <span>스터디밍 종료</span>
+            </Popconfirm>
+          </StudeamingControl>
         </ScreenSection>
         <ChatSection>
           <Chat
