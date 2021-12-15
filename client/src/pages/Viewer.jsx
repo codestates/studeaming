@@ -238,7 +238,10 @@ function Viewer() {
   );
   const { state } = useLocation();
   const date = new Date(state.createdAt * 60 * 1000);
-  const time = `${date.getHours()} : ${date.getMinutes()}`;
+  const time =
+    date.getHours > 12
+      ? `오후 ${date.getHours()}시 ${date.getMinutes()}분`
+      : `오전 ${date.getHours()}시 ${date.getMinutes()}분`;
   const dispatch = useDispatch();
   const peerVideoRef = useRef(HTMLVideoElement);
   const socketRef = useRef(
@@ -434,7 +437,7 @@ function Viewer() {
               <span
                 style={{ color: "white", fontSize: "2rem", fontWeight: "bold" }}
               >
-                방송이 종료 되었습니다.
+                방송이 종료되었습니다
               </span>
             )}
             <i
