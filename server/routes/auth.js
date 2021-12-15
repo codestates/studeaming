@@ -1,5 +1,6 @@
 const express = require("express");
 const checkAuth = require("../middleware/checkAuth");
+const uploadImage = require("../middleware/uploadImage");
 const router = express.Router();
 
 const {
@@ -14,7 +15,7 @@ const {
   kakaoSignin,
 } = require("../controller");
 
-router.post("/signup", signup);
+router.post("/signup", uploadImage, signup);
 router.post("/signup/availability", checkAvailability);
 router.post("/signin", signin);
 router.post("/signin/guest", guest);

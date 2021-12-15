@@ -1,5 +1,6 @@
 const { User } = require("../../models");
 const encryptPassword = require("../functions/encryption");
+require("dotenv").config();
 
 const {
   generateVerification,
@@ -10,7 +11,10 @@ const { setDefault } = require("../functions/model");
 
 module.exports = async (req, res) => {
   if (req.body.username && req.body.password && req.body.email) {
-    const profileImg = req.body.profileImg || "";
+    console.log(res.req.file);
+    const profileImg = res.req.file
+      ? `${process.env.SERVER_URL}/${res.req.file.path}`
+      : "";
     encryptPassword.encrypt(res, req.body.password, async (hash) => {
       try {
         const [newUser, created] = await User.findOrCreate({
@@ -36,6 +40,7 @@ module.exports = async (req, res) => {
               id: newUser.id,
               email: newUser.email,
               username: newUser.username,
+              profileImg: newUser.profileImg,
             },
           });
         } else {
