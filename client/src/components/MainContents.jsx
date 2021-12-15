@@ -41,7 +41,7 @@ const Contents = styled.div`
   width: 100%;
   max-width: 360px;
   height: 100%;
-  min-height: 320px;
+  min-height: 340px;
 
   :hover {
     cursor: pointer;
@@ -61,40 +61,33 @@ const Thumbnail = styled.div`
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-
-  @media screen and (max-width: 530px) {
-    height: 75%;
-  }
 `;
 
 const Desc = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   height: 30%;
-  padding: 6px;
+  padding: 10px;
   background-color: var(--color-gray-bg);
-
-  @media screen and (max-width: 530px) {
-    height: 25%;
-  }
 
   > .thumbnail_title {
     display: -webkit-box;
-    height: 50px;
+    line-height: 1.2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     word-wrap: break-word;
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--color-black);
   }
 
   > .thumbnail_info {
     display: flex;
     align-items: center;
-    height: 100%;
+    height: 50%;
     position: relative;
 
     > img {
@@ -106,9 +99,11 @@ const Desc = styled.div`
     }
 
     > .thumbnail_info_name {
-      padding: 2px;
+      padding-left: 4px;
+      display: flex;
+      flex-direction: column;
+
       > div {
-        padding: 3px;
         font-size: 12px;
       }
     }
@@ -189,7 +184,9 @@ function MainContents({ contents }) {
                   <div style={{ color: "var(--color-black-50)" }}>
                     {el.username}
                   </div>
-                  <div style={{ color: "#838080" }}>
+                  <div
+                    style={{ color: "#838080", display: "flex", gap: "3px" }}
+                  >
                     <IoPeople />
                     {el.user_id === "0"
                       ? ` ${el.headCount}`
