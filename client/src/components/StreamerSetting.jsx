@@ -130,6 +130,7 @@ const SoundCard = styled.div`
     position: absolute;
     background-image: url(${(props) => props.img});
     background-size: cover;
+    background-position: center;
     border-radius: 10px;
     opacity: 0.7;
     z-index: -1;
