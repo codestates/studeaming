@@ -251,7 +251,10 @@ function Streamer() {
   const [titleEditClick, setTitleEditClick] = useState(false);
   const navigate = useNavigate();
   const date = new Date(createdAt);
-  const time = `${date.getHours()} : ${date.getMinutes()}`;
+  const time =
+    date.getHours > 12
+      ? `오후 ${date.getHours()}시 ${date.getMinutes()}분`
+      : `오전 ${date.getHours()}시 ${date.getMinutes()}분`;
 
   const muteHandler = () => {
     setIsMute(!isMute);
@@ -309,7 +312,10 @@ function Streamer() {
     navigator.mediaDevices
       .getUserMedia({
         audio: false,
-        video: true,
+        video: {
+          width: 1600,
+          height: 900,
+        },
       })
       .then((stream) => {
         localVideoRef.current.srcObject = stream;
