@@ -7,7 +7,6 @@ import { BiFullscreen } from "react-icons/bi";
 import { ImVolumeMedium, ImVolumeMute2 } from "react-icons/im";
 import { io } from "socket.io-client";
 import Chat from "../components/Chat";
-import defaultImg from "../assets/images/img_profile_default.svg";
 import { notification, Popconfirm } from "antd";
 import "antd/dist/antd.css";
 
@@ -120,7 +119,6 @@ const StudeamerInfo = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 20px 10px;
-  background-color: #f8f8f8;
 `;
 
 const InfoSection1 = styled.div`
@@ -130,7 +128,9 @@ const InfoSection1 = styled.div`
 
   > .stream_title {
     display: -webkit-box;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-black-50);
     margin: 0;
     line-height: 1.2;
     -webkit-line-clamp: 2;
@@ -140,44 +140,39 @@ const InfoSection1 = styled.div`
     text-overflow: ellipsis;
   }
 
-  > .studeamer_info {
-    display: flex;
-    align-items: center;
-
-    > img {
-      height: 45px;
-      width: 45px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 10px;
-    }
-
-    > span {
-      display: inline-block;
-      vertical-align: middle;
-      line-height: normal;
-    }
-  }
-
   > input {
-    width: 200px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-black-50);
+    width: 300px;
     border: none;
     outline: none;
+    background-color: var(--color-gray-bg-50);
   }
 `;
 
 const StudeamingControl = styled.div`
-  text-align: right;
-
+  display: flex;
+  gap: 1rem;
   > span {
-    margin-left: 1rem;
-    padding: 0.1rem;
+    display: inline-block;
+    padding: 0.8rem 1rem;
     font-size: 0.8rem;
     color: var(--color-black-50);
     background-color: var(--color-gray-bg-100);
+    border-radius: 5px;
 
     :hover {
       cursor: pointer;
+      background-color: var(--color-main-50);
+    }
+  }
+
+  #end-btn {
+    :hover {
+      cursor: pointer;
+      color: white;
+      background-color: var(--color-destructive);
     }
   }
 `;
@@ -204,7 +199,16 @@ const InfoSection2 = styled.div`
 
   > span {
     display: inline-block;
-    font-size: 12px;
+  }
+
+  #study_time {
+    text-align: right;
+  }
+
+  #study_people {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 `;
 
@@ -431,6 +435,7 @@ function Streamer() {
               {titleEditClick ? (
                 <input
                   type="text"
+                  spellCheck="false"
                   value={studeamingTitle}
                   ref={inputRef}
                   onChange={(e) => {
@@ -443,38 +448,34 @@ function Streamer() {
               ) : (
                 <span className="stream_title">{studeamingTitle}</span>
               )}
-              <div className="studeamer_info">
-                <img src={profileImg || defaultImg} alt="" />
-                <span>{username}</span>
-              </div>
+              <StudeamingControl>
+                <span onClick={titleEditClickHandler}>
+                  {titleEditClick ? "완료" : "방제목 변경"}
+                </span>
+                <Popconfirm
+                  title="스터디밍을 정말 종료하시겠어요?"
+                  okText="네"
+                  cancelText="아니오"
+                  placement="topLeft"
+                  onConfirm={() => {
+                    streamingFinish();
+                  }}
+                >
+                  <span id="end-btn">스터디밍 종료</span>
+                </Popconfirm>
+              </StudeamingControl>
             </InfoSection1>
             <InfoSection2>
-              <span style={{ textAlign: "right" }}>
+              <span id="study_time">
                 공부 시작 시간 <br />
                 {time}
               </span>
-              <div>
-                <IoPeople size="12" />
-                <span style={{ fontSize: "12px", marginLeft: "3px" }}>
-                  {count}명 공부중
-                </span>
+              <div id="study_people">
+                <IoPeople />
+                <span>{count}명 공부중</span>
               </div>
             </InfoSection2>
           </StudeamerInfo>
-          <StudeamingControl>
-            <span onClick={titleEditClickHandler}>방제목 변경</span>
-            <Popconfirm
-              title="스터디밍을 종료하시겠습니까?"
-              okText="예"
-              cancelText="아니오"
-              placement="topLeft"
-              onConfirm={() => {
-                streamingFinish();
-              }}
-            >
-              <span>스터디밍 종료</span>
-            </Popconfirm>
-          </StudeamingControl>
         </ScreenSection>
         <ChatSection>
           <Chat socket={socketRef.current} viewers={viewers} uuid={uuid} />
