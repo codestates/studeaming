@@ -1,5 +1,6 @@
 const express = require("express");
 const checkAuth = require("../middleware/checkAuth");
+const uploadImage = require("../middleware/uploadImage");
 const {
   userInfo,
   profile,
@@ -10,7 +11,7 @@ const {
 const router = express.Router();
 
 router.get("/", checkAuth, userInfo.getUser);
-router.patch("/", checkAuth, userInfo.editUser);
+router.patch("/", checkAuth, uploadImage, userInfo.editUser);
 router.patch("/password", checkAuth, userInfo.editPassword);
 router.get("/:username/profile", profile);
 router.get("/follows", checkAuth, follows.get);
