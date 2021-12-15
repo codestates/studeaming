@@ -6,7 +6,9 @@ const userAPI = {
   },
 
   modifyUserInfo: (editInfo) => {
-    return api.patch(`/user`, editInfo);
+    return api.patch(`/user`, editInfo, {
+      header: { "content-type": "multipart/form-data" },
+    });
   },
 
   modifyPassword: (currentPassword, newPassword) => {
@@ -35,12 +37,6 @@ const userAPI = {
 
   getOthersAchievement: (username) => {
     return api.get(`user/${username}/achievement`);
-  },
-
-  saveProfile: (formData) => {
-    return api.post(`/img`, formData, {
-      header: { "content-type": "multipart/form-data" },
-    });
   },
 };
 

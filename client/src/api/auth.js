@@ -1,8 +1,10 @@
 import api from "./index";
 
 const authAPI = {
-  signup: (image, username, email, password) => {
-    return api.post(`/auth/signup`, { image, username, email, password });
+  signup: (userInfo) => {
+    return api.post(`/auth/signup`, userInfo, {
+      header: { "content-type": "multipart/form-data" },
+    });
   },
 
   checkAvailability: (type, input) => {
