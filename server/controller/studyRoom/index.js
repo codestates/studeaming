@@ -8,20 +8,13 @@ const {
 
 module.exports = {
   io: async (socket, io) => {
-    socket.on("open_room", async (roomInfo) => {
+    socket.on("open_room", async (id, uuid) => {
       try {
-        await startStudeaming(roomInfo.id);
+        await startStudeaming(id);
 
-        await Studyroom.create({
-          uuid: roomInfo.uuid,
-          user_id: roomInfo.id,
-          title: roomInfo.title,
-          thumbnail: roomInfo.thumbnail || "",
-          headCount: 1,
-        });
-        socket.join(roomInfo.uuid);
-        socket.data.uuid = roomInfo.uuid;
-        socket.data.userId = roomInfo.id;
+        socket.join(uuid);
+        socket.data.uuid = uuid;
+        socket.data.userId = id;
       } catch (e) {}
     });
 
@@ -81,7 +74,7 @@ module.exports = {
       if (uuid) {
         try {
           const roomInfo = await Studyroom.findOne({
-            where: { uuid: socket.data.uuid },
+            where: { uuid },
             raw: true,
           });
 
