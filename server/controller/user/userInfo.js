@@ -2,6 +2,7 @@ const { User } = require("../../models");
 const { isAccessAuthorized } = require("../functions/token");
 const { verifyUsername } = require("../functions/model");
 const { encrypt, decrypt } = require("../functions/encryption");
+require("dotenv").config();
 
 module.exports = {
   getUser: async (req, res) => {
@@ -38,11 +39,13 @@ module.exports = {
       if (!req.body.username || verifyUsername(req.body.username)) {
         const user = await User.findOne({ where: { id }, raw: true });
 
-        const profileImg = req.body.profileImg || user.profileImg;
         const username = req.body.username || user.username;
         const about = req.body.about || user.about;
+        const profileImg = res.req.file
+          ? `${process.env.SERVER_URL}/${res.req.file.path}`
+          : user.profileImg;
 
-        await User.update({ profileImg, username, about }, { where: { id } });
+        await User.update({ username, about, profileImg }, { where: { id } });
 
         res.status(200).send({
           user: {
