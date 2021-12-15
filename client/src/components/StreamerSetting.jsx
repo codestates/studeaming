@@ -35,12 +35,21 @@ const Container = styled.div`
     gap: 2rem;
   }
 
-  #sound-picker {
-  }
-
   #sound-cards {
     display: flex;
     gap: 1rem;
+  }
+
+  #video-container {
+    width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      font-size: 14px;
+      font-color: var(--color-black-50);
+    }
   }
 `;
 
@@ -253,7 +262,15 @@ function StreamerSettingMockup() {
           </span>
         </div>
         <div id="info-setting">
-          <LiveVideo autoPlay ref={localVideoRef} />
+          <div id="video-container">
+            {isActive && <LiveVideo autoPlay ref={localVideoRef} />}
+            {!isActive && (
+              <span>
+                브라우저 상단 탭에서 카메라 접근 권한을 허용한 뒤 다시
+                시도해주세요
+              </span>
+            )}
+          </div>
           <div id="info-input">
             <Desc>제목을 입력하세요</Desc>
             <Input onBlur={getTitle} />
