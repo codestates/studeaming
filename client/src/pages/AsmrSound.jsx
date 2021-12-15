@@ -6,9 +6,6 @@ import { IoPeople } from "react-icons/io5";
 import { ImVolumeMedium, ImVolumeMute2 } from "react-icons/im";
 import { io } from "socket.io-client";
 import Chat from "../components/Chat";
-import sound from "../assets/sound";
-import defaultImg from "../assets/images/img_profile_default.svg";
-import night from "../assets/images/fire2.jpg";
 
 const StyledAsmrSound = styled.div`
   width: 100%;
@@ -113,7 +110,6 @@ const StudeamerInfo = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 20px 10px;
-  /* background-color: #f8f8f8; */
 `;
 
 const InfoSection1 = styled.div`
@@ -134,6 +130,10 @@ const InfoSection1 = styled.div`
     word-wrap: break-word;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  > .stream_desc {
+    color: var(--color-black-50);
   }
 
   > .studeamer_info {
@@ -168,6 +168,12 @@ const InfoSection2 = styled.div`
     display: inline-block;
     font-size: 12px;
   }
+
+  > #study_people {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
 `;
 
 const ChatSection = styled.section`
@@ -186,18 +192,9 @@ function AsmrSound() {
   const { id, username, profileImg } = useSelector(
     ({ userReducer }) => userReducer
   );
-
-  const { state } = useLocation();
-  // console.log(state);
-  // const idx = Number(state.uuid);
-
   const [isMute, setIsMute] = useState(false);
+  const [keyword, setKeyword] = useState("");
   const audioRef = useRef(HTMLAudioElement);
-
-  const muteHandler = () => {
-    setIsMute(!isMute);
-  };
-
   const socketRef = useRef(
     io(process.env.REACT_APP_BASE_URL, {
       transports: ["websocket"],
@@ -205,8 +202,12 @@ function AsmrSound() {
     })
   );
   const viewers = useRef([{ id, username, profileImg }]);
-
   const [count, setCount] = useState(viewers.current.length);
+  const { state } = useLocation();
+
+  const muteHandler = () => {
+    setIsMute(!isMute);
+  };
 
   useEffect(() => {
     const socket = socketRef.current;
@@ -300,6 +301,23 @@ function AsmrSound() {
     else audioRef.current.pause();
   }, [isMute]);
 
+  useEffect(() => {
+    // if (state.uuid === "fire") keyword = "장작불 타는 소리";
+    switch (state.uuid) {
+      case "fire":
+        setKeyword("장작 타는 소리 들으며 공부하기");
+        break;
+      case "stream":
+        setKeyword("시냇물 흐르는 소리 들으며 공부하기");
+        break;
+      case "night":
+        setKeyword("밤 풍경 소리 들으며 공부하기");
+        break;
+      default:
+        return;
+    }
+  }, []);
+
   return (
     <StyledAsmrSound>
       <audio
@@ -316,18 +334,16 @@ function AsmrSound() {
           </Screen>
           <StudeamerInfo>
             <InfoSection1>
-              <span className="stream_title">ASMR👂 Study With Me🔥 </span>
-              <div className="studeamer_info">
-                <img src={defaultImg} alt="" />
-                <span>Studeaming</span>
-              </div>
+              <span className="stream_title">ASMR👂 {keyword}</span>
+              <span className="stream_desc">
+                ASMR 사운드에 집중할 수 있는 오디오 온리 페이지입니다.
+                열공하세요!
+              </span>
             </InfoSection1>
             <InfoSection2>
-              <div>
-                <IoPeople size="12" />
-                <span style={{ fontSize: "12px", marginLeft: "3px" }}>
-                  {count}명 공부중
-                </span>
+              <div id="study_people">
+                <IoPeople />
+                <span>{count}명 공부중</span>
               </div>
             </InfoSection2>
           </StudeamerInfo>
