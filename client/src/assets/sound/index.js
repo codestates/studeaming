@@ -1,7 +1,7 @@
-import fireImg from "../images/sound_img_fire.jpeg";
-import streamImg from "../images/sound_img_stream.jpg";
-import nightImg from "../images/sound_img_night.jpeg";
-import rainImg from "../images/sound_img_rain.jpg";
+import fireImg from "../images/fire.jpg";
+import streamImg from "../images/stream.jpeg";
+import nightImg from "../images/night.jpg";
+import rainImg from "../images/rain.jpg";
 
 const sound = [
   {
