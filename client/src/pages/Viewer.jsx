@@ -257,6 +257,7 @@ function Viewer() {
   const [count, setCount] = useState(viewers.current.length);
   const [Liveon, setLiveon] = useState(true);
   const [isMute, setIsMute] = useState(false);
+  const [changeTitle, setChangeTitle] = useState(state.title);
   const audioRef = useRef(HTMLAudioElement);
 
   const openUserProfile = (name) => {
@@ -411,6 +412,16 @@ function Viewer() {
     audioRef.current.volume = 0.1;
   }, []);
 
+  useEffect(() => {
+    socketRef.current.on("update_title", (studeamingTitle) => {
+      if (state.title !== studeamingTitle) {
+        setChangeTitle(studeamingTitle);
+      }
+    });
+  }, []);
+
+  console.log(state.title);
+
   return (
     <StyledViewer>
       <audio autoPlay ref={audioRef} src="/assets/sound/fire.mp3" />
@@ -452,7 +463,7 @@ function Viewer() {
           </Screen>
           <StudeamerInfo>
             <InfoSection1>
-              <span className="stream_title">{state.title}</span>
+              <span className="stream_title">{changeTitle}</span>
               <div className="studeamer_info">
                 <img src={state.profileImg || defaultImg} alt="" />
                 <span

@@ -274,10 +274,7 @@ function Streamer() {
 
   const editCompleteHandler = () => {
     setTitleEditClick(false);
-    socketRef.current.emit("update_title", {
-      id,
-      studeamingTitle,
-    });
+    socketRef.current.emit("update_title", uuid, id, studeamingTitle);
   };
 
   const connectToPeer = useCallback((socketId) => {
