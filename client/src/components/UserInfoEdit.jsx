@@ -65,34 +65,20 @@ function UserInfoEdit() {
   const { profileImg, username, about } = useSelector(
     ({ userReducer }) => userReducer
   );
-  const [editInfo, setEditInfo] = useState({
-    profileImg: profileImg || defaultImg,
-    username,
-    about,
-  });
-  const formData = useRef();
+  const [editInfo, setEditInfo] = useState({ profileImg, username, about });
+  const [imageUrl, setImageUrl] = useState(profileImg);
+  const formData = useRef(null);
   const dispatch = useDispatch();
 
   const getProfileImg = (event) => {
-    // const src = event.target.files[0];
-    // setEditInfo({ ...editInfo, profileImg: URL.createObjectURL(src) });
+    const src = event.target.files[0];
+    setImageUrl(URL.createObjectURL(src));
 
-    event.preventDefault();
-    let reader = new FileReader();
-    let src = event.target.files[0];
-    reader.onloadend = () => {
-      setEditInfo({
-        profileImg: reader.result,
-      });
-    };
-    reader.readAsDataURL(src);
-
-    formData.current = new FormData();
-    formData.current.append("profile_img", src);
+    setEditInfo({ ...editInfo, profileImg: src });
   };
 
   const removeProfileImg = () => {
-    setEditInfo({ ...editInfo, profileImg: null });
+    setImageUrl(null);
   };
 
   const handleInputValue = (key) => (e) => {
@@ -100,9 +86,12 @@ function UserInfoEdit() {
   };
 
   const editRequest = async () => {
-    const image = await userAPI.saveProfile(formData.current);
-    await setEditInfo({ profileImg: image.data.image });
-    userAPI.modifyUserInfo(editInfo).then((res) => {
+    formData.current = new FormData();
+    formData.current.append("profile_img", editInfo.profileImg);
+    formData.current.append("username", editInfo.username);
+    formData.current.append("about", editInfo.about);
+
+    userAPI.modifyUserInfo(formData.current).then((res) => {
       const data = res.data.user;
       dispatch(getUserInfo(data));
       dispatch(userInfoEditModalOpen(false));
@@ -111,9 +100,9 @@ function UserInfoEdit() {
 
   return (
     <>
-      {editInfo.about ? (
+      {imageUrl ? (
         <ProfileImg>
-          <img src={editInfo.profileImg} />
+          <img src={imageUrl} />
           <div id="remove_profile_img">
             <span
               onClick={removeProfileImg}

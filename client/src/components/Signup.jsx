@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import authAPI from "../api/auth";
 import {
@@ -134,20 +134,24 @@ function Signup() {
     check: "",
     failure: "",
   });
+  const [imageUrl, setImageUrl] = useState(null);
   const [isReqFailed, setIsReqFailed] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const formData = useRef(null);
   const regExpEmail =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
   const regExpPwd = /^(?=.*?[a-z])(?=.*?[0-9]).{8,16}$/i;
 
   const getProfileImg = (event) => {
     const src = event.target.files[0];
-    setSignupInfo({ ...signupInfo, image: URL.createObjectURL(src) });
+    setSignupInfo({ ...signupInfo, image: src });
+    setImageUrl(URL.createObjectURL(src));
   };
 
   const removeProfileImg = () => {
     setSignupInfo({ ...signupInfo, image: null });
+    setImageUrl(null);
   };
 
   const handleInputValue = (key) => (e) => {
@@ -233,13 +237,14 @@ function Signup() {
   const signupHandler = () => {
     const { email, username, password, check } = isValid;
     if (email && username && password && check) {
+      formData.current = new FormData();
+      formData.current.append("profile_img", signupInfo.image);
+      formData.current.append("email", signupInfo.email);
+      formData.current.append("username", signupInfo.username);
+      formData.current.append("password", signupInfo.password);
+      console.log(signupInfo.image);
       authAPI
-        .signup(
-          signupInfo.image,
-          signupInfo.username,
-          signupInfo.email,
-          signupInfo.password
-        )
+        .signup(formData.current)
         .then(() => {
           setIsSuccess(true);
         })
@@ -269,9 +274,9 @@ function Signup() {
           />
         ) : (
           <InputSection>
-            {signupInfo.image ? (
+            {imageUrl ? (
               <ProfileImg onClick={removeProfileImg}>
-                <img src={signupInfo.image} alt="profile" />
+                <img src={imageUrl} alt="profile" />
                 <div id="remove_profile_img">&times;</div>
               </ProfileImg>
             ) : (
