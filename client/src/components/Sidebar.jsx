@@ -12,8 +12,6 @@ const Container = styled.div`
   justify-content: column;
   align-items: center;
   padding: 1.2rem 0;
-  /* overflow: visible;
-  overflow-y: scroll; */
 
   .sidebar_section {
     width: 90%;
@@ -35,6 +33,10 @@ const Container = styled.div`
     :hover {
       font-weight: 600;
     }
+  }
+
+  @media screen and (max-height: 768px) {
+    height: fit-content;
   }
 
   @media screen and (max-width: 768px) {
@@ -71,6 +73,7 @@ const Following = styled.ul`
     width: 32px;
     height: 32px;
     margin-right: 0.8rem;
+    border-radius: 50%;
   }
 
   .following_name {
