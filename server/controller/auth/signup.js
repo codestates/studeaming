@@ -18,12 +18,14 @@ module.exports = async (req, res) => {
     encryptPassword.encrypt(res, req.body.password, async (hash) => {
       try {
         const [newUser, created] = await User.findOrCreate({
-          where: { username: req.body.username },
-          defaults: {
+          where: {
+            platformType: "original",
             email: req.body.email,
+          },
+          defaults: {
+            username: req.body.username,
             isEmailVerified: false,
             password: hash,
-            platformType: "original",
             profileImg: profileImg,
           },
           raw: true,
@@ -44,10 +46,10 @@ module.exports = async (req, res) => {
             },
           });
         } else {
-          res.status(409).send({ message: "Email or username already exists" });
+          res.status(409).send({ message: "Email already exists" });
         }
-      } catch {
-        res.sendStatus(500);
+      } catch (e) {
+        res.status(500).send({ message: e.message });
       }
     });
   } else {
