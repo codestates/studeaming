@@ -35,7 +35,7 @@ const GlobalStyle = createGlobalStyle`
   *,
   :after,
   :before {
-    font-family: "NotoSans", sans-serif;
+    font-family: "NotoSans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", ;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
