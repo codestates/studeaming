@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { IoPeople } from "react-icons/io5";
+import { notification } from "antd";
 import defaultImg from "../assets/images/img_profile_default.svg";
+import logo from "../assets/images/favicon_logo.png";
 import empty from "../assets/images/empty.png";
 import studyroomAPI from "../api/studyroom";
-import { notification } from "antd";
 import "antd/dist/antd.css";
 
 const StyledMainContents = styled.section`
@@ -179,7 +180,10 @@ function MainContents({ contents }) {
             <Desc>
               <div className="thumbnail_title">{el.title}</div>
               <div className="thumbnail_info">
-                <img src={el.profileImg || defaultImg} alt="" />
+                <img
+                  src={el.user_id === "0" ? logo : el.profileImg || defaultImg}
+                  alt=""
+                />
                 <div className="thumbnail_info_name">
                   <div style={{ color: "var(--color-black-50)" }}>
                     {el.username}
