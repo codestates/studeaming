@@ -43,7 +43,9 @@ module.exports = {
         const about = req.body.about || user.about;
         const profileImg = res.req.file
           ? `${process.env.SERVER_URL}/${res.req.file.path}`
-          : user.profileImg;
+          : req.body.profile_img === null
+          ? user.profileImg
+          : req.body.profile_img;
 
         await User.update({ username, about, profileImg }, { where: { id } });
 
