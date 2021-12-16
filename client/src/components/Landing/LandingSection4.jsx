@@ -73,8 +73,7 @@ const ImageContainer = styled.div`
 const SideLogImg = styled.div`
   width: 100%;
   height: 100%;
-  /* border: 1px solid; */
-  box-shadow: 0 0 10px var(--color-black-25);
+  box-shadow: 0px 0px 10px var(--color-gray-bg-100);
   position: relative;
   background-image: url("/assets/images/logchartimg.png");
   background-size: contain;
@@ -281,7 +280,7 @@ function LandingSection4() {
           </ToggleImg2>
         </ImageContainer>
         <Description>
-          <h2>공부 습관</h2>
+          <h2>공부 습관 만들기</h2>
           <span id="section4-description-1">
             더 이상 다이어리를 꺼내 메모하지 마세요
           </span>
