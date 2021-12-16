@@ -5,17 +5,19 @@ import defaultImg from "../assets/images/img_profile_default.svg";
 
 const Container = styled.div`
   width: 300px;
-  height: calc(100vh - 80px);
+  height: 100%;
   background-color: var(--color-main-0);
   display: inline-flex;
   flex-direction: column;
   justify-content: column;
   align-items: center;
   padding: 1.2rem 0;
+  /* overflow: visible;
+  overflow-y: scroll; */
 
   .sidebar_section {
     width: 90%;
-    padding: 2rem 1.2rem;
+    padding: 1rem 1.2rem;
   }
 
   #following {
@@ -52,6 +54,7 @@ const SectionTitle = styled.h3`
 const Following = styled.ul`
   display: block;
   overflow: scroll;
+  height: 100px;
 
   ::-webkit-scrollbar {
     display: none;
