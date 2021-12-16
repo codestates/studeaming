@@ -265,7 +265,7 @@ function Viewer() {
     },
   ]);
   const [count, setCount] = useState(viewers.current.length);
-  const [Liveon, setLiveon] = useState(true);
+  const [liveOn, setLiveOn] = useState(true);
   const [isMute, setIsMute] = useState(false);
   const [changeTitle, setChangeTitle] = useState(state.title);
   const audioRef = useRef(HTMLAudioElement);
@@ -297,7 +297,6 @@ function Viewer() {
 
     socket.on("welcome", (viewerInfo) => {
       if (viewerInfo.socketId !== socket.id) {
-        //새로운 참가자가 있는 경우 뷰어 목록에 추가하고 내 정보 보내줌
         viewers.current.push(viewerInfo);
         setCount(viewers.current.length);
 
@@ -312,7 +311,6 @@ function Viewer() {
 
     socket.on("get_viewer", (requestId, viewerInfo) => {
       if (requestId === socket.id) {
-        //새로 들어온 유저가 나라면 수신한 다른 유저들의 정보를 저장
         viewers.current.push(viewerInfo);
         setCount(viewers.current.length);
         if (count > 4) {
@@ -332,13 +330,7 @@ function Viewer() {
       if (socketId === socket.id) {
         peerConnection.onicecandidate = (data) => {
           if (data.candidate) {
-            socket.emit(
-              "ice",
-              data.candidate,
-              state.uuid,
-              hostId, //ice 받을 소켓
-              socket.id
-            );
+            socket.emit("ice", data.candidate, state.uuid, hostId, socket.id);
           }
         };
 
@@ -371,7 +363,7 @@ function Viewer() {
     });
 
     socket.on("close_room", () => {
-      setLiveon(false);
+      setLiveOn(false);
       socket.disconnect();
       peerConnection.close();
       audioRef.current.muted = true;
@@ -403,6 +395,7 @@ function Viewer() {
         peerConnection.close();
       }
     };
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -422,6 +415,7 @@ function Viewer() {
     });
 
     socketRef.current.emit("update_viewer", state.uuid, updatedUser);
+    // eslint-disable-next-line
   }, [id, username, profileImg]);
 
   useEffect(() => {
@@ -439,6 +433,7 @@ function Viewer() {
         setChangeTitle(studeamingTitle);
       }
     });
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -447,7 +442,7 @@ function Viewer() {
       <Container>
         <ScreenSection>
           <Screen>
-            {Liveon ? (
+            {liveOn ? (
               isTest ? (
                 <span
                   style={{

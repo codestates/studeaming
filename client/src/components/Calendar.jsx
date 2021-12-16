@@ -20,7 +20,6 @@ const Container = styled.section`
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  /* border: 1px solid gray; */
 `;
 
 const Head = styled.div`
@@ -214,6 +213,7 @@ function Calendar() {
 
   useEffect(() => {
     getReport(standard);
+    // eslint-disable-next-line
   }, [standard]);
 
   return (

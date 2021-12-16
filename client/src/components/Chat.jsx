@@ -127,8 +127,8 @@ function Chat({ socket, viewers, uuid }) {
     },
     { imoticon: "🙂", comment: "오늘도 화이팅이에요 🙂" },
     { imoticon: "💪", comment: "열공합시다! 💪" },
-    { imoticon: "👋", comment: "다음에 또 만나요, 안녕히계세요!👋" },
-    { imoticon: "🙏", comment: "반가워요, 잘 부탁드립니다!🙏" },
+    { imoticon: "👋", comment: "다음에 또 만나요, 안녕히계세요! 👋" },
+    { imoticon: "🙏", comment: "반가워요, 잘 부탁드립니다! 🙏" },
     { imoticon: "😭", comment: "오늘은 잘 안풀리는 날이에요 😭" },
     { imoticon: "😴", comment: "졸리네요.. 모두 잠을 이겨냅시다 😴" },
     { imoticon: "🥰", comment: "모두 잘 될 거에요 🥰" },
@@ -263,11 +263,13 @@ function Chat({ socket, viewers, uuid }) {
       newChattingList.push(Usernotification);
       setChattingList(newChattingList);
     });
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     sendHandler();
     scrollToBottom();
+    // eslint-disable-next-line
   }, [letter.message, chattingList]);
 
   return (

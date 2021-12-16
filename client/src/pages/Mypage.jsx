@@ -68,6 +68,9 @@ const MonthlyBody = styled.section`
     margin-bottom: 0.2rem;
     min-width: 330px;
     height: 14%;
+    @media screen and (max-width: 768px) {
+      justify-content: center;
+    }
   }
 
   #division_line {
@@ -91,13 +94,17 @@ const MonthlyBody = styled.section`
 
   .study_hour {
     display: inline-block;
-    font-size: 2.2rem;
+    font-size: 2rem;
     font-family: "Poppins-Regular", "OpenSans";
     font-weight: 700;
     color: var(--color-black-25);
 
     @media (min-width: 768px) and (max-width: 833px) {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
+    }
+
+    @media screen and (max-width: 500px) {
+      font-size: 1.4rem;
     }
   }
 `;

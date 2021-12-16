@@ -97,7 +97,11 @@ function Report() {
     "기타",
   ];
 
-  const reportRequestHandler = () => {};
+  const reportRequestHandler = () => {
+    // TODO: API 추가 및 report 요청
+    console.log(report);
+    console.log(reportOpt);
+  };
 
   const getPicture = (event) => {
     const src = event.target.files[0];
@@ -130,7 +134,7 @@ function Report() {
       />
       {picture ? (
         <Picture onClick={removePicture}>
-          <img src={picture} />
+          <img src={picture} alt="report" />
           <div id="remove-picture-btn">&times;</div>
         </Picture>
       ) : (
@@ -147,7 +151,7 @@ function Report() {
         </div>
       )}
       <span>❗️무분별한 신고는 제재 대상이 될 수 있습니다.</span>
-      <Button message="신고하기" />
+      <Button message="신고하기" clickEvent={reportRequestHandler} />
     </StyledReport>
   );
 }

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 import userAPI from "../api/user";
 import { modalOff } from "../store/actions";
@@ -108,7 +107,6 @@ const BadgeContainer = styled.div`
 `;
 
 function UserProfile({ username }) {
-  const { follows } = useSelector(({ followReducer }) => followReducer);
   const [profile, setProfile] = useState({
     username: "",
     profileImg: "",

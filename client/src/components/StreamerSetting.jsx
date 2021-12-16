@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { notification } from "antd";
+import "antd/dist/antd.css";
 import { modalOff } from "../store/actions";
 import useAudio from "../hooks/useAudio";
 import { v4 } from "uuid";
@@ -191,7 +193,16 @@ function StreamerSettingMockup() {
       setActive(true);
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
     } catch (err) {
-      console.log("Error opening video camera", err);
+      notification.open({
+        message: (
+          <div style={{ fontSize: "1rem" }}>카메라를 인식하지 못했습니다.</div>
+        ),
+        description: (
+          <div style={{ fontSize: "0.8rem" }}>
+            새로고침 후 다시 시도해주세요.
+          </div>
+        ),
+      });
     }
   };
 
@@ -211,7 +222,6 @@ function StreamerSettingMockup() {
   };
 
   const getSound = (ASMR, idx) => {
-    console.log(ASMR, idx);
     setStreamingInfo({ ...streamingInfo, sound: ASMR, idx: idx });
   };
 
@@ -256,12 +266,14 @@ function StreamerSettingMockup() {
         localStream.getTracks()[0].stop();
       }
     };
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     if (hover.mounted) {
       toggle(hover.idx);
     }
+    // eslint-disable-next-line
   }, [hover]);
 
   return (
@@ -290,7 +302,7 @@ function StreamerSettingMockup() {
             <Desc>썸네일을 선택하세요</Desc>
             {imageUrl ? (
               <Thumbnail onClick={removeThumbnail}>
-                <img src={imageUrl} />
+                <img src={imageUrl} alt="thumbnail" />
                 <div id="remove-thumbnail-btn">&times;</div>
               </Thumbnail>
             ) : (

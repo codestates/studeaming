@@ -93,6 +93,7 @@ function ToggleBox({
     } else {
       gsap.to(`.circle_${idx}`, { x: 0 });
     }
+    // eslint-disable-next-line
   }, [isOn]);
 
   return (

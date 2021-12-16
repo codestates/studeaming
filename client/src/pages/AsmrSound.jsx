@@ -225,7 +225,6 @@ function AsmrSound() {
 
     socket.on("welcome", (viewerInfo) => {
       if (viewerInfo.socketId !== socket.id) {
-        //새로운 참가자가 있는 경우 뷰어 목록에 추가하고 내 정보 보내줌
         viewers.current.push(viewerInfo);
         setCount(viewers.current.length);
         socket.emit(
@@ -239,7 +238,6 @@ function AsmrSound() {
 
     socket.on("get_viewer", (requestId, viewerInfo) => {
       if (requestId === socket.id) {
-        //새로 들어온 유저가 나라면 수신한 다른 유저들의 정보를 저장
         viewers.current.push(viewerInfo);
       }
       setCount(viewers.current.length);
@@ -253,7 +251,6 @@ function AsmrSound() {
     });
 
     socket.on("update_viewer", (updatedViewer) => {
-      console.log("update_viewer");
       viewers.current.forEach((viewer) => {
         if (viewer.socketId === updatedViewer.socketId) {
           viewer.id = updatedViewer.id;
@@ -266,6 +263,7 @@ function AsmrSound() {
     return () => {
       socket.disconnect();
     };
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -285,9 +283,9 @@ function AsmrSound() {
     });
 
     socketRef.current.emit("update_viewer", state.uuid, updatedUser);
+    // eslint-disable-next-line
   }, [id, username, profileImg]);
 
-  //todo: 오디오 무한재생부분 및 페이지 아웃시 음악 일시정지
   useEffect(() => {
     audioRef.current.addEventListener("ended", () => {
       audioRef.current.loop = true;
@@ -302,7 +300,6 @@ function AsmrSound() {
   }, [isMute]);
 
   useEffect(() => {
-    // if (state.uuid === "fire") keyword = "장작불 타는 소리";
     switch (state.uuid) {
       case "fire":
         setKeyword("장작 타는 소리 들으며 공부하기");
@@ -316,6 +313,7 @@ function AsmrSound() {
       default:
         return;
     }
+    // eslint-disable-next-line
   }, []);
 
   return (

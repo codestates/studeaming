@@ -242,7 +242,6 @@ function Signup() {
       formData.current.append("email", signupInfo.email);
       formData.current.append("username", signupInfo.username);
       formData.current.append("password", signupInfo.password);
-      console.log(signupInfo.image);
       authAPI
         .signup(formData.current)
         .then(() => {

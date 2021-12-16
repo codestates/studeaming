@@ -135,6 +135,7 @@ function Slider({ contents }) {
 
   useEffect(() => {
     if (transition === 0) setSlideInfo({ ...slideInfo, transition: 0.45 });
+    // eslint-disable-next-line
   }, [transition]);
 
   return (

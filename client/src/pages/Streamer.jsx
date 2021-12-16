@@ -302,11 +302,8 @@ function Streamer() {
       peerConnection.addTrack(track, localStreamRef.current);
     });
 
-    peerConnection.oniceconnectionstatechange = (e) => {
-      console.log("ice connected ", e);
-    };
-
     return peerConnection;
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -393,6 +390,7 @@ function Streamer() {
         pc.close();
       });
     };
+    // eslint-disable-next-line
   }, [localVideoRef]);
 
   useEffect(() => {
@@ -401,6 +399,7 @@ function Streamer() {
       audioRef.current.play();
     });
     audioRef.current.volume = 0.1;
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
