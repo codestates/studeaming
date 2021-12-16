@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { AiOutlineSearch } from "react-icons/ai";
 import Fuse from "fuse.js";
+import { notification } from "antd";
+import "antd/dist/antd.css";
 import {
   loginStateChange,
   verifySocialLogined,
@@ -113,7 +115,15 @@ function Home() {
         dispatch(getFollows(res.data.studeamerList));
         navigate("/home");
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        notification.open({
+          message: (
+            <div style={{ fontSize: "1rem" }}>
+              카카오 로그인에 실패했습니다.
+            </div>
+          ),
+        })
+      );
   };
 
   const tryGoogleOAuth = (authorizationCode) => {
@@ -134,7 +144,13 @@ function Home() {
         dispatch(getFollows(res.data.studeamerList));
         navigate("/home");
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        notification.open({
+          message: (
+            <div style={{ fontSize: "1rem" }}>구글 로그인에 실패했습니다.</div>
+          ),
+        })
+      );
   };
 
   const searchItem = (query) => {
@@ -172,22 +188,23 @@ function Home() {
       if (state === "kakao") tryKakaoOAuth(code);
       else if (state === "google") tryGoogleOAuth(code);
     }
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    // get contents 요청 보내기
     setIsLoading(true);
     studyroomAPI.getStudyRoom().then((res) => {
-      console.log("알이에스", res);
       setIsLoading(false);
       setAxiosItems(res.data.roomList);
       setSearchItems(res.data.roomList);
       filterHandler(res.data.roomList);
     });
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     filterHandler(searchItems);
+    // eslint-disable-next-line
   }, [selectedFilterOpt]);
 
   return (

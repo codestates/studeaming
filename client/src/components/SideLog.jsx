@@ -284,7 +284,7 @@ const ButtonContainer = styled.div`
 `;
 
 function SideLog() {
-  const { isLogin, profileImg, username, about, isSocialLogined } = useSelector(
+  const { isLogin, profileImg, username, about } = useSelector(
     ({ userReducer }) => userReducer
   );
   const [toggles, setToggles] = useState([
@@ -415,6 +415,7 @@ function SideLog() {
           dispatch(signinModalOpen(true));
         });
     }
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -442,7 +443,7 @@ function SideLog() {
       <ContentsContainer>
         <UserBox>
           <UserImg>
-            <img src={profileImg || defaultImg} />
+            <img src={profileImg || defaultImg} alt="profile" />
           </UserImg>
           <UserNameAndLogout>
             <div>

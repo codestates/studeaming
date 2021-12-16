@@ -158,6 +158,7 @@ function LogChart({ date, offset }) {
 
   useEffect(() => {
     if (isLogin) getLogsHandler();
+    // eslint-disable-next-line
   }, []);
 
   return (
