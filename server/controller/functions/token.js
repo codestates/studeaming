@@ -55,9 +55,9 @@ module.exports = {
       domain: process.env.COOKIE_DOMAIN,
       path: "/",
     });
-    res.clearCookie("refresh", {
-      domain: process.env.CLIENT_DOMAIN,
-      path: "/auth/refresh",
+    res.cookie("refresh", "", {
+      ...cookieOpt,
+      path: "/auth/token",
     });
   },
 };
