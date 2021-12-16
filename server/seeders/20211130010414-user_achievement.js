@@ -35,6 +35,10 @@ module.exports = {
         },
         {
           user_id: 4,
+          achievement_id: 3,
+        },
+        {
+          user_id: 4,
           achievement_id: 8,
         },
       ],
