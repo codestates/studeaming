@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { profileModalOpen, reportModalOpen } from "../store/actions/index";
 import { IoPeople } from "react-icons/io5";
@@ -11,6 +11,8 @@ import { io } from "socket.io-client";
 import Chat from "../components/Chat";
 import FollowBtn from "../components/FollowBtn";
 import defaultImg from "../assets/images/img_profile_default.svg";
+import { notification } from "antd";
+import "antd/dist/antd.css";
 
 const StyledViewer = styled.section`
   width: 100%;
@@ -237,6 +239,7 @@ function Viewer() {
     ({ userReducer }) => userReducer
   );
   const { state } = useLocation();
+  const navigate = useNavigate();
   const date = new Date(state.createdAt * 60 * 1000);
   const time =
     date.getHours > 12
@@ -305,6 +308,16 @@ function Viewer() {
     socket.on("get_viewer", (requestId, viewerInfo) => {
       if (requestId === socket.id) {
         //새로 들어온 유저가 나라면 수신한 다른 유저들의 정보를 저장
+        if (viewerInfo.length > 3) {
+          notification.warning({
+            message: (
+              <div style={{ fontSize: "1rem" }}>
+                입장 가능 인원이 초과되었습니다.
+              </div>
+            ),
+          });
+          navigate("/home");
+        }
         viewers.current.push(viewerInfo);
         setCount(viewers.current.length);
       }
