@@ -26,6 +26,8 @@ const Container = styled.div`
     align-items: center;
     width: calc(100vw - 300px);
     height: calc(100vh - 80px);
+    min-width: 330px;
+    min-height: 450px;
 
     @media screen and (max-width: 768px) {
       width: 100vw;
@@ -36,7 +38,7 @@ const Container = styled.div`
   }
 
   @media screen and (max-width: 768px) {
-    justify-content: flex-end;
+    justify-content: flex-start;
     flex-direction: column;
   }
 
@@ -50,6 +52,7 @@ const MonthlyBody = styled.section`
   height: 100%;
   max-width: 1000px;
   min-width: 330px;
+  min-height: 450px;
   padding: 2.4rem 2.4rem;
   position: relative;
   @media screen and (max-width: 768px) {
