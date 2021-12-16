@@ -236,8 +236,10 @@ function Calendar() {
       </Head>
       <Body>
         <div className="day-box">
-          {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
-            <span className="day-text">{day}</span>
+          {["일", "월", "화", "수", "목", "금", "토"].map((day, idx) => (
+            <span className="day-text" key={idx}>
+              {day}
+            </span>
           ))}
         </div>
         {generate()}
