@@ -265,6 +265,7 @@ function Viewer() {
   const [isMute, setIsMute] = useState(false);
   const [changeTitle, setChangeTitle] = useState(state.title);
   const audioRef = useRef(HTMLAudioElement);
+  const isTest = state.user_id === "2" || state.user_id === "3";
 
   const openUserProfile = (name) => {
     dispatch(profileModalOpen(true, name));
@@ -445,7 +446,19 @@ function Viewer() {
         <ScreenSection>
           <Screen>
             {Liveon ? (
-              <Cam ref={peerVideoRef} autoPlay playsInline undefined />
+              isTest ? (
+                <span
+                  style={{
+                    color: "white",
+                    fontSize: "2rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  테스트용 데이터입니다
+                </span>
+              ) : (
+                <Cam ref={peerVideoRef} autoPlay playsInline undefined />
+              )
             ) : (
               <span
                 style={{ color: "white", fontSize: "2rem", fontWeight: "bold" }}
