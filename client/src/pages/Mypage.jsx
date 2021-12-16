@@ -18,6 +18,7 @@ import Calendar from "../components/Calendar";
 const Container = styled.div`
   display: flex;
   justify-content: flex-start;
+  height: calc(100vh - 80px);
 
   .statistics-container {
     display: flex;
