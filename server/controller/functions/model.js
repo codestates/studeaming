@@ -15,7 +15,7 @@ module.exports = {
         where: { username },
       });
 
-      if (!user && username) {
+      if (!user) {
         return true;
       } else {
         return false;
@@ -31,7 +31,7 @@ module.exports = {
         where: { email },
       });
 
-      if (!user && email) {
+      if (!user) {
         return true;
       } else {
         return false;
