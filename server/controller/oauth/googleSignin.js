@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
     } else {
       res.status(401).send({ message: "Invalid authorization code" });
     }
-  } catch (e) {
-    res.status(500).send(e);
+  } catch {
+    res.sendStatus(500);
   }
 };

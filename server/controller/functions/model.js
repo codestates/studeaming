@@ -51,7 +51,7 @@ module.exports = {
       return null;
     }
   },
-  // todo: refactor
+
   getStudyTime: async (studylogList, start, end) => {
     return studylogList
       .filter((log) => log.name !== "휴식")
@@ -75,6 +75,7 @@ module.exports = {
         }
       }, 0);
   },
+
   getStudylogs: async (id, start, end) => {
     const studylogList = await Studylog.findAll({
       where: {
@@ -95,7 +96,7 @@ module.exports = {
       } else if (log.finishedAt > end) {
         log.finishedAt = end;
       }
-    }); //각 배열 요소들의 startedAt(start보다 전이라면 start)부터 finishedAt(null이라면 현재시간, end보다 뒤라면 end)까지
+    });
 
     return studylogList;
   },

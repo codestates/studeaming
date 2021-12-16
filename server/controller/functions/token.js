@@ -14,6 +14,7 @@ module.exports = {
     });
     res.cookie("authorization", accessToken, { ...cookieOpt, path: "/" });
   },
+
   sendRefreshToken: (res, data) => {
     const refreshToken = sign(data, process.env.REFRESH_SECRET, {
       expiresIn: "7d",
@@ -24,6 +25,7 @@ module.exports = {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
   },
+
   isAccessAuthorized: (req) => {
     const authorization = req.cookies["authorization"];
     if (!authorization) {
@@ -35,6 +37,7 @@ module.exports = {
       return null;
     }
   },
+
   isRefreshAuthorized: (req) => {
     const refreshToken = req.cookies["refresh"];
     if (!refreshToken) {
@@ -46,6 +49,7 @@ module.exports = {
       return null;
     }
   },
+
   clearToken: (res) => {
     res.clearCookie("authorization", {
       domain: process.env.COOKIE_DOMAIN,
