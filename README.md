@@ -4,7 +4,7 @@
 
 <img src="https://user-images.githubusercontent.com/85829962/146155478-f263f9b7-6816-4f29-a1e4-c97dc3a1fbd6.png" />
 
-<img height="250" alt="streaming" src="https://user-images.githubusercontent.com/85829962/146299269-865cdd03-8924-4564-96fe-d3bc3da72e09.png"> <img height="250" alt="mypage" src="https://user-images.githubusercontent.com/85829962/146310340-29861ea5-1e57-4f07-a96b-77b6c1d0e474.png">
+<img height="220" alt="streaming" src="https://user-images.githubusercontent.com/85829962/146299269-865cdd03-8924-4564-96fe-d3bc3da72e09.png"> <img height="220" alt="mypage" src="https://user-images.githubusercontent.com/85829962/146310340-29861ea5-1e57-4f07-a96b-77b6c1d0e474.png">
 
 <b><a href="http://studeaming.com">👉🏼 studeaming 사이트 바로가기</a></b>  
 <b><a href="https://github.com/codestates/studeaming/wiki">👉🏼 studeaming 프로젝트 위키 바로가기</a></b>
