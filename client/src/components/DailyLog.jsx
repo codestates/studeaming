@@ -67,6 +67,7 @@ const Container = styled.div`
     flex-direction: column;
     padding: 0 0 0.4rem;
     margin-top: 0.6rem;
+    margin-left: 4px;
 
     @media screen and (max-width: 768px) {
       display: none;
@@ -76,6 +77,7 @@ const Container = styled.div`
   .studytime-title {
     font-size: 0.9rem;
     color: var(--color-black-25);
+    margin-left: 3px;
   }
 
   .studytime {
