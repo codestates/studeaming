@@ -262,7 +262,7 @@ module.exports = {
           name: "화학",
           color: "blue",
           startedAt: new Date("2021-12-15T21:00:00").getTime() / (1000 * 60),
-          finishedAt: new Date("2021-12-15T22:30:00").getTime() / (1000 * 60),
+          finishedAt: new Date("2021-12-15T22:14:00").getTime() / (1000 * 60),
         },
       ],
       {}
