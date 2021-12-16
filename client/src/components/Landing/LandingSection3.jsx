@@ -65,12 +65,12 @@ const Description = styled.section`
 
 const ImageContainer = styled.div`
   width: 500px; //600px or 800px
-  height: 300px;
+  height: 350px;
   position: relative;
 
   @media screen and (max-width: 600px) {
     width: 330px;
-    height: 198px;
+    height: 231px;
   }
 `;
 
@@ -80,11 +80,15 @@ const CalenderImg = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  border: 1px solid;
+  border-radius: 6px;
+  box-shadow: 0px 0px 10px var(--color-gray-bg-100);
+  background-image: url(${(props) => props.img});
+  background-repeat: no-repeat;
+  background-size: cover;
 
   @media screen and (max-width: 600px) {
     width: 330px;
-    height: 198px;
+    height: 231px;
   }
 `;
 
@@ -95,11 +99,14 @@ const DailyImg = styled.div`
   top: 0;
   left: 0;
   opacity: 0;
-  background-color: lightgrey;
+  border-radius: 6px;
+  background-image: url(${(props) => props.img});
+  background-repeat: no-repeat;
+  background-size: cover;
 
   @media screen and (max-width: 600px) {
     width: 330px;
-    height: 198px;
+    height: 231px;
   }
 `;
 
@@ -155,8 +162,14 @@ function LandingSection3() {
           </span>
         </Description>
         <ImageContainer>
-          <CalenderImg id="section3-image" />
-          <DailyImg id="section3-modal-image" />
+          <CalenderImg
+            id="section3-image"
+            img={"/assets/images/landing_mypage_1.png"}
+          />
+          <DailyImg
+            id="section3-modal-image"
+            img={"/assets/images/landing_mypage_2.png"}
+          />
         </ImageContainer>
       </Wrapper>
     </Container>
