@@ -24,6 +24,24 @@ module.exports = {
           isOn: false,
         },
         {
+          user_id: 2,
+          name: "전자기학",
+          color: "yellow",
+          isOn: false,
+        },
+        {
+          user_id: 2,
+          name: "회로이론",
+          color: "yellow",
+          isOn: false,
+        },
+        {
+          user_id: 3,
+          name: "디지털 신호처리",
+          color: "yellow",
+          isOn: false,
+        },
+        {
           user_id: 1,
           name: "전자기학",
           color: "red",
