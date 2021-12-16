@@ -487,7 +487,7 @@ function Viewer() {
               </span>
               <div id="study_people">
                 <IoPeople />
-                <span>{count}명 공부중</span>
+                <span>{count}명 공부 중</span>
               </div>
             </InfoSection2>
           </StudeamerInfo>
