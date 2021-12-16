@@ -43,10 +43,11 @@ module.exports = {
       );
 
       res.send({ roomList: roomList });
-    } catch (e) {
-      res.status(500).send(e);
+    } catch {
+      res.sendStatus(500);
     }
   },
+
   post: async (req, res) => {
     try {
       const user = isAccessAuthorized(req);
@@ -67,7 +68,7 @@ module.exports = {
       } else {
         res.sendStatus(500);
       }
-    } catch (e) {
+    } catch {
       res.sendStatus(500);
     }
   },

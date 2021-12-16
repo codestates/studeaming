@@ -21,6 +21,7 @@ module.exports = {
       res.status(500).send(e);
     }
   },
+
   post: async (req, res) => {
     try {
       const user_id = isAccessAuthorized(req).id;
@@ -37,6 +38,7 @@ module.exports = {
       res.status(500).send(e);
     }
   },
+
   delete: async (req, res) => {
     try {
       const user_id = isAccessAuthorized(req).id;

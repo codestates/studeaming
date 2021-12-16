@@ -44,7 +44,6 @@ module.exports = {
       const user = isAccessAuthorized(req);
 
       const logToUpdate = await Studylog.findOne({
-        //업데이트할 로그의 아이디를 우선 조회
         where: {
           user_id: user.id,
           finishedAt: { [Op.is]: null },
@@ -53,7 +52,6 @@ module.exports = {
       });
 
       const updated = await Studylog.update(
-        //아이디에 해당하는 로그 끝나는 시간을 현재 시간으로 업데이트
         { finishedAt: Date.now() / (60 * 1000) },
         { where: { finishedAt: { [Op.is]: null } } }
       );
@@ -71,7 +69,6 @@ module.exports = {
           checkAchievement.studyHalfDay(user.id);
         }
 
-        //요청받은 로그도 있고 업데이트도 성공했으면 성공 응답
         res.send({
           studylog: {
             id: logToUpdate.id,

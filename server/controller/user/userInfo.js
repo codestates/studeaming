@@ -75,7 +75,7 @@ module.exports = {
       decrypt(res, currentPassword, user.password, () => {
         encrypt(res, newPassword, async (hash) => {
           await User.update({ password: hash }, { where: { id } });
-          res.send({ message: "Password updated" }); //todo:gitbook
+          res.send({ message: "Password updated" });
         });
       });
     } catch (e) {

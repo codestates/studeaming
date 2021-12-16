@@ -15,7 +15,7 @@ module.exports = {
         socket.join(uuid);
         socket.data.uuid = uuid;
         socket.data.userId = id;
-      } catch (e) {}
+      } catch {}
     });
 
     socket.on("join_room", async (viewerInfo) => {
@@ -41,17 +41,14 @@ module.exports = {
     });
 
     socket.on("offer", (offer, uuid, socketId, hostId, soundIdx) => {
-      console.log("호스트가 offer 보냄", hostId);
       socket.to(uuid).emit("offer", offer, socketId, hostId, soundIdx);
     });
 
     socket.on("answer", (answer, uuid, socketId) => {
-      console.log("참여자가 answer 보냄");
       socket.to(uuid).emit("answer", answer, socketId);
     });
 
     socket.on("ice", (ice, uuid, recieverId, senderId) => {
-      console.log("icecandidate", ice, "to", recieverId);
       socket.to(uuid).emit("ice", ice, recieverId, senderId);
     });
 
@@ -75,7 +72,7 @@ module.exports = {
           { where: { user_id: id } }
         );
         socket.to(uuid).emit("update_title", studeamingTitle);
-      } catch (err) {}
+      } catch {}
     });
 
     socket.on("disconnect", async () => {
