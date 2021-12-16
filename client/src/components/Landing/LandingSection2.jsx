@@ -29,15 +29,17 @@ const Container = styled.div`
 
 const ImgContainer = styled.div`
   width: 500px;
-  height: 300px;
-  border: 1px solid black;
-  /* background-image: url(${(props) => props.img}); */
+  height: 280px;
+  background-image: url(${(props) => props.img});
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
+  border-radius: 6px;
+  box-shadow: 0px 0px 10px var(--color-gray-bg-100);
 
   @media screen and (max-width: 600px) {
     width: 330px;
-    height: 198px;
+    height: 175px;
   }
 `;
 
@@ -149,7 +151,10 @@ function LandingSection2() {
   return (
     <Container>
       <div id="section2-container">
-        <ImgContainer className="section2-image" />
+        <ImgContainer
+          className="section2-image"
+          img="/assets/images/landing_streaming.gif"
+        />
         <TextContainer>
           <h2 id="stream-header">실시간 스터디윗미</h2>
           <h3 id="stream-header-desc">
