@@ -22,6 +22,7 @@ const CloseBtn = styled.div`
   right: 30px;
   cursor: pointer;
   font-size: 26px;
+  z-index: 100;
 `;
 
 const ModalWrapper = styled.div`
