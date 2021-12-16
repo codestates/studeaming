@@ -74,6 +74,10 @@ const TextContainer = styled.div`
       justify-content: flex-start;
       align-items: start;
       margin-bottom: 0.2rem;
+
+      span {
+        color: var(--color-black-50);
+      }
     }
   }
 
