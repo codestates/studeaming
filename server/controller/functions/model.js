@@ -16,9 +16,9 @@ module.exports = {
       });
 
       if (!user && username) {
-        return false;
-      } else {
         return true;
+      } else {
+        return false;
       }
     } catch (err) {
       return null;
@@ -32,9 +32,9 @@ module.exports = {
       });
 
       if (!user && email) {
-        return false;
-      } else {
         return true;
+      } else {
+        return false;
       }
     } catch (err) {
       return null;
