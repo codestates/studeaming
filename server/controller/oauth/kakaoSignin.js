@@ -12,11 +12,10 @@ module.exports = async (req, res) => {
 
       if (data) {
         const subId = data.id;
-        const nickname = data.kakao_account.profile_nickname_needs_agreement
+        const nickname = data.kakao_account.profile
           ? data.kakao_account.profile.nickname
           : undefined;
-        const profile_image_url = data.kakao_account
-          .profile_image_needs_agreement
+        const profile_image_url = data.kakao_account.profile
           ? data.kakao_account.profile.profile_image_url
           : "";
 
