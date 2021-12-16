@@ -64,6 +64,8 @@ module.exports = {
 
       if (studyroom) {
         res.send({ studyroom: studyroom });
+      } else {
+        res.sendStatus(500);
       }
     } catch (e) {
       res.sendStatus(500);
