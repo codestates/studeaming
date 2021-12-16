@@ -79,8 +79,8 @@ const UserImg = styled.div`
 `;
 
 const UserNameAndLogout = styled.div`
-  margin-top: 4px;
   width: 100%;
+  margin-left: 4px;
 
   > div {
     > .nickname {
