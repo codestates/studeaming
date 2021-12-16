@@ -313,7 +313,10 @@ function Viewer() {
     socket.on("get_viewer", (requestId, viewerInfo) => {
       if (requestId === socket.id) {
         //새로 들어온 유저가 나라면 수신한 다른 유저들의 정보를 저장
-        if (viewerInfo.length > 3) {
+        viewers.current.push(viewerInfo);
+        setCount(viewers.current.length);
+        if (count > 4) {
+          navigate("/home");
           notification.warning({
             message: (
               <div style={{ fontSize: "1rem" }}>
@@ -321,10 +324,7 @@ function Viewer() {
               </div>
             ),
           });
-          navigate("/home");
         }
-        viewers.current.push(viewerInfo);
-        setCount(viewers.current.length);
       }
     });
 
@@ -440,8 +440,6 @@ function Viewer() {
       }
     });
   }, []);
-
-  console.log(state.title);
 
   return (
     <StyledViewer>
