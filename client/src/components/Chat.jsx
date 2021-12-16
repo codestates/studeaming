@@ -48,7 +48,8 @@ const ChatInput = styled.input`
   border-radius: 5px;
   background-color: #f8f8f8;
   font-size: 12px;
-  padding-left: 30px;
+  padding-left: 35px;
+  padding-bottom: 0.1rem;
 
   > .non_member {
     color: #838080;
@@ -212,6 +213,7 @@ function Chat({ socket, viewers, uuid }) {
               height: "30px",
               borderRadius: "50%",
               margin: "5px",
+              objectFit: "cover",
             }}
           />
           <span
