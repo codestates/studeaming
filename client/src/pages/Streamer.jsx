@@ -252,9 +252,13 @@ function Streamer() {
   const navigate = useNavigate();
   const date = new Date(createdAt);
   const time =
-    date.getHours > 12
-      ? `오후 ${date.getHours()}시 ${date.getMinutes()}분`
-      : `오전 ${date.getHours()}시 ${date.getMinutes()}분`;
+    date.getHours() === 0
+      ? `오전 12시 ${date.getMinutes()}분`
+      : date.getHours() >= 1 && date.getHours() < 12
+      ? `오전 ${date.getHours()}시 ${date.getMinutes()}분`
+      : date.getHours() === 12
+      ? `오후 12시 ${date.getMinutes()}분`
+      : `오후 ${date.getHours() - 12}시 ${date.getMinutes()}분`;
 
   const muteHandler = () => {
     setIsMute(!isMute);
