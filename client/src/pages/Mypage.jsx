@@ -164,9 +164,19 @@ function Mypage() {
         dispatch(loginStateChange(false));
         navigate("/home");
       })
+      .then(() => {
+        setTimeout(() => {
+          localStorage.clear();
+          window.location.reload();
+        }, 0);
+      })
       .catch(() => {
         dispatch(loginStateChange(false));
         navigate("/home");
+        setTimeout(() => {
+          localStorage.clear();
+          // window.location.reload();
+        }, 0);
       });
   };
 

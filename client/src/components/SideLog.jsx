@@ -303,11 +303,27 @@ function SideLog() {
   const offset = date.getTimezoneOffset();
 
   const logoutHandler = () => {
-    authAPI.signout().then(() => {
-      dispatch(loginStateChange(false));
-      dispatch(sideLogOpen(false));
-      navigate("/home");
-    });
+    authAPI
+      .signout()
+      .then(() => {
+        dispatch(loginStateChange(false));
+        dispatch(sideLogOpen(false));
+        navigate("/home");
+      })
+      .then(() => {
+        setTimeout(() => {
+          localStorage.clear();
+          window.location.reload();
+        }, 0);
+      })
+      .catch(() => {
+        dispatch(loginStateChange(false));
+        navigate("/home");
+        setTimeout(() => {
+          localStorage.clear();
+          window.location.reload();
+        }, 0);
+      });
   };
 
   const editCompleteHandler = () => {
