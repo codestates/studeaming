@@ -58,6 +58,7 @@ module.exports = {
     res.cookie("refresh", "", {
       ...cookieOpt,
       path: "/auth/token",
+      maxAge: -1,
     });
   },
 };

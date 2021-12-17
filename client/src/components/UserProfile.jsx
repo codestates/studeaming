@@ -31,6 +31,7 @@ const UserInfo = styled.section`
 
   #profile_img {
     width: 60px;
+    border-radius: 50%;
   }
 
   .description {
