@@ -295,7 +295,7 @@ function Chat({ socket, viewers, uuid }) {
           onKeyUp={(e) => onKeyUpHandler(e, letter.idx)}
           ref={inputRef}
           readOnly
-          placeholder={isLogin ? "" : "로그인 후 이용가능 합니다."}
+          placeholder={isLogin ? "" : "로그인 후 이용 가능합니다."}
         />
         {letter.message ? (
           <CloseIcon
