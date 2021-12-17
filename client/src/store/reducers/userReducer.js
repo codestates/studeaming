@@ -19,10 +19,7 @@ const initState = {
 const userReducer = (state = initState, action) => {
   switch (action.type) {
     case CHANGE_LOGIN_STATE:
-      if (!action.payload) {
-        localStorage.removeItem("persist:root");
-        return { ...initState };
-      } else return { ...state, isLogin: action.payload };
+      return action.payload ? { ...state, isLogin: true } : { ...initState };
     case VERIFY_SOCIAL_LOGINED:
       return { ...state, isSocialLogined: action.payload };
     case VERIFY_GUEST_LOGINED:

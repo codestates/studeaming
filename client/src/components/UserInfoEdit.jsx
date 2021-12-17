@@ -78,6 +78,7 @@ function UserInfoEdit() {
 
   const removeProfileImg = () => {
     setImageUrl(null);
+    setEditInfo({ ...editInfo, profileImg: "" });
   };
 
   const handleInputValue = (key) => (e) => {

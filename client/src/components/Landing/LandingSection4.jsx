@@ -93,7 +93,7 @@ const ToggleImg1 = styled(ToggleSection)`
   position: absolute;
   right: 15%;
   bottom: 30%;
-  box-shadow: 0 0 10px var(--color-black-25);
+  box-shadow: 0px 0px 10px var(--color-gray-bg-100);
 
   @media screen and (max-width: 900px) {
     width: 70px;
@@ -109,7 +109,7 @@ const ToggleImg2 = styled(ToggleSection)`
   position: absolute;
   right: -20%;
   bottom: 20%;
-  box-shadow: 0 0 10px var(--color-black-25);
+  box-shadow: 0px 0px 10px var(--color-gray-bg-100);
 
   @media screen and (max-width: 900px) {
     width: 70px;

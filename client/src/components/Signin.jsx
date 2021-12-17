@@ -155,11 +155,12 @@ function Signin() {
         dispatch(modalOff());
         notification.open({
           message: (
-            <div style={{ fontSize: "1rem" }}>게스트로 로그인되었습니다.</div>
+            <div style={{ fontSize: "1rem" }}>게스트로 로그인되었습니다</div>
           ),
           description: (
             <div style={{ fontSize: "0.8rem" }}>
-              1시간 뒤 만료되니 이어서 이용하시려면 회원가입해주세요.
+              게스트 로그인은 1시간 뒤 만료되며 스트리밍이 불가합니다. <br />
+              이어서 이용하시려면 회원가입해주세요!
             </div>
           ),
         });
