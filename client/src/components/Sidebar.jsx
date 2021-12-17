@@ -9,7 +9,6 @@ const Container = styled.div`
   background-color: var(--color-main-0);
   display: inline-flex;
   flex-direction: column;
-  justify-content: column;
   align-items: center;
   padding: 1.2rem 0;
 
@@ -18,12 +17,19 @@ const Container = styled.div`
     padding: 1rem 1.2rem;
   }
 
-  #following {
+  /* #following {
     flex: 1 0 auto;
-  }
+  } */
 
   section {
     display: inline-block;
+  }
+
+  #user_edit {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
   }
 
   button {
@@ -56,11 +62,7 @@ const SectionTitle = styled.h3`
 const Following = styled.ul`
   display: block;
   overflow: scroll;
-  height: 100px;
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
+  height: 200px;
 
   li {
     display: flex;
@@ -74,6 +76,7 @@ const Following = styled.ul`
     height: 32px;
     margin-right: 0.8rem;
     border-radius: 50%;
+    object-fit: cover;
   }
 
   .following_name {
