@@ -64,6 +64,10 @@ const Following = styled.ul`
   overflow: scroll;
   height: 200px;
 
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   li {
     display: flex;
     align-items: center;
