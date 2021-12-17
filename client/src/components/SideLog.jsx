@@ -46,7 +46,7 @@ const SideLogSection = styled.div`
     box-shadow: none;
     border-radius: 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-    padding: 25px;
+    padding: 15px;
   }
 `;
 
@@ -81,6 +81,7 @@ const UserImg = styled.div`
 const UserNameAndLogout = styled.div`
   width: 100%;
   margin-left: 4px;
+  position: relative;
 
   > div {
     > .nickname {
@@ -93,9 +94,10 @@ const UserNameAndLogout = styled.div`
       font-size: 12px;
       color: #6e6e6e;
       cursor: pointer;
-      margin-right: 75px;
     }
     > .logout {
+      position: absolute;
+      right: 0;
       margin-top: 4px;
       cursor: pointer;
       font-size: 12px;
@@ -120,6 +122,10 @@ const ToggleBoxWrapper = styled.div`
   grid-template-rows: repeat(auto-fill, 1fr);
   grid-template-columns: repeat(3, 1fr);
   gap: 5px 5px;
+
+  @media screen and (max-width: 480px) {
+    margin-left: -10px;
+  }
 `;
 
 const ToggleAddBox = styled.div`
@@ -196,6 +202,14 @@ const PlusIcon = styled(IoIosAdd)`
   :hover {
     cursor: pointer;
     font-size: 30px;
+  }
+`;
+
+const LogChartWrapper = styled.div`
+  height: 100%;
+
+  @media screen and (max-width: 480px) {
+    margin-left: -10px;
   }
 `;
 
@@ -463,7 +477,12 @@ function SideLog() {
           </UserImg>
           <UserNameAndLogout>
             <div>
-              <span className="nickname">{username || "김코딩"} 님</span>
+              <span className="nickname">
+                {username.length > 7
+                  ? username.slice(0, 7) + "..."
+                  : username || "김코딩"}{" "}
+                님
+              </span>
               {isLogin ? (
                 <>
                   <span className="user_edit" onClick={userInfoEditHandler}>
@@ -542,9 +561,9 @@ function SideLog() {
             )
           ) : null}
         </ToggleBoxWrapper>
-        <div style={{ height: "100%" }}>
+        <LogChartWrapper>
           <LogChart date={eightDigitDate} offset={offset} />
-        </div>
+        </LogChartWrapper>
         <SideLogCloseBackIcon onClick={sideLogCloseBackIconHandler} />
         <SideLogCloseUpIcon>
           <IoIosArrowUp
