@@ -116,7 +116,7 @@ const CommentBox = styled.div`
 `;
 
 function DailyLog({ moment }) {
-  const [studyTime, setStudyTime] = useState({ hour: 9, minute: 52 });
+  const [studyTime, setStudyTime] = useState({ hour: 0, minute: 0 });
   const [isEditing, setIsEditing] = useState(false);
   const [comment, setComment] = useState("");
   const [isForSure, setIsForSure] = useState(false);
@@ -155,11 +155,11 @@ function DailyLog({ moment }) {
 
   const removeHandler = () => {
     setIsEditing(false);
-    setComment("");
     logAPI
-      .modifyComment(date, comment)
+      .modifyComment(date, "")
       .then(() => {
         setIsForSure(false);
+        setComment("");
       })
       .catch(() => {
         dispatch(loginStateChange(false));
