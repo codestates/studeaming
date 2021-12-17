@@ -25,7 +25,7 @@ const SideLogSection = styled.div`
   height: 690px;
   display: flex;
   flex-direction: column;
-  padding: 35px;
+  padding: 30px 35px 35px 30px;
   border-radius: 0 1rem 1rem 0;
   position: fixed;
   top: 20px;
