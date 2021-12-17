@@ -175,7 +175,7 @@ function Mypage() {
         navigate("/home");
         setTimeout(() => {
           localStorage.clear();
-          // window.location.reload();
+          window.location.reload();
         }, 0);
       });
   };
