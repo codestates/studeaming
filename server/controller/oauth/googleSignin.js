@@ -22,7 +22,9 @@ module.exports = async (req, res) => {
           raw: true,
         });
 
-        await setDefault(user.id);
+        if (created) {
+          await setDefault(user.id);
+        }
 
         sendAccessToken(res, { id: user.id });
         sendRefreshToken(res, { id: user.id });
