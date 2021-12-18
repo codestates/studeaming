@@ -33,6 +33,7 @@ const SideLogSection = styled.div`
   z-index: 3000;
   background-color: white;
   box-shadow: 0px 0px 15px #8d8d8d;
+  opacity: 0;
 
   ::-webkit-scrollbar {
     display: none;
@@ -397,7 +398,7 @@ function SideLog() {
   };
 
   const sideLogCloseBackIconHandler = () => {
-    gsap.to("#side_log", { x: -400, duration: 1 });
+    gsap.to("#side_log", { x: -330, duration: 1 });
     setTimeout(() => {
       dispatch(sideLogOpen(false));
     }, 1000);

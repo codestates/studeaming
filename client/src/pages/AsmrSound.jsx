@@ -16,6 +16,7 @@ const StyledAsmrSound = styled.div`
 
   @media screen and (max-width: 480px) {
     height: calc(100vh - 60px);
+    padding: 0;
   }
 `;
 
@@ -53,7 +54,7 @@ const ScreenSection = styled.section`
 const Screen = styled.div`
   width: 100%;
   max-width: 1280px;
-  min-width: 360px;
+  min-width: 330px;
   height: 100%;
   min-height: 240px;
   position: relative;
@@ -103,11 +104,12 @@ const Img = styled.div`
 
 const StudeamerInfo = styled.div`
   max-width: 1280px;
-  min-width: 360px;
+  min-width: 330px;
   width: 100%;
   height: 15%;
   min-height: 150px;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   padding: 20px 10px;
 `;
@@ -131,36 +133,12 @@ const InfoSection1 = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
-  > .stream_desc {
-    color: var(--color-black-50);
-  }
-
-  > .studeamer_info {
-    display: flex;
-    align-items: center;
-
-    > img {
-      height: 45px;
-      width: 45px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 10px;
-    }
-
-    > span {
-      display: inline-block;
-      vertical-align: middle;
-      line-height: normal;
-    }
-  }
 `;
 
 const InfoSection2 = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: end;
-  justify-content: end;
+  justify-content: space-between;
   color: #838080;
   min-width: 120px;
 
@@ -170,9 +148,15 @@ const InfoSection2 = styled.div`
   }
 
   > #study_people {
+    min-width: 100px;
     display: flex;
     align-items: center;
     gap: 0.4rem;
+  }
+
+  > .stream_desc {
+    color: var(--color-black-50);
+    word-break: keep-all;
   }
 `;
 
@@ -184,7 +168,7 @@ const ChatSection = styled.section`
 
   @media screen and (max-width: 1000px) {
     width: 100%;
-    min-width: 360px;
+    min-width: 330px;
   }
 `;
 
@@ -333,12 +317,12 @@ function AsmrSound() {
           <StudeamerInfo>
             <InfoSection1>
               <span className="stream_title">ASMR👂 {keyword}</span>
+            </InfoSection1>
+            <InfoSection2>
               <span className="stream_desc">
                 ASMR 사운드에 집중할 수 있는 오디오 온리 페이지입니다.
                 열공하세요!
               </span>
-            </InfoSection1>
-            <InfoSection2>
               <div id="study_people">
                 <IoPeople />
                 <span>{count}명 공부 중</span>

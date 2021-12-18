@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
 
         break;
 
-      default:
+      case "original":
         encryptPassword.decrypt(
           res,
           req.body.password,
@@ -41,6 +41,13 @@ module.exports = async (req, res) => {
             res.sendStatus(204);
           }
         );
+
+        break;
+
+      default:
+        await dropData(user.id);
+        clearToken(res);
+        res.sendStatus(204);
     }
   } catch (e) {
     res.status(500).send(e);

@@ -70,7 +70,7 @@ function PwdEdit() {
       currentPwInput.current.focus();
     } else if (isValid.fresh && isValid.check) {
       userAPI
-        .modifyUserInfo(password.current, password.fresh)
+        .modifyPassword(password.current, password.fresh)
         .then(() => {
           setIsSuccess(true);
         })

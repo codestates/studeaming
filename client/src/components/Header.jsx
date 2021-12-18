@@ -20,6 +20,7 @@ import project_logo_web from "../assets/images/project_logo_web.svg";
 
 const HeaderSection = styled.section`
   width: 100%;
+  min-width: 330px;
   height: 80px;
   padding: 20px 0;
   display: flex;
@@ -107,56 +108,47 @@ const MobileLogo = styled(WebLogo)`
 `;
 
 const UserBox = styled.div`
-  margin-right: 3rem;
+  display: flex;
+  gap: 3rem;
+  margin-right: 2rem;
   margin-bottom: -4px;
 
   @media screen and (max-width: 768px) {
     margin-right: 1.5rem;
+  }
+
+  @media screen and (max-width: 480px) {
+    gap: 1.5rem;
+    margin-bottom: -2px;
   }
 `;
 
 const Video = styled(AiOutlineVideoCamera)`
   font-size: 1.4rem;
   color: var(--color-black-50);
+  cursor: pointer;
 
   @media screen and (max-width: 1024px) {
     display: none;
   }
-  margin: 0 1.75rem;
-  cursor: pointer;
 `;
 
 const User = styled(AiOutlineUser)`
-  margin-left: 1.75rem;
-  cursor: pointer;
   font-size: 1.4rem;
   color: var(--color-black-50);
-
-  @media screen and (max-width: 420px) {
-    margin-left: 0.75rem;
-  }
+  cursor: pointer;
 `;
 
 const HomeIcon = styled(AiOutlineHome)`
-  cursor: pointer;
-  margin-right: 1.5rem;
   font-size: 1.4rem;
   color: var(--color-black-50);
-
-  @media screen and (max-width: 768px) {
-    margin-right: 0.3rem;
-  }
+  cursor: pointer;
 `;
 
 const LoginIcon = styled(AiOutlineLogin)`
-  cursor: pointer;
-  margin-left: 1.5rem;
   font-size: 1.4rem;
   color: var(--color-black-50);
-
-  @media screen and (max-width: 768px) {
-    margin-left: 0.3rem;
-  }
+  cursor: pointer;
 `;
 
 function Header() {
@@ -171,10 +163,11 @@ function Header() {
     if (!isSideLogOpen) {
       dispatch(sideLogOpen(true));
       setTimeout(() => {
-        gsap.from("#side_log", { x: -480, duration: 1 });
+        gsap.from("#side_log", { x: -330, duration: 1 });
+        gsap.to("#side_log", { opacity: 1, duration: 0.2 });
       }, 0);
     } else {
-      gsap.to("#side_log", { x: -480, duration: 1 });
+      gsap.to("#side_log", { x: -330, duration: 1 });
       setTimeout(() => {
         dispatch(sideLogOpen(false));
       }, 500);
@@ -186,6 +179,11 @@ function Header() {
     setTimeout(() => {
       gsap.from("#side_log", {
         y: -400,
+        duration: 1,
+      });
+      gsap.to("#side_log", {
+        opacity: 1,
+        duration: 0.1,
       });
     }, 0);
   };
