@@ -26,6 +26,7 @@ const ChatSection = styled.ul`
   flex-direction: column;
   overflow: scroll;
   margin-bottom: 4px;
+  padding: 10px;
 
   ::-webkit-scrollbar {
     display: none;
@@ -242,7 +243,7 @@ function Chat({ socket, viewers, uuid }) {
 
     socket.on("welcome", (user) => {
       const Usernotification = (
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "center", marginBottom: "10px" }}>
           <span style={{ fontSize: "12px", color: "var(--color-black-50)" }}>
             {user.username || "구경꾼"}님이 입장하셨습니다.
           </span>
@@ -254,7 +255,7 @@ function Chat({ socket, viewers, uuid }) {
 
     socket.on("leave_room", (_, username) => {
       const Usernotification = (
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "center", marginBottom: "10px" }}>
           <span style={{ fontSize: "12px", color: "var(--color-black-50)" }}>
             {username || "구경꾼"}님이 나가셨습니다.
           </span>
