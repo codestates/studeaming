@@ -163,10 +163,11 @@ function Header() {
     if (!isSideLogOpen) {
       dispatch(sideLogOpen(true));
       setTimeout(() => {
-        gsap.from("#side_log", { x: -480, duration: 1 });
+        gsap.from("#side_log", { x: -330, duration: 1 });
+        gsap.to("#side_log", { opacity: 1, duration: 0.2 });
       }, 0);
     } else {
-      gsap.to("#side_log", { x: -480, duration: 1 });
+      gsap.to("#side_log", { x: -330, duration: 1 });
       setTimeout(() => {
         dispatch(sideLogOpen(false));
       }, 500);
@@ -178,6 +179,11 @@ function Header() {
     setTimeout(() => {
       gsap.from("#side_log", {
         y: -400,
+        duration: 1,
+      });
+      gsap.to("#side_log", {
+        opacity: 1,
+        duration: 0.1,
       });
     }, 0);
   };
