@@ -9,6 +9,7 @@ import SuccessNotify from "./SuccessNotify";
 import { Title, Input } from "../styles/reusableStyle";
 
 const Container = styled.div`
+  width: 280px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,7 +100,7 @@ function Withdrawal() {
             입력한 후 탈퇴할 수 있습니다.
           </div>
           <Input
-            type={isSocialLogined ? "text" : "password"}
+            type={isSocialLogined || isGuestLogined ? "text" : "password"}
             onChange={getPassword}
             ref={input}
             placeholder={
@@ -107,6 +108,7 @@ function Withdrawal() {
                 ? `'잘있어요 스터디밍'을 입력해주세요`
                 : "비밀번호를 입력해주세요"
             }
+            spellCheck="false"
           />
           <div id="warning_message">
             {isReqFailed
