@@ -17,10 +17,6 @@ const Container = styled.div`
     padding: 1rem 1.2rem;
   }
 
-  /* #following {
-    flex: 1 0 auto;
-  } */
-
   section {
     display: inline-block;
   }
@@ -62,7 +58,7 @@ const SectionTitle = styled.h3`
 const Following = styled.ul`
   display: block;
   overflow: scroll;
-  height: 200px;
+  height: 180px;
 
   ::-webkit-scrollbar {
     display: none;
