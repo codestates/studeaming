@@ -2,7 +2,6 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
-const fs = require("fs");
 const cron = require("node-cron");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
@@ -34,12 +33,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(cors(corsOpt));
-
-fs.readdir("uploads", (error) => {
-  if (error) {
-    fs.mkdirSync("uploads");
-  }
-});
 
 cron.schedule("0 0 * * 1", () => {
   cronJob();
