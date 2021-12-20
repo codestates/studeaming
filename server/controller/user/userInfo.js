@@ -42,7 +42,7 @@ module.exports = {
         const username = req.body.username || user.username;
         const about = req.body.about || user.about;
         const profileImg = res.req.file
-          ? `${process.env.SERVER_URL}/${res.req.file.path}`
+          ? res.req.file.location
           : req.body.profile_img === null
           ? user.profileImg
           : req.body.profile_img;
