@@ -200,6 +200,8 @@ function MainContents({ contents }) {
                 <div className="time_info">
                   {el.user_id === "0"
                     ? null
+                    : el.user_id === "1" || "2"
+                    ? "1시간 12분 전"
                     : now - el.createdAt > 60
                     ? `${Math.floor(
                         (now - el.createdAt) / 60
