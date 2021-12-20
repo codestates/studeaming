@@ -72,7 +72,6 @@ const Desc = styled.div`
   width: 100%;
   height: 32%;
   padding: 10px;
-  /* background-color: var(--color-gray-bg); */
 
   > .thumbnail_title {
     display: -webkit-box;
