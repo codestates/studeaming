@@ -8,6 +8,7 @@ import { modalOff } from "../store/actions";
 import useAudio from "../hooks/useAudio";
 import { v4 } from "uuid";
 import studyroomAPI from "../api/studyroom";
+import Loading from "./Loading";
 import { Input, Desc } from "../styles/reusableStyle";
 import sound from "../assets/sound";
 
@@ -174,7 +175,8 @@ function StreamerSettingMockup() {
   const formData = useRef();
   const [players, toggle] = useAudio(sound);
   const [hover, setHover] = useState({ mounted: false, idx: null });
-  const [isActive, setActive] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let localStream;
@@ -190,7 +192,7 @@ function StreamerSettingMockup() {
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       localStream = stream;
-      setActive(true);
+      setIsActive(true);
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
     } catch (err) {
       notification.open({
@@ -230,6 +232,8 @@ function StreamerSettingMockup() {
   };
 
   const startBtnHandler = () => {
+    setIsLoading(true);
+
     if (isActive) {
       let title = streamingInfo.title,
         sound = streamingInfo.sound;
@@ -250,18 +254,22 @@ function StreamerSettingMockup() {
       studyroomAPI
         .postStudyRoom(formData.current)
         .then((res) => {
+          setIsLoading(false);
           dispatch(modalOff());
           navigate("/streamer", {
             state: { uuid, title, sound, createdAt: now },
           });
         })
-        .catch((err) => {});
+        .catch((err) => {
+          setIsLoading(false);
+        });
     }
   };
 
   useEffect(() => {
     checkCameraHandler();
     return () => {
+      setIsLoading(false);
       if (localStream) {
         localStream.getTracks()[0].stop();
       }
@@ -278,6 +286,7 @@ function StreamerSettingMockup() {
 
   return (
     <>
+      {isLoading ? <Loading></Loading> : null}
       <Container>
         <div>
           <span id="studeaming-setting-title">스트리밍 시작하기</span>

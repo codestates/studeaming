@@ -1,9 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { getUserInfo, userInfoEditModalOpen } from "../store/actions/index";
 import Button from "./Button";
 import userAPI from "../api/user";
+import Loading from "./Loading";
 import { InputContainer, Input, Desc } from "../styles/reusableStyle";
 
 const ProfileImg = styled.div`
@@ -66,6 +67,7 @@ function UserInfoEdit() {
   );
   const [editInfo, setEditInfo] = useState({ profileImg, username, about });
   const [imageUrl, setImageUrl] = useState(profileImg);
+  const [isLoading, setIsLoading] = useState(false);
   const formData = useRef(null);
   const dispatch = useDispatch();
 
@@ -86,20 +88,34 @@ function UserInfoEdit() {
   };
 
   const editRequest = async () => {
+    setIsLoading(true);
     formData.current = new FormData();
     formData.current.append("profile_img", editInfo.profileImg);
     formData.current.append("username", editInfo.username);
     formData.current.append("about", editInfo.about);
 
-    userAPI.modifyUserInfo(formData.current).then((res) => {
-      const data = res.data.user;
-      dispatch(getUserInfo(data));
-      dispatch(userInfoEditModalOpen(false));
-    });
+    userAPI
+      .modifyUserInfo(formData.current)
+      .then((res) => {
+        const data = res.data.user;
+        dispatch(getUserInfo(data));
+        dispatch(userInfoEditModalOpen(false));
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
   };
+
+  useEffect(() => {
+    return () => {
+      setIsLoading(false);
+    };
+  }, []);
 
   return (
     <>
+      {isLoading ? <Loading></Loading> : null}
       {imageUrl ? (
         <ProfileImg>
           <img src={imageUrl} alt="profile" />
