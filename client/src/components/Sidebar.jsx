@@ -37,7 +37,7 @@ const Container = styled.div`
     }
   }
 
-  @media screen and (max-height: 768px) {
+  @media screen and (max-height: 796px) {
     height: fit-content;
   }
 
@@ -58,7 +58,7 @@ const SectionTitle = styled.h3`
 const Following = styled.ul`
   display: block;
   overflow: scroll;
-  height: 180px;
+  height: 130px;
 
   ::-webkit-scrollbar {
     display: none;
@@ -86,6 +86,7 @@ const Following = styled.ul`
   @media screen and (max-width: 768px) {
     display: grid;
     grid-template-columns: repeat(auto-fill, 120px);
+    height: fit-content;
   }
 `;
 
