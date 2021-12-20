@@ -150,6 +150,7 @@ function Calendar() {
   };
 
   const jumpToMonth = (num) => {
+    setGrape(Array(31).fill(0));
     if (num > 0) {
       setStandard(standard.clone().add(1, "month"));
     } else {
@@ -157,8 +158,7 @@ function Calendar() {
     }
   };
 
-  const generate = () => {
-    const date = standard;
+  const generate = (date) => {
     const startWeek = date.clone().startOf("month").week();
     const endWeek =
       date.clone().endOf("month").week() === 1
@@ -191,10 +191,10 @@ function Calendar() {
 
               return (
                 <Date
+                  key={idx}
                   isThisMonth={!isThisMonth}
                   isFuture={isFuture}
                   grape={grape[targetDate - 1]}
-                  key={idx}
                   onClick={() => handleDayClick(current, isFuture)}
                 >
                   <div className={isToday}>
@@ -242,7 +242,7 @@ function Calendar() {
             </span>
           ))}
         </div>
-        {generate()}
+        {generate(standard)}
       </Body>
     </Container>
   );
