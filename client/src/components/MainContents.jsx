@@ -43,6 +43,7 @@ const Contents = styled.div`
   max-width: 360px;
   height: 100%;
   min-height: 340px;
+  box-shadow: 0px 0px 10px var(--color-gray-bg);
 
   :hover {
     cursor: pointer;
@@ -57,7 +58,7 @@ const Contents = styled.div`
 
 const Thumbnail = styled.div`
   width: 100%;
-  height: 70%;
+  height: 68%;
   background-image: url(${(props) => props.img});
   background-size: cover;
   background-repeat: no-repeat;
@@ -69,9 +70,9 @@ const Desc = styled.div`
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  height: 30%;
+  height: 32%;
   padding: 10px;
-  background-color: var(--color-gray-bg);
+  /* background-color: var(--color-gray-bg); */
 
   > .thumbnail_title {
     display: -webkit-box;
@@ -194,7 +195,7 @@ function MainContents({ contents }) {
                     <IoPeople />
                     {el.user_id === "0"
                       ? ` ${el.headCount}`
-                      : ` ${el.headCount} / 4`}
+                      : ` ${el.headCount} / 5`}
                   </div>
                 </div>
                 <div className="time_info">
