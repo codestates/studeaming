@@ -72,7 +72,6 @@ const Desc = styled.div`
   width: 100%;
   height: 32%;
   padding: 10px;
-  /* background-color: var(--color-gray-bg); */
 
   > .thumbnail_title {
     display: -webkit-box;
@@ -201,6 +200,8 @@ function MainContents({ contents }) {
                 <div className="time_info">
                   {el.user_id === "0"
                     ? null
+                    : el.user_id === "1" || "2"
+                    ? "1시간 12분 전"
                     : now - el.createdAt > 60
                     ? `${Math.floor(
                         (now - el.createdAt) / 60

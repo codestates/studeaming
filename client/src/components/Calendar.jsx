@@ -102,7 +102,6 @@ const Date = styled.div`
 
   .date-text {
     font-size: 1.2rem;
-    margin-top: 3px;
   }
 
   .future {

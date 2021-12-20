@@ -121,6 +121,10 @@ const ToggleImg2 = styled(ToggleSection)`
   }
 `;
 
+const MovingCircle = styled(Circle)`
+  cursor: default;
+`;
+
 const ToggleBack = styled(ToggleBackground)`
   background: var(--color-gray-bg-100);
 `;
@@ -269,13 +273,13 @@ function LandingSection4() {
           <ToggleImg1 id="toggle-image1">
             <Name>기하와 벡터</Name>
             <ToggleBack id="toggle-back" color="blue">
-              <Circle id="moving-circle" />
+              <MovingCircle id="moving-circle" />
             </ToggleBack>
           </ToggleImg1>
           <ToggleImg2 id="toggle-image2">
             <Name>미분과 적분</Name>
             <ToggleBackground color="red">
-              <Circle />
+              <MovingCircle />
             </ToggleBackground>
           </ToggleImg2>
         </ImageContainer>
