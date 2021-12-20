@@ -51,9 +51,7 @@ module.exports = {
   post: async (req, res) => {
     try {
       const user = isAccessAuthorized(req);
-      const thumbnail = res.req.file
-        ? `${process.env.SERVER_URL}/${res.req.file.path}`
-        : null;
+      const thumbnail = res.req.file ? res.req.file.location : null;
 
       const studyroom = await Studyroom.create({
         uuid: req.body.uuid,
