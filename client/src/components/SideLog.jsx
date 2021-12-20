@@ -478,7 +478,7 @@ function SideLog() {
           </UserImg>
           <UserNameAndLogout>
             <div>
-              <span className="nickname">
+              <span className="nickname" title={username}>
                 {username.length > 7
                   ? username.slice(0, 7) + "..."
                   : username || "김코딩"}{" "}
