@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import authAPI from "../api/auth";
+import Loading from "./Loading";
 import {
   AuthContainer,
   Title,
@@ -138,6 +139,7 @@ function Signup() {
   const [isReqFailed, setIsReqFailed] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const formData = useRef(null);
   const regExpEmail =
     /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
@@ -237,6 +239,7 @@ function Signup() {
   const signupHandler = () => {
     const { email, username, password, check } = isValid;
     if (email && username && password && check) {
+      setIsLoading(true);
       formData.current = new FormData();
       formData.current.append("profile_img", signupInfo.image);
       formData.current.append("email", signupInfo.email);
@@ -246,9 +249,11 @@ function Signup() {
         .signup(formData.current)
         .then(() => {
           setIsSuccess(true);
+          setIsLoading(false);
         })
         .catch(() => {
           setIsReqFailed(true);
+          setIsLoading(false);
           setMessage({ ...message, failure: "새로고침 후 다시 시도해주세요." });
         });
     } else {
@@ -262,8 +267,16 @@ function Signup() {
     // eslint-disable-next-line
   }, [signupInfo.password, signupInfo.check]);
 
+  useEffect(() => {
+    return () => {
+      setIsLoading(false);
+    };
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <>
+      {isLoading ? <Loading></Loading> : null}
       <AuthContainer isTermsOpen={isTermsOpen}>
         <Title>회원가입</Title>
         {isSuccess ? (
