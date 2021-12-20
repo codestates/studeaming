@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   loginStateChange,
   sideLogOpen,
   signinModalOpen,
+  modalOff,
 } from "../store/actions/index";
 import styled from "styled-components";
 import logAPI from "../api/studyLog";
@@ -82,6 +84,7 @@ function LogChart({ date, offset }) {
   const { isLogin } = useSelector(({ userReducer }) => userReducer);
   const [log, setLog] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const minute = ["", 10, 20, 30, 40, 50, 60];
   const hour = new Array(24).fill(0).map((_, idx) => idx);
 
@@ -136,14 +139,14 @@ function LogChart({ date, offset }) {
       .getLogs(date, offset)
       .then((res) => {
         const studylogList = res.data.studylogList.map((list) => {
-          const utcStart = list.startedAt * 60000;
-          const utcFinish = list.finishedAt * 60000;
-          const startedAt =
-            new Date(utcStart).getHours() * 60 +
-            new Date(utcStart).getMinutes();
-          const finishedAt =
-            new Date(utcFinish).getHours() * 60 +
-            new Date(utcFinish).getMinutes();
+          const start =
+            new Date(
+              date.slice(0, 4),
+              Number(date.slice(4, 6)) - 1,
+              date.slice(6, 8)
+            ).getTime() / 60000;
+          const startedAt = list.startedAt - start;
+          const finishedAt = list.finishedAt - start;
           const newList = { ...list, startedAt, finishedAt };
           return newList;
         });
@@ -152,6 +155,8 @@ function LogChart({ date, offset }) {
       .catch(() => {
         dispatch(loginStateChange(false));
         dispatch(sideLogOpen(false));
+        dispatch(modalOff());
+        navigate("/home");
         dispatch(signinModalOpen(true));
       });
   };
