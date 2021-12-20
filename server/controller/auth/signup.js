@@ -12,9 +12,7 @@ const { setDefault } = require("../functions/model");
 module.exports = async (req, res) => {
   if (req.body.username && req.body.password && req.body.email) {
     console.log(res.req.file);
-    const profileImg = res.req.file
-      ? `${process.env.SERVER_URL}/${res.req.file.path}`
-      : null;
+    const profileImg = res.req.file ? res.req.file.location : null;
     encryptPassword.encrypt(res, req.body.password, async (hash) => {
       try {
         const [newUser, created] = await User.findOrCreate({

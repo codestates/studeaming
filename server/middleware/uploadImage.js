@@ -1,12 +1,17 @@
 const path = require("path");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
+const aws = require("aws-sdk");
+
+aws.config.loadFromPath(__dirname + "/awsconfig.json");
+const s3 = new aws.S3();
 
 module.exports = (req, res, next) => {
-  let storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "uploads");
-    },
-    filename: (req, file, cb) => {
+  let storage = multerS3({
+    s3: s3,
+    bucket: "studeaming-images",
+    acl: "public-read",
+    key: function (req, file, cb) {
       cb(null, `${Date.now()}_${file.originalname}`);
     },
   });
