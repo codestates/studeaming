@@ -25,7 +25,7 @@
 
 
 <h1>STACK</h1>
-<img width="700" alt="stack" src="https://user-images.githubusercontent.com/85681803/146299253-2eea1c52-596b-4a15-8877-f9c5f28a2429.png" />
+<img width="700" alt="stack" src="https://user-images.githubusercontent.com/85681803/146872410-188275f2-f64c-4851-868e-da0814db3cfe.png" />
 
 <br />
 
