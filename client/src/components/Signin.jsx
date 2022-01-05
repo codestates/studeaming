@@ -75,7 +75,7 @@ const SocialBtn = styled.div`
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.button`
   width: 220px;
   margin-top: 20px;
   display: flex;
@@ -97,7 +97,8 @@ function Signin() {
     setSigninInfo({ ...signinInfo, [key]: e.target.value });
   };
 
-  const signinHandler = () => {
+  const signinHandler = (e) => {
+    e.preventDefault();
     if (!signinInfo.email.length) {
       setIsReqFailed(true);
       setMessage("이메일을 입력해주세요.");
@@ -188,11 +189,12 @@ function Signin() {
   };
 
   return (
-    <AuthContainer>
+    <AuthContainer onSubmit={signinHandler}>
       <Title>로그인</Title>
       <InputBox>
         <Input
-          type="text"
+          type="email"
+          name="email"
           placeholder="이메일"
           onChange={handleInputValue("email")}
           onKeyUp={(e) => {
@@ -204,6 +206,7 @@ function Signin() {
       <InputBox>
         <Input
           type="password"
+          name="password"
           placeholder="비밀번호"
           onChange={handleInputValue("password")}
           onKeyUp={(e) => {
@@ -212,9 +215,9 @@ function Signin() {
         />
         <Icon icon={faLock} />
       </InputBox>
-      <ButtonContainer>
+      <ButtonContainer type="submit">
         {isReqFailed && <FailureMsg>{message}</FailureMsg>}
-        <Button message="로그인" clickEvent={signinHandler}></Button>
+        <Button message="로그인" />
       </ButtonContainer>
       <div>
         <AssistBtn onClick={guestSigninHandler}>게스트 로그인</AssistBtn>
