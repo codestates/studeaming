@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const AuthContainer = styled.div`
+export const AuthContainer = styled.form`
   width: 280px;
   height: fit-content;
   display: ${(props) => (props.isTermsOpen ? "none" : "flex")};
