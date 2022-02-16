@@ -85,7 +85,7 @@ const Terms = styled.span`
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.button`
   width: 220px;
 `;
 
@@ -236,7 +236,8 @@ function Signup() {
     setIsTermsOpen(false);
   };
 
-  const signupHandler = () => {
+  const signupHandler = (e) => {
+    e.preventDefault();
     const { email, username, password, check } = isValid;
     if (email && username && password && check) {
       setIsLoading(true);
@@ -277,7 +278,7 @@ function Signup() {
   return (
     <>
       {isLoading ? <Loading></Loading> : null}
-      <AuthContainer isTermsOpen={isTermsOpen}>
+      <AuthContainer isTermsOpen={isTermsOpen} onSubmit={signupHandler}>
         <Title>회원가입</Title>
         {isSuccess ? (
           <SuccessNotify
@@ -347,8 +348,8 @@ function Signup() {
             </InputContainer>
             <Terms onClick={openTerms}>👉 개인정보 수집 및 이용내역</Terms>
             {isReqFailed && <FailureMsg>{message.failure}</FailureMsg>}
-            <ButtonContainer>
-              <Button message="동의 및 회원가입" clickEvent={signupHandler} />
+            <ButtonContainer type="submit">
+              <Button message="동의 및 회원가입" />
             </ButtonContainer>
           </InputSection>
         )}
